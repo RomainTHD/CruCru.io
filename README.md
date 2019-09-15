@@ -1,5 +1,3 @@
-# VISI301_CRUMIERE_THEODET
+# Projet VISI301
 
-<h1> Projet VISI301 </h1>
-
-TEST
+### Romain THEODET - Sarah CRUMIERE
