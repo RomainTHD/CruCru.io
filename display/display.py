@@ -1,6 +1,3 @@
-if __name__ == "__main__":
-    raise ImportError("Executez main.py")
-
 import pygame
 import time
 
@@ -17,9 +14,12 @@ class Display:
 
         cls.framerate = 60
 
+        cls.key_to_function = {}
+        cls.str_to_key = {}
+
     @classmethod
-    def bind(cls, key, function):
-        pass
+    def bindKey(cls, key, function):
+        cls.key_to_function[key] = function
 
     @classmethod
     def exit(cls):
@@ -31,14 +31,25 @@ class Display:
 
     @classmethod
     def display(cls):
-
+        pass
 
     @classmethod
     def run(cls):
         while not cls.quit:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    cls.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        run = False
+
             cls.update()
             cls.display()
 
             pygame.display.flip()
 
             time.sleep(1/cls.framerate)
+
+Display.init((1000, 1000))
+Display.run()
