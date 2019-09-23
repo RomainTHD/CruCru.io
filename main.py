@@ -1,39 +1,24 @@
 import pygame
-import time
 
 from player import Player
-
+from color import Color
+from display import Display
+from map import Map
 
 player = Player()
-
-red    = (255, 0  , 0  )
-green  = (0  , 255, 0  )
-blue   = (0  , 0  , 255)
-black  = (0  , 0  , 0  )
-yellow = (255, 255, 0  )
+# Création du joueur
 
 pygame.init()
 # On initialise pygame
 
-window_resolution = (800, 600)
-window = pygame.display.set_mode((window_resolution))
-# Taille de la fenêtre et création d'une variable fenêtre (window)
+Display.init(800, 600)
+# On initialise la fenêtre
 
-pygame.display.set_caption("Agar.io")
-# On change le titre
+Map.init(800, 600)
+# On initialise le terrain de jeu
+# Pour l'instant il a la même taille que la fenêtre
 
-window.fill(black)
-# La fenêtre aura un fond noir
-# black a été défini plus tôt dans le programme
 
-# rectangle = pygame.Rect(50, 50, 100, 100)
-# pygame.draw.rect(window, red, rectangle)
-# On crée un objet rectangle en (x=50, y=50) de largeur 100 et de hauteur 100
-# ici c'est donc un carré
-# la coordonnée (50, 50) correspond au coin en haut à gauche
-
-pygame.display.flip()
-# On actualise la fenêtre
 
 run = True
 
@@ -51,20 +36,14 @@ while run:
     mx, my = pygame.mouse.get_pos()
     # Position (x, y) de la souris
 
-    if pygame.mouse.get_focused():
-        # Si souris dans fenêtre
-        # print(mx, my)
+    if not pygame.mouse.get_focused():
+        # Si souris hors de la fenêtre
+        # print("out")
         pass
 
     player.update(mx, my)
+    player.display()
 
-    time.sleep(1/100)
-    # Pour actualiser la fenêtre tous les centième de seconde
-
-    window.fill(black)
-
-    player.display(window)
-
-    pygame.display.flip()
+    Display.updateFrame()
 
 pygame.quit()
