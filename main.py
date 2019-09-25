@@ -5,9 +5,6 @@ from color import Color
 from display import Display
 from map import Map
 
-player = Player()
-# Création du joueur
-
 pygame.init()
 # On initialise pygame
 
@@ -18,7 +15,8 @@ Map.init(800, 600)
 # On initialise le terrain de jeu
 # Pour l'instant il a la même taille que la fenêtre
 
-
+player = Player()
+# Création du joueur
 
 run = True
 
@@ -41,8 +39,10 @@ while run:
         # print("out")
         pass
 
+    Map.hitbox_cellule(player)
     Map.creer_boule()
     Map.affiche_cellule()
+
 
     player.update(mx, my)
     player.display()
