@@ -41,6 +41,9 @@ while run:
         # print("out")
         pass
 
+    Map.creer_boule()
+    Map.affiche_cellule()
+
     player.update(mx, my)
     player.display()
 
