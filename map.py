@@ -1,14 +1,14 @@
 import time
 import random
 
-from boule_a_manger import Boule_a_manger
+from cell import Cell
 
 class Map:
     @classmethod
-    def init(cls, width, height):
+    def init(cls, width:int, height:int) -> None:
         cls.width = width
         cls.height = height
-        cls.liste_boules=[]
+        cls.all_cells = []
 
         cls.delta_t = 0.2
         cls.ref_time = -1*cls.delta_t
@@ -16,28 +16,38 @@ class Map:
         cls.max_cells = 100
 
     @classmethod
-    def creer_boule(cls):
+    def createNewCell(cls) -> None:
         if time.time() - cls.ref_time > cls.delta_t:
             cls.ref_time = time.time()
 
             x = random.randrange(0, cls.width)
             y = random.randrange(0,cls.height)
-            b = Boule_a_manger(x,y)
+            cell = Cell(x, y)
 
-            if len(cls.liste_boules) <= cls.max_cells:
-                cls.liste_boules += [b]
+            if len(cls.all_cells) <= cls.max_cells:
+                cls.all_cells.append(cell)
             else :
-                del cls.liste_boules[0]
-                cls.liste_boules += [b]
+                cls.all_cells.append(cell)
+                del cls.all_cells[0]
 
     @classmethod
-    def affiche_cellule(cls):
-        for i in range(0,len(cls.liste_boules)):
-            cls.liste_boules[i].display()
+    def displayCell(cls) -> None:
+        for i in range(0,len(cls.all_cells)):
+            cls.all_cells[i].display()
 
     @classmethod
-    def hitbox_cellule(cls, player):
-        for i in range(len(cls.liste_boules)-1, -1, -1):
-            if (player.x-cls.liste_boules[i].x)**2 + (player.y-cls.liste_boules[i].y)**2 < (player.radius+cls.liste_boules[i].radius)**2:
-                del cls.liste_boules[i]
+    def detectCellHitbox(cls, player:"Player") -> None:
+        """
+
+        INPUT :
+
+        OUTPUT :
+            None
+        """
+
+        for i in range(len(cls.all_cells)-1, -1, -1):
+            cell_i = cls.all_cells[i]
+
+            if (player.x-cell_i.x)**2 + (player.y-cell_i.y)**2 < (player.radius+cell_i.radius)**2:
+                del cls.all_cells[i]
                 player.score += 1

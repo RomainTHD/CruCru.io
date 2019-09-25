@@ -1,3 +1,5 @@
+#! commentaires débug
+
 import pygame
 
 from player import Player
@@ -8,10 +10,10 @@ from map import Map
 pygame.init()
 # On initialise pygame
 
-Display.init(800, 600)
+w, h = Display.init(fullscreen=True)
 # On initialise la fenêtre
 
-Map.init(800, 600)
+Map.init(w, h)
 # On initialise le terrain de jeu
 # Pour l'instant il a la même taille que la fenêtre
 
@@ -39,10 +41,9 @@ while run:
         # print("out")
         pass
 
-    Map.hitbox_cellule(player)
-    Map.creer_boule()
-    Map.affiche_cellule()
-
+    Map.detectCellHitbox(player)
+    Map.createNewCell()
+    Map.displayCell()
 
     player.update(mx, my)
     player.display()

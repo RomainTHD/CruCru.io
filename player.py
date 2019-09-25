@@ -3,7 +3,7 @@ from display import Display
 from map import Map
 
 class Player:
-    def __init__(self):
+    def __init__(self) -> None:
         self.x = Map.width/2
         self.y = Map.height/2
 
@@ -14,7 +14,7 @@ class Player:
 
         self.name = "Player"
 
-    def update(self, mx, my):
+    def update(self, mx:int, my:int) -> None:
         coeff = 100
 
         dist_x = (mx - self.x)/coeff
@@ -28,6 +28,6 @@ class Player:
 
         self.radius = int(self.base_radius + self.score/10)
 
-    def display(self):
-        Display.drawCircle(x=self.x, y=self.y, color=Color.pink, radius=self.radius)
-        Display.drawText(str(self.score), self.x, self.y, Color.white)
+    def display(self) -> None:
+        Display.drawCircle(x=self.x, y=self.y, color=Color.PINK, radius=self.radius)
+        Display.drawText(str(self.score), self.x, self.y, Color.WHITE)
