@@ -1,4 +1,3 @@
-* Vitesse constante
-* Boule à manger
 * ennemis
 * vitesse max
+* taille non proportionnelle à score 
