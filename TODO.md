@@ -1,3 +1,7 @@
 * ennemis
-* vitesse max
-* taille non proportionnelle à score 
+* vitesse max du player
+* taille non proportionnelle à score
+* camera
+* IA ennemis
+* écran d'accueil
+* réseau
