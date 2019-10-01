@@ -28,6 +28,29 @@ class Player:
 
         self.radius = int(self.base_radius + self.score/10)
 
+    def update2(self, mx:int, my:int) -> None:
+        coeff = 10
+
+        dx = (mx - self.x)*coeff
+        dy = (my - self.y)*coeff
+
+        max_speed = 10
+
+        speed = (dx**2 + dy**2)**0.5
+
+        vx = dx/speed*coeff
+        vy = dy/speed*coeff
+
+        print(vx, vy)
+
+        if self.x+vx > self.radius and self.x+vx < Map.width-self.radius:
+            self.x += vx
+
+        if self.y+vy > self.radius and self.y+vy < Map.height-self.radius:
+            self.y += vy
+
+        self.radius = int(self.base_radius + self.score/10)
+
     def display(self) -> None:
         Display.drawCircle(x=self.x, y=self.y, color=Color.PINK, radius=self.radius)
         Display.drawText(str(self.score), self.x, self.y, Color.WHITE)
