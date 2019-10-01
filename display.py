@@ -2,10 +2,11 @@ import pygame
 import time
 
 from color import Color
+from vector import Vect2d
 
 class Display:
     @classmethod
-    def init(cls, width:int=1920, height:int=1080, fullscreen:bool=False) -> (int, int):
+    def init(cls, width:int=1920, height:int=1080, fullscreen:bool=False, framerate:int=60) -> (int, int):
         """
 
         """
@@ -14,7 +15,7 @@ class Display:
         #! pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
         #! taille écran
 
-        cls.framerate = 100
+        cls.framerate = framerate
 
         if fullscreen:
             cls.window = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
@@ -46,13 +47,13 @@ class Display:
         # On efface l'arrière-plan
 
     @classmethod
-    def drawCircle(cls, x:int, y:int, color:Color, radius:int) -> None:
-        pygame.draw.circle(cls.window, color, (int(x), int(y)), radius)
+    def drawCircle(cls, pos:Vect2d, color:Color, radius:int) -> None:
+        pygame.draw.circle(cls.window, color, (int(pos.x), int(pos.y)), radius)
 
     @classmethod
-    def drawText(cls, text_str:str, x:int, y:int, color:Color=Color.WHITE, size=None) -> None:
+    def drawText(cls, text_str:str, pos:Vect2d, color:Color=Color.WHITE, size=None) -> None:
         text = cls.font.render(text_str, True, color)
-        cls.window.blit(text, (int(x)-text.get_width()//2, int(y)-text.get_height()//2))
+        cls.window.blit(text, (int(pos.x)-text.get_width()//2, int(pos.y)-text.get_height()//2))
 
 # rectangle = pygame.Rect(50, 50, 100, 100)
 # pygame.draw.rect(window, red, rectangle)

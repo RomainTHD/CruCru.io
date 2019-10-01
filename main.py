@@ -6,14 +6,15 @@ from player import Player
 from color import Color
 from display import Display
 from map import Map
+from vector import Vect2d
 
 pygame.init()
 # On initialise pygame
 
-w, h = Display.init(fullscreen=True)
+w, h = Display.init(fullscreen=False, width=800, height=600, framerate=144)
 # On initialise la fenêtre
 
-Map.init(w, h)
+Map.init(w, h, framerate=Display.framerate)
 # On initialise le terrain de jeu
 # Pour l'instant il a la même taille que la fenêtre
 
@@ -45,7 +46,7 @@ while run:
     Map.createNewCell()
     Map.displayCell()
 
-    player.update(mx, my)
+    player.update(Vect2d(mx, my))
     player.display()
 
     Display.updateFrame()
