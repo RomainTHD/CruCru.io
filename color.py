@@ -1,9 +1,9 @@
 import random
 
 class Color:
-    RED    = (77 , 0  , 0  )
+    RED    = (255, 0  , 0  )
     ORANGE = (255, 127, 0  )
-    YELLOW = (255, 5  , 0  )
+    YELLOW = (255, 255, 0  )
     LIME   = (127, 255, 0  )
     GREEN  = (0  , 255, 0  )
     CYAN   = (0  , 255, 255)
