@@ -28,13 +28,21 @@ class Player:
 
         self.radius = int(self.base_radius + self.score/10)
 
-    def update(self, mouse_vect:Vect2d) -> None:
-        coeff_tps = 0.01
+    def update(self, mouse_pos:Vect2d) -> None:
+        coeff_tps = 1
+        dist_per_sec = 200
 
-        v = mouse_vect-self.pos
+        v = mouse_pos-self.pos
         v = v.normalize()
 
-        v = v*Map.frame_time/coeff_tps
+        dist_mouse = Vect2d.dist(mouse_pos, self.pos)
+
+        if dist_mouse > self.radius:
+            coeff_dist_mouse = 1
+        else:
+            coeff_dist_mouse = dist_mouse/self.radius
+
+        v = v*Map.frame_time*dist_per_sec/coeff_tps*coeff_dist_mouse
 
         max_speed_per_s = 100
 
