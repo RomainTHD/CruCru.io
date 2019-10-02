@@ -17,7 +17,7 @@ class Display:
             frameRate : int, nombre d'images par seconde
         
         OUTPUT :
-            (int, int), largeur et hauteur de la fenêtre 
+            dim : (int, int), largeur et hauteur de la fenêtre 
         """
 
         #! infoObject = pygame.display.Info()
@@ -42,7 +42,9 @@ class Display:
         cls.updateFrame()
         # On actualise la fenêtre
 
-        return (cls.width, cls.height)
+        dim = (cls.width, cls.height)
+        
+        return dim
 
     @classmethod
     def updateFrame(cls) -> None:
