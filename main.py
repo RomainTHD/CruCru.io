@@ -7,6 +7,7 @@ from color import Color
 from display import Display
 from map import Map
 from vector import Vect2d
+from camera import Camera
 
 pygame.init()
 # On initialise pygame
@@ -14,9 +15,11 @@ pygame.init()
 w, h = Display.init(fullscreen=False, width=800, height=600, framerate=144)
 # On initialise la fenêtre
 
-Map.init(w, h, framerate=Display.framerate)
+Map.init(1000, 1000, framerate=Display.framerate)
 # On initialise le terrain de jeu
 # Pour l'instant il a la même taille que la fenêtre
+
+Camera.setWindowSize(w, h)
 
 player = Player()
 # Création du joueur
@@ -44,9 +47,12 @@ while run:
 
     Map.detectCellHitbox(player)
     Map.createNewCell()
-    Map.displayCell()
+    Map.display()
 
-    player.update(Vect2d(mx, my))
+    player.update(Vect2d(mx, my) - Vect2d(Display.width/2, Display.height/2))
+
+    Camera.setPos(player.pos)
+
     player.display()
 
     Display.updateFrame()

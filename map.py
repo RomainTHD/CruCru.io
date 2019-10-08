@@ -3,6 +3,7 @@ import random
 
 from cell import Cell
 from vector import Vect2d
+from display import Display
 
 class Map:
     @classmethod
@@ -32,6 +33,18 @@ class Map:
             else :
                 cls.all_cells.append(cell)
                 del cls.all_cells[0]
+
+    @classmethod
+    def display(cls):
+        cls.displayCell()
+
+        w = cls.width
+        h = cls.height
+
+        Display.drawLine(Vect2d(0, 0), Vect2d(w, 0))
+        Display.drawLine(Vect2d(w, 0), Vect2d(w, h))
+        Display.drawLine(Vect2d(w, h), Vect2d(0, h))
+        Display.drawLine(Vect2d(0, h), Vect2d(0, 0))
 
     @classmethod
     def displayCell(cls) -> None:
