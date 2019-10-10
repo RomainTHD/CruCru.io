@@ -27,6 +27,8 @@ class Display:
 
         cls.framerate = framerate
 
+        cls.frame_time = 1/framerate
+
         if fullscreen:
             cls.window = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
             cls.width, cls.height = pygame.display.get_surface().get_size()
@@ -102,6 +104,8 @@ class Display:
         """
 
         pos_cam = pos - Camera.pos
+
+        text_str = str(text_str)
 
         text = cls.font.render(text_str, True, color)
         cls.window.blit(text, (int(pos_cam.x)-text.get_width()//2, int(pos_cam.y)-text.get_height()//2))

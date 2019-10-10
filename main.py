@@ -21,9 +21,6 @@ Map.init(1000, 1000, framerate=Display.framerate)
 
 Camera.setWindowSize(w, h)
 
-player = Player()
-# Création du joueur
-
 run = True
 
 while run:
@@ -45,15 +42,12 @@ while run:
         # print("out")
         pass
 
-    Map.detectCellHitbox(player)
-    Map.createNewCell()
+
+    Map.player.mouse_pos = Vect2d(mx, my) - Vect2d(Display.width/2, Display.height/2)
+    Map.update()
     Map.display()
 
-    player.update(Vect2d(mx, my) - Vect2d(Display.width/2, Display.height/2))
-
-    Camera.setPos(player.pos)
-
-    player.display()
+    Camera.setPos(Map.player.pos)
 
     Display.updateFrame()
 

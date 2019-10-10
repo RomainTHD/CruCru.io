@@ -2,22 +2,29 @@ from display import Display
 from vector import Vect2d
 from creature import Creature
 
-class Player(Creature):
-    mouse_pos = Vect2d()
+import math
+import random
 
-    def __init__(self, pos) -> None:
-        super().__init__(pos, "Player")
+class Enemy(Creature):
+    def __init__(self, pos, name, color) -> None:
+        super().__init__(pos, name, color)
 
-    def update(self, width, height) -> None:
+        self.angle = random.random()*math.pi*2
+
+    def update(self, width, height):
+        v = Vect2d(math.cos(self.angle), math.sin(self.angle)) * 100
+
+        self.angle += 0.05
+
         coeff_tps = 1
         dist_per_sec = 200
 
-        if self.mouse_pos.lengthSq() > self.radius**2:
+        if v.lengthSq() > self.radius**2:
             coeff_dist_mouse = 1
         else:
-            coeff_dist_mouse = self.mouse_pos.length()/self.radius
+            coeff_dist_mouse = v.length()/self.radius
 
-        v = self.mouse_pos.normalize()
+        v = v.normalize()
 
         v = v*Display.frame_time*dist_per_sec/coeff_tps * coeff_dist_mouse**2
 

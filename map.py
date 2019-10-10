@@ -4,6 +4,11 @@ import random
 from cell import Cell
 from vector import Vect2d
 from display import Display
+from color import Color
+
+from player import Player
+from enemy import Enemy
+from creature import Creature
 
 class Map:
     @classmethod
@@ -12,12 +17,39 @@ class Map:
         cls.height = height
         cls.all_cells = []
 
-        cls.frame_time = 1/framerate
-
         cls.delta_t_new_cell = 0.2
         cls.ref_time = -1*cls.delta_t_new_cell
 
-        cls.max_cells = 100
+        cls.MAX_CELLS = 100
+
+        cls.grille_width = 10
+        cls.grille_height = 10
+
+        cls.grille = [[[] for y in range(cls.grille_height)] for x in range(cls.grille_width)]
+
+        cls.player = Player(Vect2d(cls.width/2, cls.height/2))
+        # Création du joueur
+
+        cls.enemies = []
+
+        for i in range(3):
+            v = Vect2d(random.randrange(Creature.base_radius, cls.width -Creature.base_radius), \
+                       random.randrange(Creature.base_radius, cls.height-Creature.base_radius))
+
+            cls.enemies.append(Enemy(v, "Ennemi "+str(i), Color.randomColor()))
+
+    @classmethod
+    def update(cls):
+        cls.player.update(cls.width, cls.height)
+
+        for i in range(len(cls.enemies)):
+            cls.enemies[i].update(cls.width, cls.height)
+
+        for i in range(len(cls.enemies)):
+            cls.detectCellHitbox(cls.enemies[i])
+
+        cls.detectCellHitbox(cls.player)
+        cls.createNewCell()
 
     @classmethod
     def createNewCell(cls) -> None:
@@ -28,11 +60,14 @@ class Map:
             y = random.randrange(0, cls.height)
             cell = Cell(Vect2d(x, y))
 
-            if len(cls.all_cells) <= cls.max_cells:
-                cls.all_cells.append(cell)
-            else :
-                cls.all_cells.append(cell)
-                del cls.all_cells[0]
+            x = int(cell.pos.x / cls.width  * cls.grille_width )
+            y = int(cell.pos.y / cls.height * cls.grille_height)
+
+            cls.all_cells.append(cell)
+            cls.grille[x][y].append(cell)
+
+            if len(cls.all_cells) >= cls.MAX_CELLS:
+                cls.deleteCell(0)
 
     @classmethod
     def display(cls):
@@ -46,13 +81,22 @@ class Map:
         Display.drawLine(Vect2d(w, h), Vect2d(0, h))
         Display.drawLine(Vect2d(0, h), Vect2d(0, 0))
 
+        for x in range(cls.grille_width):
+            for y in range(cls.grille_height):
+                Display.drawText(len(cls.grille[x][y]), Vect2d((x+0.5)*cls.width/cls.grille_width, (y+0.5)*cls.height/cls.grille_height))
+
+        for i in range(len(cls.enemies)):
+            cls.enemies[i].display()
+
+        cls.player.display()
+
     @classmethod
     def displayCell(cls) -> None:
         for i in range(0,len(cls.all_cells)):
             cls.all_cells[i].display()
 
     @classmethod
-    def detectCellHitbox(cls, player:"Player") -> None:
+    def detectCellHitbox(cls, creature:"Creature") -> None:
         """
 
         INPUT :
@@ -64,6 +108,19 @@ class Map:
         for i in range(len(cls.all_cells)-1, -1, -1):
             cell_i = cls.all_cells[i]
 
-            if Vect2d.distSq(player.pos, cell_i.pos) < (player.radius+cell_i.radius)**2:
-                del cls.all_cells[i]
-                player.score += 1
+            if Vect2d.distSq(creature.pos, cell_i.pos) < (creature.radius+cell_i.radius)**2:
+                cls.deleteCell(i)
+                creature.score += 1
+
+    @classmethod
+    def deleteCell(cls, index:int):
+        cell = cls.all_cells[index]
+
+        x = int(cell.pos.x / cls.width  * cls.grille_width )
+        y = int(cell.pos.y / cls.height * cls.grille_height)
+
+        for i in range(len(cls.grille[x][y])-1, -1, -1):
+            if cell == cls.grille[x][y][i]:
+                del cls.grille[x][y][i]
+
+        del cls.all_cells[index]
