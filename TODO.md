@@ -6,3 +6,4 @@
 * IA ennemis
 * écran d'accueil
 * réseau
+* Attention lors de l'apparition ne pas apparaitre à côté d'un joueur imposant sinon on perd direct, aucun intérêt.
