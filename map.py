@@ -32,7 +32,7 @@ class Map:
 
         cls.enemies = []
 
-        for i in range(3):
+        for i in range(1):
             v = Vect2d(random.randrange(Creature.base_radius, cls.width -Creature.base_radius), \
                        random.randrange(Creature.base_radius, cls.height-Creature.base_radius))
 
@@ -43,6 +43,8 @@ class Map:
         cls.player.update(cls.width, cls.height)
 
         for i in range(len(cls.enemies)):
+            pos_x, pos_y = cls.enemies[i].getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
+            cls.enemies[i].map = cls.getLenSubMap(pos_x, pos_y)
             cls.enemies[i].update(cls.width, cls.height)
 
         for i in range(len(cls.enemies)):
@@ -50,6 +52,17 @@ class Map:
 
         cls.detectCellHitbox(cls.player)
         cls.createNewCell()
+
+    @classmethod
+    def getLenSubMap(cls, pos_x, pos_y):
+        res = [[None for i in range(cls.grille_height)] for j in range(cls.grille_width)]
+
+        for x in range(pos_x-cls.grille_width, pos_x+cls.grille_width+1):
+            for y in range(pos_y-cls.grille_height, pos_y+cls.grille_height+1):
+                if x >= 0 and x < cls.grille_width and y >= 0 and y < cls.grille_height:
+                    res[x][y] = cls.grille[x][y]
+                    
+        return res
 
     @classmethod
     def createNewCell(cls) -> None:

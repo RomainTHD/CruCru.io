@@ -10,14 +10,14 @@ class Cell:
     def __init__(self, pos:Vect2d) -> None:
         """
         Constructeur
-        
+
         INPUT :
             pos : Vect2d, position de la cellule
-           
+
         OUTPUT :
             None
         """
-        
+
         self.pos = pos
         self.color = Color.randomColor()
         # On prend une couleur aléatoire
@@ -26,13 +26,19 @@ class Cell:
     def display(self) -> None:
         """
         Procédure d'affichage de la cellule
-        
+
         INPUT :
             None
-        
+
         OUTPUT :
             None
         """
-        
+
         Display.drawCircle(pos=self.pos, color=self.color, radius=self.radius)
         # Dessine un cercle
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return str(self.pos)
