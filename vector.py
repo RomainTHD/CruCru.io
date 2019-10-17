@@ -112,7 +112,29 @@ class Vect2d:
         return self.__str__()
 
     def __str__(self) -> str:
-        return "(x:{0},y:{1})".format(self.x, self.y)
+
+
+
+        #!
+        # n = 3
+        #
+        # x = int(self.x*10**n)
+        # y = int(self.y*10**n)
+        #
+        # sx = str(x//10**n) + '.'
+        # sy = str(y//10**n) + '.'
+        #
+        # for i in range(n):
+        #     sx += str(int(x*10 - int(x)*10 - x*10%1))
+        #
+        #     x *= 10
+
+        sx = str(self.x)
+        sy = str(self.y)
+
+        s = "(x:" + sx + ",y:" + sy + ")"
+
+        return s
 
     def normalize(self) -> 'Vect2d':
         sum = (self.x**2 + self.y**2)**0.5

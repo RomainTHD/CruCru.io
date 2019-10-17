@@ -22,6 +22,8 @@ class Map:
 
         cls.MAX_CELLS = 100
 
+        cls.NB_CELL_PER_SECOND = 2
+
         cls.grille_width = 10
         cls.grille_height = 10
 
@@ -43,25 +45,27 @@ class Map:
         cls.player.update(cls.width, cls.height)
 
         for i in range(len(cls.enemies)):
-            pos_x, pos_y = cls.enemies[i].getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
-            cls.enemies[i].map = cls.getLenSubMap(pos_x, pos_y)
+            map_pos = cls.enemies[i].getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
+            cls.enemies[i].map = cls.getCenteredSubMap(map_pos)
             cls.enemies[i].update(cls.width, cls.height)
 
         for i in range(len(cls.enemies)):
             cls.detectCellHitbox(cls.enemies[i])
 
         cls.detectCellHitbox(cls.player)
-        cls.createNewCell()
+
+        for i in range(cls.NB_CELL_PER_SECOND):
+            cls.createNewCell()
 
     @classmethod
-    def getLenSubMap(cls, pos_x, pos_y):
+    def getCenteredSubMap(cls, map_pos):
         res = [[None for i in range(cls.grille_height)] for j in range(cls.grille_width)]
 
-        for x in range(pos_x-cls.grille_width, pos_x+cls.grille_width+1):
-            for y in range(pos_y-cls.grille_height, pos_y+cls.grille_height+1):
+        for x in range(map_pos.x-cls.grille_width, map_pos.x+cls.grille_width+1):
+            for y in range(map_pos.y-cls.grille_height, map_pos.y+cls.grille_height+1):
                 if x >= 0 and x < cls.grille_width and y >= 0 and y < cls.grille_height:
                     res[x][y] = cls.grille[x][y]
-                    
+
         return res
 
     @classmethod
@@ -97,6 +101,12 @@ class Map:
         for x in range(cls.grille_width):
             for y in range(cls.grille_height):
                 Display.drawText(len(cls.grille[x][y]), Vect2d((x+0.5)*cls.width/cls.grille_width, (y+0.5)*cls.height/cls.grille_height))
+
+        for x in range(1, cls.grille_width):
+            Display.drawLine(Vect2d(x*w/cls.grille_width, 0), Vect2d(x*w/cls.grille_width, h), color=Color.LIGHT_GRAY)
+
+        for y in range(1, cls.grille_height):
+            Display.drawLine(Vect2d(0, y*h/cls.grille_height), Vect2d(w, y*h/cls.grille_height), color=Color.LIGHT_GRAY)
 
         for i in range(len(cls.enemies)):
             cls.enemies[i].display()

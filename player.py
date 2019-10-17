@@ -16,19 +16,11 @@ class Player(Creature):
             coeff_dist_mouse = 1
         else:
             coeff_dist_mouse = self.mouse_pos.length()/self.radius
+            coeff_dist_mouse = coeff_dist_mouse**2
 
-        v = self.mouse_pos.normalize()
+            if coeff_dist_mouse < 0.1:
+                coeff_dist_mouse = 0
 
-        v = v*Display.frame_time*dist_per_sec/coeff_tps * coeff_dist_mouse**2
+        direction = self.mouse_pos.normalize()*coeff_dist_mouse
 
-        max_speed_per_s = 100
-
-        new_pos = self.pos + v
-
-        if new_pos.x > self.radius and new_pos.x < width-self.radius:
-            self.pos.x = new_pos.x
-
-        if new_pos.y > self.radius and new_pos.y < height-self.radius:
-            self.pos.y = new_pos.y
-
-        self.radius = int(self.base_radius + self.score/10)
+        self.applyNewDirection(direction, width, height)

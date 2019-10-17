@@ -12,7 +12,7 @@ from camera import Camera
 pygame.init()
 # On initialise pygame
 
-w, h = Display.init(fullscreen=False, width=800, height=600, framerate=144)
+w, h = Display.init(fullscreen=False, width=1920, height=1080, framerate=144)
 # On initialise la fenêtre
 
 Map.init(1000, 1000, framerate=Display.framerate)

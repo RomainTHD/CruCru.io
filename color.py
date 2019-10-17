@@ -5,7 +5,7 @@ class Color:
     Classe pour gérer l'organisation des couleurs
     Contient des attributs statiques qui sont des constantes de couleurs
     """
-    
+
     RED    = (255, 0  , 0  )
     ORANGE = (255, 127, 0  )
     YELLOW = (255, 255, 0  )
@@ -16,9 +16,10 @@ class Color:
     PURPLE = (127, 0  , 255)
     PINK   = (255, 0  , 255)
 
-    BLACK  = (0  , 0  , 0  )
-    GRAY   = (127, 127, 127)
-    WHITE  = (255, 255, 255)
+    BLACK      = (0  , 0  , 0  )
+    GRAY       = (127, 127, 127)
+    LIGHT_GRAY = (63 , 63 , 63 )
+    WHITE      = (255, 255, 255)
 
     @classmethod
     def randomColor(cls) -> (int, int, int):
@@ -29,11 +30,11 @@ class Color:
 
         INPUT :
             None
-        
+
         OUTPUT :
             color : tuple de int, un tuple avec les composantes RGB
         """
-        
+
         hue = random.randrange(0, 360)
         # Teinte aléatoire
 
