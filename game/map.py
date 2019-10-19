@@ -1,14 +1,15 @@
 import time
 import random
 
-from cell import Cell
-from vector import Vect2d
-from display import Display
-from color import Color
+from view.display import Display
 
-from player import Player
-from enemy import Enemy
-from creature import Creature
+from util.vector import Vect2d
+from util.color import Color
+
+from entity.cell import Cell
+from entity.player import Player
+from entity.enemy import Enemy
+from entity.creature import Creature
 
 class Map:
     @classmethod
@@ -64,8 +65,12 @@ class Map:
         for x in range(map_pos.x-cls.grille_width, map_pos.x+cls.grille_width+1):
             for y in range(map_pos.y-cls.grille_height, map_pos.y+cls.grille_height+1):
                 if x >= 0 and x < cls.grille_width and y >= 0 and y < cls.grille_height:
-                    res[x][y] = cls.grille[x][y]
+                    content = []
 
+                    for i in range(len(cls.grille[x][y])):
+                        content.append(cls.grille[x][y][i].pos.copy())
+
+                    res[x][y] = tuple(content)
         return res
 
     @classmethod

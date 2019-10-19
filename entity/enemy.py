@@ -1,7 +1,6 @@
-from display import Display
-from vector import Vect2d
-from creature import Creature
-from cell import Cell
+from util.vector import Vect2d
+
+from entity.creature import Creature
 
 import math
 import random
@@ -12,7 +11,7 @@ class Enemy(Creature):
 
         self.map = None
 
-        self.speed = Vect2d()
+        self.speed = Vect2d(random.random()*2-1, random.random()*2-1)
 
     def searchDest(self, radius, width, height):
         maxi = 0
@@ -41,30 +40,31 @@ class Enemy(Creature):
             x, y = liste_pos_maxi[i]
 
             for j in range(len(self.map[x][y])):
-                cell = self.map[x][y][j]
+                pos = self.map[x][y][j]
 
-                dist = Vect2d.dist(cell.pos, self.pos)
+                dist = Vect2d.dist(pos, self.pos)
 
                 if dist < distance_mini:
                     distance_mini = dist
-                    coords_mini = self.map[x][y][j].pos
+                    coords_mini = self.map[x][y][j]
 
         return coords_mini
 
     def update(self, width, height):
-        coords_mini = None
+        dest = None
         radius = 1
 
-        while coords_mini is None and radius < 100:
-            coords_mini = self.searchDest(radius, width, height)
+        grille_width  = len(self.map)
+        grille_height = len(self.map[0])
+
+        max_radius = int(grille_width*20/100)
+
+        while dest is None and radius < max_radius:
+            dest = self.searchDest(radius, width, height)
             radius += 1
 
-        if coords_mini is None:
-            coords_mini = Vect2d()
-
-        dest = coords_mini.copy()
-
-        self.speed = dest - self.pos + self.speed*0.98
+        if dest is not None:
+            self.speed = dest - self.pos + self.speed*0.98
 
         direction = self.speed.normalize()
 

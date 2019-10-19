@@ -1,4 +1,4 @@
-from vector import Vect2d
+from util.vector import Vect2d
 
 class Camera:
     pos = Vect2d()

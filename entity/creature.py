@@ -1,6 +1,7 @@
-from vector import Vect2d
-from display import Display
-from color import Color
+from util.vector import Vect2d
+from util.color import Color
+
+from view.display import Display
 
 class Creature:
     base_radius = 20

@@ -1,9 +1,10 @@
 import pygame
 import time
 
-from color import Color
-from vector import Vect2d
-from camera import Camera
+from util.color import Color
+from util.vector import Vect2d
+
+from view.camera import Camera
 
 class Display:
     @classmethod
@@ -26,6 +27,8 @@ class Display:
         #! taille écran
 
         cls.framerate = framerate
+
+        cls.clock = pygame.time.Clock()
 
         cls.frame_time = 1/framerate
 
@@ -61,14 +64,14 @@ class Display:
             None
         """
 
-        time.sleep(1/cls.framerate)
-        # Pour actualiser la fenêtre après un certain temps
-
         pygame.display.flip()
         # On met à jour l'écran
 
         cls.window.fill(Color.BLACK)
         # On efface l'arrière-plan
+
+        cls.clock.tick(cls.framerate)
+        # Pour actualiser la fenêtre après un certain temps
 
     @classmethod
     def drawCircle(cls, pos:Vect2d, color:Color, radius:int) -> None:

@@ -2,20 +2,25 @@
 
 import pygame
 
-from player import Player
-from color import Color
-from display import Display
-from map import Map
-from vector import Vect2d
-from camera import Camera
+from game.map import Map
+
+from entity.player import Player
+
+from util.color import Color
+from util.vector import Vect2d
+
+from view.display import Display
+from view.camera import Camera
+
+import config
 
 pygame.init()
 # On initialise pygame
 
-w, h = Display.init(fullscreen=False, width=1920, height=1080, framerate=144)
+w, h = Display.init(fullscreen=config.IS_FULLSCREEN, width=config.WINDOW_WIDTH, height=config.WINDOW_HEIGHT, framerate=config.FRAMERATE)
 # On initialise la fenêtre
 
-Map.init(1000, 1000, framerate=Display.framerate)
+Map.init(config.MAP_WIDTH, config.MAP_HEIGHT, framerate=Display.framerate)
 # On initialise le terrain de jeu
 # Pour l'instant il a la même taille que la fenêtre
 

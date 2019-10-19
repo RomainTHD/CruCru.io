@@ -1,6 +1,6 @@
-from display import Display
-from vector import Vect2d
-from creature import Creature
+from util.vector import Vect2d
+
+from entity.creature import Creature
 
 class Player(Creature):
     mouse_pos = Vect2d()
