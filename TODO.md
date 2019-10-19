@@ -17,3 +17,5 @@ d* 'abord chercher à vider le carré dans lequel l'ennemi est
 * taille non proportionnelle à score
 * Cellule à manger apparaissent sur la ligne
 * Attention lors de l'apparition ne pas apparaitre à côté d'un joueur imposant sinon on perd direct, aucun intérêt.
+
+organisation MVC ?
