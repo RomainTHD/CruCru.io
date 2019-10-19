@@ -1,4 +1,4 @@
-## AJOUTS :
+### AJOUTS :
 * Division du cercle pour attaquer
 * Collision
 * IA ennemis
@@ -6,12 +6,12 @@
 * réseau
 * faire skins
 
-## CORRECTIONS :
+### CORRECTIONS :
 * organiser les fichiers en dossiers
 * ajouter angle de rotation à ennemi pour moins brutal
 d* 'abord chercher à vider le carré dans lequel l'ennemi est
 
-## BUGS :
+### BUGS :
 * Grossisement sur les bords bug de déplacement
 * Bug cellule ne pas apparaitre sur le joueur direct
 * taille non proportionnelle à score
