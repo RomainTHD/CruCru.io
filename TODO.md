@@ -7,10 +7,9 @@
 * faire skins
 
 ### CORRECTIONS :
-* organiser les fichiers en dossiers
 * ajouter angle de rotation à ennemi pour moins brutal
 * d'abord chercher à vider le carré dans lequel l'ennemi est
-* adapter si taille fenêtre modifiée
+* centrer fenêtre au démarrage
 
 ### BUGS :
 * Grossisement sur les bords bug de déplacement
