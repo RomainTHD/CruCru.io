@@ -17,7 +17,10 @@ import config
 pygame.init()
 # On initialise pygame
 
-w, h = Display.init(fullscreen=config.IS_FULLSCREEN, width=config.WINDOW_WIDTH, height=config.WINDOW_HEIGHT, framerate=config.FRAMERATE)
+w, h = Display.init(fullscreen=config.IS_FULLSCREEN,
+                    width=config.WINDOW_WIDTH,
+                    height=config.WINDOW_HEIGHT,
+                    framerate=config.FRAMERATE)
 # On initialise la fenêtre
 
 Map.init(config.MAP_WIDTH, config.MAP_HEIGHT, framerate=Display.framerate)

@@ -6,20 +6,20 @@ class Color:
     Contient des attributs statiques qui sont des constantes de couleurs
     """
 
-    RED    = (255, 0  , 0  )
-    ORANGE = (255, 127, 0  )
-    YELLOW = (255, 255, 0  )
-    LIME   = (127, 255, 0  )
-    GREEN  = (0  , 255, 0  )
-    CYAN   = (0  , 255, 255)
-    BLUE   = (0  , 0  , 255)
-    PURPLE = (127, 0  , 255)
-    PINK   = (255, 0  , 255)
+    RED = (255, 0, 0)
+    ORANGE = (255, 127, 0)
+    YELLOW = (255, 255, 0)
+    LIME = (127, 255, 0)
+    GREEN = (0, 255, 0)
+    CYAN = (0, 255, 255)
+    BLUE = (0, 0, 255)
+    PURPLE = (127, 0, 255)
+    PINK = (255, 0, 255)
 
-    BLACK      = (0  , 0  , 0  )
-    GRAY       = (127, 127, 127)
-    LIGHT_GRAY = (63 , 63 , 63 )
-    WHITE      = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    GRAY = (127, 127, 127)
+    LIGHT_GRAY = (63, 63, 63)
+    WHITE = (255, 255, 255)
 
     @classmethod
     def randomColor(cls) -> (int, int, int):
@@ -44,7 +44,7 @@ class Color:
         return color
 
     @staticmethod
-    def HSVToRGB(h:int=0, s:int=100, v:int=100) -> (int, int, int):
+    def HSVToRGB(h: int, s: int, v: int) -> (int, int, int):
         """
         Retourne le code RGB d'une couleur dans l'espace HSV
 
