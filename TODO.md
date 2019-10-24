@@ -5,11 +5,13 @@
 * écran d'accueil
 * réseau
 * faire skins
+* commentaires
 
 ### CORRECTIONS :
 * ajouter angle de rotation à ennemi pour moins brutal
 * d'abord chercher à vider le carré dans lequel l'ennemi est
 * centrer fenêtre au démarrage
+* Vect2d : bugs de floating point dans égalité, dist et length 
 
 ### BUGS :
 * Grossisement sur les bords bug de déplacement

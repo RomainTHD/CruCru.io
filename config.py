@@ -1,10 +1,10 @@
 """Variables de configuration du programme"""
 
-WINDOW_WIDTH = 1920
-WINDOW_HEIGHT = 1080
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
 # Largeur et hauteur de la fenêtre
 
-FRAMERATE = 120
+FRAMERATE = 60
 # Images par seconde
 
 MAP_WIDTH = 1000
