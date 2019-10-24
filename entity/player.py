@@ -1,3 +1,7 @@
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+
 from util.vector import Vect2d
 
 from entity.creature import Creature

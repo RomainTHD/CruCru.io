@@ -1,3 +1,7 @@
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+
 from util.color import Color
 from util.vector import Vect2d
 

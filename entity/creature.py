@@ -1,3 +1,7 @@
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+
 from util.vector import Vect2d
 from util.color import Color
 
@@ -11,11 +15,13 @@ class Creature:
 
         self.radius = self.base_radius
 
-        self.score = 0
+        self.score = 5
 
         self.name = name
 
         self.color = color
+
+        self.is_alive = True
 
     def getMapPos(self, width, height, grille_width, grille_height):
         pos_x = int(self.pos.x/width  * grille_width)
