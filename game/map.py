@@ -1,3 +1,7 @@
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+
 import time
 import random
 
@@ -35,28 +39,74 @@ class Map:
 
         cls.enemies = []
 
-        for i in range(1):
-            v = Vect2d(random.randrange(Creature.base_radius, cls.width -Creature.base_radius), \
-                       random.randrange(Creature.base_radius, cls.height-Creature.base_radius))
+        cls.ENEMIES_MAX_SIZE = 5
 
-            cls.enemies.append(Enemy(v, "Ennemi "+str(i), Color.randomColor()))
+    @classmethod
+    def createEnemy(cls):
+        v = Vect2d(random.randrange(Creature.base_radius, cls.width -Creature.base_radius), \
+                   random.randrange(Creature.base_radius, cls.height-Creature.base_radius))
+
+        cls.enemies.append(Enemy(v, "Ennemi "+str(len(cls.enemies)), Color.randomColor()))
+
 
     @classmethod
     def update(cls):
+        if len(cls.enemies) < cls.ENEMIES_MAX_SIZE:
+            cls.createEnemy()
+        
         cls.player.update(cls.width, cls.height)
+
+        enemies_map      = [[[] for y in range(cls.grille_height)] for x in range(cls.grille_width)]
+        enemies_map_info = [[[] for y in range(cls.grille_height)] for x in range(cls.grille_width)]
+
+        for i in range(len(cls.enemies)):
+            v = cls.enemies[i].getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
+
+            enemies_map[v.x][v.y].append(cls.enemies[i])
+            enemies_map_info[v.x][v.y].append((cls.enemies[i].pos.copy(), cls.enemies[i].score))
+
+        v = cls.player.getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
+        enemies_map[v.x][v.y].append(cls.player)
+        enemies_map_info[v.x][v.y].append((cls.player.pos.copy(), cls.player.score))
 
         for i in range(len(cls.enemies)):
             map_pos = cls.enemies[i].getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
             cls.enemies[i].map = cls.getCenteredSubMap(map_pos)
+            cls.enemies[i].creature_map_info = enemies_map_info
             cls.enemies[i].update(cls.width, cls.height)
 
-        for i in range(len(cls.enemies)):
-            cls.detectCellHitbox(cls.enemies[i])
+        creatures = cls.enemies + [cls.player]
 
-        cls.detectCellHitbox(cls.player)
+        for i in range(len(creatures)):
+            cls.detectCellHitbox(creatures[i])
+
+        for i in range(len(creatures)):
+            cls.detectEnemyHitbox(creatures[i], enemies_map)
+
+        for i in range(len(cls.enemies)-1, -1, -1):
+            if not cls.enemies[i].is_alive:
+                del cls.enemies[i]
 
         for i in range(cls.NB_CELL_PER_SECOND):
             cls.createNewCell()
+
+    @classmethod
+    def detectEnemyHitbox(cls, creature, creature_map):
+        v = creature.getMapPos(cls.width, cls.height, cls.grille_width, cls.grille_height)
+
+        creatures = []
+
+        for x in range(v.x-1, v.x+2):
+            for y in range(v.y-1, v.y+2):
+                if x in range(cls.grille_width) and y in range(cls.grille_height):
+                    creatures += creature_map[x][y]
+
+        for i in range(len(creatures)):
+            if creature.is_alive and creatures[i].is_alive:
+                if Vect2d.dist(creature.pos, creatures[i].pos) <= creature.radius + creatures[i].radius:
+                    if creature.score > creatures[i].score:
+                        creature.score += creatures[i].score
+                        creatures[i].is_alive = False                    
 
     @classmethod
     def getCenteredSubMap(cls, map_pos):
