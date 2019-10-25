@@ -14,7 +14,7 @@ class Enemy(Creature):
         super().__init__(pos, name, color)
 
         self.map = None
-        self.creature_map_info = None
+        self.creature_info = None
 
         self.speed = Vect2d(random.random()*2-1, random.random()*2-1)
 
@@ -76,21 +76,21 @@ class Enemy(Creature):
         radius = 3
         bord = 2
 
-        enemies_info = []
+        dist_cible = float("inf")
+        dist_chasseur = float("inf")
 
-        for x in range(v.x-radius, v.x+radius+1):
-            for y in range(v.y-radius, v.y+radius+1):
-                if x in range(bord, grille_width-bord) and y in range(bord, grille_height-bord):
-                    if len(self.creature_map_info[x][y]) != 0:
-                        enemies_info += self.creature_map_info[x][y]
+        pos_cible = None
+        pos_chasseur = None
 
-        for i in range(len(enemies_info)):
-            enemy_pos, enemy_score = enemies_info[i] 
-            
-            if enemy_score < self.score:
-                dest = enemy_pos
+        for i in range(len(self.creature_info)):
+            enemy_pos, enemy_score = self.creature_info[i]
+
+            if enemy_score > self.score:
+                if Vect2d.dist(self.pos, enemy_pos) < dist_chasseur:
+                    pos_chasseur = enemy_pos
             else:
-                dest = enemy_pos*-1
+                if Vect2d.dist(self.pos, enemy_pos) < dist_cible:
+                    pos_cible = enemy_pos
 
         if dest is not None:
             self.speed = dest - self.pos + self.speed*0.98

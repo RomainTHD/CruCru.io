@@ -9,13 +9,14 @@ from view.display import Display
 
 class Creature:
     base_radius = 20
+    score_base = 5
 
     def __init__(self, pos:Vect2d, name:str, color:Color=Color.PINK):
         self.pos = pos.copy()
 
         self.radius = self.base_radius
 
-        self.score = 5
+        self.score = Creature.score_base
 
         self.name = name
 
