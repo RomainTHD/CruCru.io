@@ -18,6 +18,8 @@ class Display:
         # TODO:
     """
 
+    execWhenResized = []
+
     def __init__(self):
         """Constructeur
         La classe étant statique, une exception est levée en cas d'instanciation
@@ -64,8 +66,6 @@ class Display:
         pygame.display.set_caption("Agar.io")
         # On change le titre
 
-        cls.font = pygame.font.SysFont("comicsansms", 16)
-
         cls.updateFrame()
         # On actualise la fenêtre
 
@@ -77,6 +77,14 @@ class Display:
         cls.height = h
 
         Camera.setWindowSize(w, h)
+
+        """
+        for f in cls.execWhenResized:
+            f(w, h)
+        """
+    @classmethod
+    def executeWhenResized(cls, f):
+        cls.execWhenResized.append(f)
 
     @classmethod
     def updateFrame(cls) -> None:
@@ -115,7 +123,16 @@ class Display:
         # un rendu plus lisse
 
     @classmethod
-    def drawText(cls, text_str:str, pos:Vect2d, color:Color=Color.WHITE, size=None) -> None:
+    def drawRect(cls, pos: Vect2d, size: Vect2d, color: Color, fill: bool = True) -> None:
+        rect = pygame.Rect((int(pos.x), int(pos.y)), (int(size.x), int(size.y)))
+
+        if fill:
+            pygame.gfxdraw.box(cls.window, rect, color)
+        else:
+            pygame.gfxdraw.rectangle(cls.window, rect, color)
+
+    @classmethod
+    def drawText(cls, text_str:str, pos:Vect2d, color:Color=Color.WHITE, size=16) -> None:
         """
         Procédure pour afficher du texte à l'écran
 
@@ -129,13 +146,15 @@ class Display:
             None
         """
 
+        font = pygame.font.SysFont("comicsansms", int(size))
+
         #! TODO: taille
 
         pos_cam = pos - Camera.pos
 
         text_str = str(text_str)
 
-        text = cls.font.render(text_str, True, color)
+        text = font.render(text_str, True, color)
         cls.window.blit(text, (int(pos_cam.x)-text.get_width()//2, int(pos_cam.y)-text.get_height()//2))
 
     @classmethod
