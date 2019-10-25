@@ -6,6 +6,7 @@
 * réseau
 * faire skins
 * commentaires
+* Buisson pour se cacher
 
 ### CORRECTIONS :
 * ajouter angle de rotation à ennemi pour moins brutal
