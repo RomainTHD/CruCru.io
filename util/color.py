@@ -44,7 +44,7 @@ class Color:
         return color
 
     @staticmethod
-    def HSVToRGB(h: int, s: int, v: int) -> (int, int, int):
+    def HSVToRGB(h: int, s: int = 100, v: int = 100) -> (int, int, int):
         """
         Retourne le code RGB d'une couleur dans l'espace HSV
 
@@ -57,6 +57,11 @@ class Color:
         OUTPUT :
             s : tuple de int, tuple de couleurs RGB entre 0 et 255
         """
+
+        while h < 360:
+            h += 360*100
+
+        h %= 360
 
         h /= 360
         s /= 100
