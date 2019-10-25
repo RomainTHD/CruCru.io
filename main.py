@@ -11,6 +11,8 @@ from game.map import Map
 from game.game import Game
 # Jeu en général
 
+from game.menu import Menu
+
 from view.display import Display
 # Fenêtre
 
@@ -28,6 +30,8 @@ Display.init(width=config.WINDOW_WIDTH,
 
 Map.init(config.MAP_WIDTH, config.MAP_HEIGHT, framerate=Display.framerate)
 # Initialisation du terrain de jeu
+
+Menu.init(config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
 
 Game.run()
 # Lancement du jeu
