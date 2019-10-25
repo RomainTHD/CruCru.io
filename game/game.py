@@ -6,6 +6,8 @@ import pygame
 
 from game.map import Map
 
+from game.menu import Menu
+
 from util.vector import Vect2d
 
 from view.display import Display
@@ -32,16 +34,23 @@ class Game:
 
             mx, my = pygame.mouse.get_pos()
             # Position (x, y) de la souris
+            mouse_pos = Vect2d(mx, my)
+
+            mouse_pressed = pygame.mouse.get_pressed()[0]
 
             if not pygame.mouse.get_focused():
                 # Si souris hors de la fenêtre
                 #!
                 pass
 
-            Map.player.mouse_pos = Vect2d(mx, my) - Vect2d(Display.width/2, Display.height/2)
-            Map.update()
-            Map.display()
+            if Menu.can_play:
+                Map.player.mouse_pos = mouse_pos - Vect2d(Display.width/2, Display.height/2)
+                Map.update()
+                Map.display()
 
-            Camera.setPos(Map.player.pos)
+                Camera.setPos(Map.player.pos)
+            else:
+                Menu.update(mouse_pos, mouse_pressed)
+                Menu.display()
 
             Display.updateFrame()
