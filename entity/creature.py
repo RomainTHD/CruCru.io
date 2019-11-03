@@ -1,22 +1,23 @@
 if __name__ == "__main__":
-    import sys
-    sys.path.append("..")
+    raise RuntimeError("Ne peut pas être lancé seul")
 
 from util.vector import Vect2d
 from util.color import Color
 
+from view.camera import Camera
 from view.display import Display
+from view.skins import Skins
 
 class Creature:
-    base_radius = 20
-    score_base = 5
+    BASE_RADIUS = 20
+    BASE_SCORE = 5
 
     def __init__(self, pos:Vect2d, name:str, color:Color=Color.PINK):
         self.pos = pos.copy()
 
-        self.radius = self.base_radius
+        self.radius = self.BASE_RADIUS
 
-        self.score = Creature.score_base
+        self.score = Creature.BASE_SCORE
 
         self.name = name
 
@@ -24,31 +25,39 @@ class Creature:
 
         self.is_alive = True
 
-    def getMapPos(self, width, height, grille_width, grille_height):
-        pos_x = int(self.pos.x/width  * grille_width)
-        pos_y = int(self.pos.y/height * grille_height)
+        self.img = Skins.getRandomSkin()
+
+    def getMapPos(self, size, grille_size):
+        pos_x = int(self.pos.x/size.x * grille_size.x)
+        pos_y = int(self.pos.y/size.y * grille_size.y)
 
         return Vect2d(pos_x, pos_y)
 
-    def update(self, width, height):
+    def update(self, size):
         pass
 
     def display(self) -> None:
-        Display.drawCircle(pos=self.pos, color=self.color, radius=self.radius)
-        Display.drawText(text_str=str(self.score), pos=self.pos, color=Color.WHITE)
+        Display.drawImg(img=self.img,
+                        pos=self.pos,
+                        radius=self.radius,
+                        base_pos=Camera.pos)
 
-    def applyNewDirection(self, direction, width, height):
+        Display.drawText(text=self.score - self.BASE_SCORE,
+                         pos=self.pos + Vect2d(0, -self.radius-10),
+                         base_pos=Camera.pos)
+
+    def applyNewDirection(self, direction, size):
         coeff_tps = 1
         dist_per_sec = 100
 
-        direction = direction*Display.frame_time*dist_per_sec/coeff_tps
+        direction = direction*Display.frametime*dist_per_sec/coeff_tps
 
         new_pos = self.pos + direction
 
-        if new_pos.x > self.radius and new_pos.x < width-self.radius:
+        if new_pos.x > self.radius and new_pos.x < size.x-self.radius:
             self.pos.x = new_pos.x
 
-        if new_pos.y > self.radius and new_pos.y < height-self.radius:
+        if new_pos.y > self.radius and new_pos.y < size.y-self.radius:
             self.pos.y = new_pos.y
 
-        self.radius = int(self.base_radius + self.score/10)
+        self.radius = round(self.BASE_RADIUS + self.score/2)

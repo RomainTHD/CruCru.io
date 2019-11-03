@@ -6,7 +6,7 @@ import pygame
 
 from util.vector import Vect2d
 
-from game.button import Button
+from game.button import *
 
 from view.display import Display
 
@@ -20,9 +20,17 @@ class Menu:
         cls.can_play = True
 
     @classmethod
-    def init(cls, width, height):
-        Display.executeWhenResized(cls.whenResized)
-        cls.buttons.append(Button(width/4, height/3, width/2, height/3, text="Jouer !", on_click=cls.play))
+    def init(cls):
+        width = Display.size.x
+        height = Display.size.y
+
+        Display.execWhenResized(cls.whenResized)
+        cls.buttons.append(Button(pos=Vect2d(width/4, height/3),
+                                  size=Vect2d(width/2, height/3),
+                                  text="Jouer !",
+                                  on_click=cls.play,
+                                  when_display=buttonStart_Display,
+                                  when_init=buttonStart_Init))
 
     @classmethod
     def update(cls, mouse_pos, mouse_pressed):

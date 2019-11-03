@@ -12,7 +12,7 @@ class Player(Creature):
     def __init__(self, pos) -> None:
         super().__init__(pos, "Player")
 
-    def update(self, width, height) -> None:
+    def update(self, size) -> None:
         coeff_tps = 1
         dist_per_sec = 200
 
@@ -27,4 +27,4 @@ class Player(Creature):
 
         direction = self.mouse_pos.normalize()*coeff_dist_mouse
 
-        self.applyNewDirection(direction, width, height)
+        self.applyNewDirection(direction, size)

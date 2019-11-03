@@ -1,15 +1,22 @@
 if __name__ == "__main__":
-    import sys
-    sys.path.append("..")
+    raise RuntimeError("Ne peut pas être lancé seul")
+
+import math
+import random
 
 from util.vector import Vect2d
 
 from entity.creature import Creature
 
-import math
-import random
-
 class Enemy(Creature):
+    """Ennemi, hérite de Creature
+
+    Attributs:
+        cf. Creature
+        map (list of list of )
+
+    """
+
     def __init__(self, pos, name, color) -> None:
         super().__init__(pos, name, color)
 
@@ -18,21 +25,21 @@ class Enemy(Creature):
 
         self.speed = Vect2d(random.random()*2-1, random.random()*2-1)
 
-    def searchDest(self, radius, width, height):
+    def searchDest(self, radius, size):
         maxi = 0
         liste_pos_maxi = []
 
         score = 0
 
-        grille_width  = len(self.map)
-        grille_height = len(self.map[0])
+        grille_size = Vect2d(len(self.map), len(self.map[0]))
 
-        map_pos = self.getMapPos(width, height, grille_width, grille_height)
+        map_pos = self.getMapPos(size, grille_size)
 
         for x in range(map_pos.x-radius, map_pos.x+radius+1):
             for y in range(map_pos.y-radius, map_pos.y+radius+1):
-                if x in range(grille_width) and y in range(grille_height):
+                if x in range(grille_size.x) and y in range(grille_size.y):
                     taille = len(self.map[x][y])
+                    # print(self.map)
 
                     if taille == maxi:
                         liste_pos_maxi += [(x, y)]
@@ -58,21 +65,20 @@ class Enemy(Creature):
 
         return coords_mini, score
 
-    def update(self, width, height):
+    def update(self, size):
         dest = None
         best_score = 0
         radius = 1
 
-        grille_width  = len(self.map)
-        grille_height = len(self.map[0])
+        grille_size = Vect2d(len(self.map), len(self.map[0]))
 
-        max_radius = grille_width
+        max_radius = grille_size.x
 
         while dest is None and radius < max_radius:
-            dest, best_score = self.searchDest(radius, width, height)
+            dest, best_score = self.searchDest(radius, size)
             radius += 1
 
-        v = self.getMapPos(width, height, grille_width, grille_height)
+        v = self.getMapPos(size, grille_size)
         radius = 3
         bord = 2
 
@@ -97,4 +103,4 @@ class Enemy(Creature):
 
         direction = self.speed.normalize()
 
-        self.applyNewDirection(direction, width, height)
+        self.applyNewDirection(direction, size)

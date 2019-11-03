@@ -1,16 +1,22 @@
 ### AJOUTS :
-* Division du cercle pour attaquer
+* Division du cercle pour attaquer (split)
 * Écran de mort
 * Réseau
-* Faire skins
 * Commentaires
+* Log
 
 ### CORRECTIONS :
 * Ajouter angle de rotation à ennemi pour moins brutal
 * D'abord chercher à vider le carré dans lequel l'ennemi est
-* Centrer fenêtre au démarrage
-* Vect2d : bugs de floating point dans égalité, dist et length
+* Centrer fenêtre ?
 * Quand player mort revenir au menu
+* HSV -> HSB (ou HSL)
+* Toutes les positions en Vect2d
+* Config custom (avec par exemple une valeur par défaut, un min, un max) -> cf. VISI201
+* Vect2d : héritage de list ?
+* Transformer toutes les couleurs en Color (qui hériterait de list)
+* Avec les 2 idées précédentes on peut utiliser directement Vect2d et Color en parametre de fonction 
+* Vect2d : pouvoir le choisir constant ?
 
 ### BUGS :
 * Grossisement sur les bords bug de déplacement
@@ -18,7 +24,9 @@
 * Taille non proportionnelle à score
 * Cellule à manger apparaissent sur la ligne
 * Attention lors de l'apparition ne pas apparaitre à côté d'un joueur imposant sinon on perd direct, aucun intérêt.
-* Resize fenêtre : resize qu'une seule fois (ne fonctionne pas ensuite)
-* Resize fenêtre : taille anormale
 
-organisation MVC ?
+gota.io
+
+https://docs.python.org/3/library/enum.html
+https://docs.python.org/3/library/abc.html
+https://docs.python.org/3/library/functions.html?highlight=property#property
