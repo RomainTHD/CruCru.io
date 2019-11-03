@@ -37,13 +37,17 @@ class Creature:
         pass
 
     def display(self) -> None:
+        """
         Display.drawImg(img=self.img,
                         pos=self.pos,
                         radius=self.radius,
                         base_pos=Camera.pos)
+        """
+
+        Display.drawCircle(pos=self.pos, color=self.color, radius=self.radius, base_pos=Camera.pos)
 
         Display.drawText(text=self.score - self.BASE_SCORE,
-                         pos=self.pos + Vect2d(0, -self.radius-10),
+                         pos=self.pos,
                          base_pos=Camera.pos)
 
     def applyNewDirection(self, direction, size):
