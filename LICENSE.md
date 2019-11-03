@@ -144,7 +144,7 @@ Dans le cas où vous effectuez un remix, que vous transformez, ou créez à part
 #### Pas de restrictions complémentaires
 Vous n'êtes pas autorisé à appliquer des conditions légales ou des mesures techniques qui restreindraient légalement autrui à utiliser l'Oeuvre dans les conditions décrites par la licence.
 
-<i>This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-To view a copy of this license, visit <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">http://creativecommons.org/licenses/by-nc-sa/4.0/</a>,
+<i>This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.<br />
+To view a copy of this license, visit <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">http://creativecommons.org/licenses/by-nc-sa/4.0/</a>,<br />
 or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 </i>
