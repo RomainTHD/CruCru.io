@@ -31,8 +31,8 @@ class Button:
                  size: Vect2d,
                  text: str,
                  on_click: 'function' = lambda: None,
-                 when_display: 'function' = lambda: None,
-                 when_init: 'function' = lambda: None) -> None:
+                 when_display: 'function' = lambda e: None,
+                 when_init: 'function' = lambda e: None) -> None:
 
         """Constructeur
 
@@ -111,4 +111,50 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
     Display.drawText(button.text,
                      button.pos + button.size/2,
                      color=Color.BLACK,
+                     size=font_size)
+
+def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
+    """Affichage du texte de fin"""
+
+    min_size = max(button.size.x, button.size.y)
+
+    font_size = min_size*50/400
+
+    Display.drawText(button.text,
+                     button.pos + button.size/2,
+                     color=Color.RED,
+                     size=font_size)
+
+def buttonEndReplay_Display(button: Button, mouse_pos: Vect2d) -> None:
+    """Affichage du bouton rejouer"""
+
+    min_size = max(button.size.x, button.size.y)
+
+    font_size = min_size*50/400
+
+    Display.drawRect(button.pos,
+                     button.size,
+                     color=Color.RED,
+                     fill=False)
+
+    Display.drawText(button.text,
+                     button.pos + button.size/2,
+                     color=Color.RED,
+                     size=font_size)
+
+def buttonEndQuit_Display(button: Button, mouse_pos: Vect2d) -> None:
+    """Affichage du bouton quitter"""
+
+    min_size = max(button.size.x, button.size.y)
+
+    font_size = min_size*50/400
+
+    Display.drawRect(button.pos,
+                     button.size,
+                     color=Color.RED,
+                     fill=False)
+
+    Display.drawText(button.text,
+                     button.pos + button.size/2,
+                     color=Color.RED,
                      size=font_size)

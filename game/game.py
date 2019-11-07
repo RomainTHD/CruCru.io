@@ -1,8 +1,5 @@
 """Partie principale du jeu"""
 
-from enum import Enum, unique
-# Permet de faire des énumérations
-
 import pygame
 
 if __name__ == "__main__":
@@ -10,28 +7,13 @@ if __name__ == "__main__":
     sys.path.append("..")
 
 from game.map import Map
-
 from game.menu import Menu
+from game.gamestate import GameState
 
 from util.vector import Vect2d
 
 from view.display import Display
 from view.camera import Camera
-
-@unique
-class GameState(Enum):
-    """Énumération des différents états du jeu
-    Chaque état doit avoir une valeur différente
-
-    États :
-        MENU : au démarrage, le menu
-        GAME : le jeu en lui-même
-        END : fin du jeu
-    """
-
-    MENU = 0
-    GAME = 1
-    END = 2
 
 class Game:
     """Gestion du jeu
@@ -70,18 +52,27 @@ class Game:
 
             mouse_pressed = pygame.mouse.get_pressed()[0]
 
-            if cls.state == GameState.MENU:
+            Menu.state = GameState.MENU
+
+            if cls.state == GameState.MENU or cls.state == GameState.END:
                 Menu.update(mouse_pos, mouse_pressed)
                 Menu.display()
 
                 if Menu.can_play:
                     cls.state = GameState.GAME
+
+                if Menu.can_quit:
+                    cls.finished = True
             elif cls.state == GameState.GAME:
                 Map.setMousePos(mouse_pos)
                 Map.update()
                 Map.display()
 
                 Camera.setPos(Map.player.pos)
+
+                if not Map.player.is_alive:
+                    cls.state = GameState.END
+                    Menu.applyState(GameState.END)
             else:
                 raise ValueError("État inconnu")
 
@@ -127,3 +118,7 @@ class Game:
                 if event.key == pygame.K_F11:
                     # Quand F11 on se met en plein écran
                     Display.toggleFullscreen()
+
+                if event.key == pygame.K_SPACE:
+                    # Map.split(Map.player)
+                    Map.player.is_alive = False

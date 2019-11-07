@@ -47,32 +47,40 @@ class Map:
         """
 
         cls.size = Vect2d(width, height)
-        cls.all_cells = []
 
-        cls.DELTA_T_NEW_CELL = 0.2
-        cls.ref_time = -1*cls.DELTA_T_NEW_CELL
-
-        cls.MAX_CELLS = 100
-
-        cls.NB_CELL_PER_SECOND = 2
+        cls.MAX_CELLS = 500
+        cls.NB_CELL_PER_SECOND = 10
+        cls.DELTA_T_NEW_CELL = 0.1
 
         cls.grille_size = Vect2d(10, 10)
 
+        cls.ENEMIES_MAX_SIZE = 5
+
+        cls.reset()
+
+    @classmethod
+    def reset(cls):
+        cls.ref_time = -1*cls.DELTA_T_NEW_CELL
+
+        cls.all_cells = []
+
+        cls.ref_time = -1*cls.DELTA_T_NEW_CELL
+
         cls.grille = [[[] for y in range(cls.grille_size.y)] for x in range(cls.grille_size.x)]
 
-        cls.player = Player(Vect2d(cls.size.x/2, cls.size.y/2))
+        cls.player = Player(Vect2d(cls.size.x/2, cls.size.y/2), "Player", Color.randomColor(), id)
         # Création du joueur
 
         cls.enemies = []
-
-        cls.ENEMIES_MAX_SIZE = 5
 
     @classmethod
     def createEnemy(cls):
         v = Vect2d(random.randrange(Creature.BASE_RADIUS*2, cls.size.x -Creature.BASE_RADIUS*2),
                    random.randrange(Creature.BASE_RADIUS*2, cls.size.y-Creature.BASE_RADIUS*2))
 
-        cls.enemies.append(Enemy(v, "Ennemi "+str(len(cls.enemies)), Color.randomColor()))
+        id = random.randrange(10**64)
+
+        cls.enemies.append(Enemy(v, "Ennemi "+str(len(cls.enemies)), Color.randomColor(), id))
 
     @classmethod
     def setMousePos(cls, mouse_pos: Vect2d):
@@ -112,9 +120,6 @@ class Map:
             if not cls.enemies[i].is_alive:
                 del cls.enemies[i]
 
-        if not cls.player.is_alive:
-            print("dead")
-
         for i in range(cls.NB_CELL_PER_SECOND):
             cls.createNewCell()
 
@@ -125,13 +130,15 @@ class Map:
 
             for j in range(i+1, len(creatures)):
                 if creatures[i].is_alive and creatures[j].is_alive:
-                    if Vect2d.dist(creatures[i].pos, creatures[j].pos) <= creatures[i].radius + creatures[j].radius:
+                    dist = Vect2d.dist(creatures[i].pos, creatures[j].pos)
+
+                    if dist <= creatures[i].radius or dist <= creatures[j].radius:
                         if creatures[i].score > creatures[j].score + Creature.BASE_SCORE:
-                            creatures[i].score += creatures[j].score
-                            creatures[j].is_alive = False
+                            creatures[i].kill(creatures[j].score)
+                            creatures[j].killed()
                         elif creatures[i].score + Creature.BASE_SCORE < creatures[j].score:
-                            creatures[j].score += creatures[i].score
-                            creatures[i].is_alive = False
+                            creatures[j].kill(creatures[i].score)
+                            creatures[i].killed()
 
     @classmethod
     def getCenteredSubMap(cls, map_pos):
@@ -204,8 +211,13 @@ class Map:
 
     @classmethod
     def displayCell(cls) -> None:
-        for i in range(0,len(cls.all_cells)):
+        for i in range(len(cls.all_cells)):
             cls.all_cells[i].display()
+
+    @classmethod
+    def splitCreature(cls, creature):
+        if creature.score > creature.BASE_SCORE*3:
+            creature.split()
 
     @classmethod
     def detectCellHitbox(cls, creature:"Creature") -> None:
