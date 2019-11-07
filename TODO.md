@@ -22,6 +22,8 @@
 * Bug cellule ne pas apparaitre sur le joueur direct
 * Cellule à manger apparaissent sur la ligne
 * Attention lors de l'apparition ne pas apparaitre à côté d'un joueur imposant sinon on perd direct, aucun intérêt
+* Changer curseur souris quand bouton
+* Effet de transition de bouton
 
 gota.io
 
