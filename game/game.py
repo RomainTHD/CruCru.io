@@ -56,13 +56,15 @@ class Game:
 
             if cls.state == GameState.MENU or cls.state == GameState.END:
                 Menu.update(mouse_pos, mouse_pressed)
-                Menu.display()
 
                 if Menu.can_play:
                     cls.state = GameState.GAME
 
                 if Menu.can_quit:
                     cls.finished = True
+
+                Menu.display()
+
             elif cls.state == GameState.GAME:
                 Map.setMousePos(mouse_pos)
                 Map.update()

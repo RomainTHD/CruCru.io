@@ -68,6 +68,15 @@ class Display:
 
         raise RuntimeError("Classe statique, instanciation impossible")
 
+    @staticmethod
+    def setCursorArrow():
+        pygame.mouse.set_cursor(*pygame.cursors.arrow)
+        # pygame.mouse.set_cursor(*pygame.cursors.tri_left)
+
+    @staticmethod
+    def setCursorHand():
+        pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+
     @classmethod
     def init(cls, width: int, height: int, start_fullscreen: bool, framerate: int) -> None:
         """Initialisation de l'affichage
@@ -78,6 +87,8 @@ class Display:
             start_fullscreen (bool): plein écran au démarrage ou non
             framerate (int): nombre d'images par seconde
         """
+
+        cls.setCursorArrow()
 
         cls.screen_size = Vect2d(pygame.display.Info().current_w, pygame.display.Info().current_h)
         # Taille de l'écran
@@ -166,19 +177,26 @@ class Display:
         # On ajoute la fonction
 
     @classmethod
-    def updateFrame(cls) -> None:
+    def updateFrame(cls, color: Color = Color.BLACK) -> None:
         """Procédure pour mettre à jour la fenêtre"""
 
         pygame.display.flip()
         # On met à jour l'écran
 
-        cls.window.fill(Color.BLACK)
-        # On efface l'arrière-plan
+        if len(color) == 3:
+            cls.window.fill(color)
+            # On efface l'arrière-plan
+        else:
+            cls.drawRect(Vect2d(0, 0), cls.size, color)
 
         cls.clock.tick(cls.framerate)
         # Pour actualiser la fenêtre après un certain temps
 
         cls.framecount += 1
+
+    @classmethod
+    def screenshot(cls) -> pygame.Surface:
+        return cls.window.copy()
 
     @classmethod
     def drawCircle(cls, pos: Vect2d, color: Color, radius: int, base_pos: Vect2d = Vect2d(0, 0), fill: bool = True) -> None:
@@ -311,9 +329,9 @@ class Display:
         """
 
         pos = (pos - base_pos).toIntValues()
-        pos -= Vect2d(radius, radius)
 
         if radius is not None:
+            pos -= Vect2d(radius, radius)
             img = pygame.transform.smoothscale(img, (radius*2, radius*2))
             # On agrandit (ou réduit) la taille de l'image
 

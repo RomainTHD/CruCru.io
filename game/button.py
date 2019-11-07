@@ -92,8 +92,10 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
     """Affichage du bouton Start"""
 
     if button.isMouseOver(mouse_pos):
+        Display.setCursorHand()
         button.color_sat -= 3
     else:
+        Display.setCursorArrow()
         button.color_sat = 100
         button.color_hue += 1
 
@@ -113,6 +115,11 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
                      color=Color.BLACK,
                      size=font_size)
 
+def buttonEnd_Init(button: Button, first_try: bool) -> None:
+    if first_try:
+        button.screenshot = Display.screenshot()
+        button.alpha = 0
+
 def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
     """Affichage du texte de fin"""
 
@@ -120,41 +127,38 @@ def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
 
     font_size = min_size*50/400
 
+    if button.alpha < 256:
+        Display.drawImg(button.screenshot, Vect2d(0, 0))
+        Display.drawRect(Vect2d(0, 0), Display.size, (0, 0, 0, button.alpha))
+        button.alpha += 1
+
     Display.drawText(button.text,
                      button.pos + button.size/2,
                      color=Color.RED,
                      size=font_size)
 
-def buttonEndReplay_Display(button: Button, mouse_pos: Vect2d) -> None:
+def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
     """Affichage du bouton rejouer"""
 
     min_size = max(button.size.x, button.size.y)
 
     font_size = min_size*50/400
 
-    Display.drawRect(button.pos,
-                     button.size,
-                     color=Color.RED,
-                     fill=False)
-
-    Display.drawText(button.text,
-                     button.pos + button.size/2,
-                     color=Color.RED,
-                     size=font_size)
-
-def buttonEndQuit_Display(button: Button, mouse_pos: Vect2d) -> None:
-    """Affichage du bouton quitter"""
-
-    min_size = max(button.size.x, button.size.y)
-
-    font_size = min_size*50/400
+    if button.isMouseOver(mouse_pos):
+        Display.setCursorHand()
+        c = Color.BLACK
+        f = True
+    else:
+        Display.setCursorArrow()
+        c = Color.RED
+        f = False
 
     Display.drawRect(button.pos,
                      button.size,
                      color=Color.RED,
-                     fill=False)
+                     fill=f)
 
     Display.drawText(button.text,
                      button.pos + button.size/2,
-                     color=Color.RED,
+                     color=c,
                      size=font_size)

@@ -21,7 +21,7 @@ class Menu:
 
         Display.execWhenResized(cls.createButtons)
 
-        cls.createButtons(Display.size.x, Display.size.y)
+        cls.createButtons(Display.size.x, Display.size.y, first_try=True)
 
     @classmethod
     def play(cls):
@@ -29,8 +29,10 @@ class Menu:
         cls.can_play = True
 
     @classmethod
-    def createButtons(cls, width, height):
+    def createButtons(cls, width: int, height: int, first_try: bool = False):
         cls.buttons = []
+
+        cls.first_try = first_try
 
         if cls.state == GameState.MENU:
             cls.applyMenu(width, height)
@@ -55,19 +57,20 @@ class Menu:
         cls.buttons.append(Button(pos=Vect2d(width/4, height/5),
                                   size=Vect2d(width/2, height/5),
                                   text="Perdu !",
-                                  when_display=buttonEnd_Display))
+                                  when_display=buttonEnd_Display,
+                                  when_init=lambda b: buttonEnd_Init(b, cls.first_try)))
 
         cls.buttons.append(Button(pos=Vect2d(width/5, 3*height/5),
                                   size=Vect2d(width/5, height/5),
                                   text="Rejouer",
                                   on_click=cls.play,
-                                  when_display=buttonEndReplay_Display))
+                                  when_display=buttonEndChoice_Display))
 
         cls.buttons.append(Button(pos=Vect2d(3*width/5, 3*height/5),
                                   size=Vect2d(width/5, height/5),
                                   text="Quitter",
                                   on_click=cls.quit,
-                                  when_display=buttonEndReplay_Display))
+                                  when_display=buttonEndChoice_Display))
 
     @classmethod
     def update(cls, mouse_pos, mouse_pressed):
