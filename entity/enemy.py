@@ -17,15 +17,15 @@ class Enemy(Creature):
 
     """
 
-    def __init__(self, pos, name, color) -> None:
-        super().__init__(pos, name, color)
+    def __init__(self, pos, name, color, id) -> None:
+        super().__init__(pos, name, color, id)
 
         self.map = None
         self.creature_info = None
 
         self.speed = Vect2d(random.random()*2-1, random.random()*2-1)
 
-    def searchDest(self, radius, size):
+    def searchDest(self, radius, map_size):
         maxi = 0
         liste_pos_maxi = []
 
@@ -33,7 +33,7 @@ class Enemy(Creature):
 
         grille_size = Vect2d(len(self.map), len(self.map[0]))
 
-        map_pos = self.getMapPos(size, grille_size)
+        map_pos = self.getMapPos(map_size, grille_size)
 
         for x in range(map_pos.x-radius, map_pos.x+radius+1):
             for y in range(map_pos.y-radius, map_pos.y+radius+1):
@@ -65,42 +65,64 @@ class Enemy(Creature):
 
         return coords_mini, score
 
-    def update(self, size):
-        dest = None
-        best_score = 0
-        radius = 1
-
+    def update(self, map_size):
         grille_size = Vect2d(len(self.map), len(self.map[0]))
 
         max_radius = grille_size.x
+        radius = 1
+        speed_cell = None
+        cell_score = 0
 
-        while dest is None and radius < max_radius:
-            dest, best_score = self.searchDest(radius, size)
+        while speed_cell is None and radius < max_radius:
+            speed_cell, cell_score = self.searchDest(radius, map_size)
             radius += 1
 
-        v = self.getMapPos(size, grille_size)
-        radius = 3
-        bord = 2
+        if speed_cell is None:
+            speed_cell = Vect2d(0, 0)
+        else:
+            speed_cell = speed_cell - self.pos
 
-        dist_cible = float("inf")
-        dist_chasseur = float("inf")
+        dist_target = float("inf")
+        dist_hunter = float("inf")
 
-        pos_cible = None
-        pos_chasseur = None
+        speed_target = None
+        speed_hunter = None
 
         for i in range(len(self.creature_info)):
             enemy_pos, enemy_score = self.creature_info[i]
 
-            if enemy_score > self.score:
-                if Vect2d.dist(self.pos, enemy_pos) < dist_chasseur:
-                    pos_chasseur = enemy_pos
-            else:
-                if Vect2d.dist(self.pos, enemy_pos) < dist_cible:
-                    pos_cible = enemy_pos
+            dist = Vect2d.dist(self.pos, enemy_pos)
 
-        if dest is not None:
-            self.speed = dest - self.pos + self.speed*0.98
+            if enemy_score >= self.score + self.BASE_SCORE:
+                if dist < dist_hunter:
+                    speed_hunter = enemy_pos - self.pos
+                    dist_hunter = dist
+            elif enemy_score + self.BASE_SCORE <= self.score:
+                if dist < dist_target:
+                    speed_target = enemy_pos - self.pos
+                    dist_target = dist
+
+        if speed_hunter is None:
+            speed_hunter = Vect2d(0, 0)
+
+        if speed_target is None:
+            speed_target = Vect2d(0, 0)
+
+        coeff_target = 1 - dist_target/map_size.length()
+        coeff_target = abs(coeff_target**3)
+        coeff_target = coeff_target if coeff_target < 1 else 0
+
+        coeff_hunter = 1 - dist_hunter/map_size.length()
+        coeff_hunter = abs(coeff_hunter**3)
+        coeff_hunter = coeff_hunter if coeff_hunter < 1 else 0
+
+        # coeff_target *= coeff_hunter
+
+        self.speed = self.speed * 0.97
+        self.speed += speed_cell*(1-coeff_target)*(1-coeff_hunter)
+        self.speed += speed_target*coeff_target*(1-coeff_hunter)
+        self.speed -= speed_hunter*(1-coeff_target)*coeff_hunter
 
         direction = self.speed.normalize()
 
-        self.applyNewDirection(direction, size)
+        self.applyNewDirection(direction, map_size)

@@ -9,8 +9,8 @@ from entity.creature import Creature
 class Player(Creature):
     mouse_pos = Vect2d()
 
-    def __init__(self, pos) -> None:
-        super().__init__(pos, "Player")
+    def __init__(self, pos, name, color, id) -> None:
+        super().__init__(pos, "Player", color, id)
 
     def update(self, size) -> None:
         coeff_tps = 1
