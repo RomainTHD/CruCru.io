@@ -14,6 +14,8 @@ from game.game import Game
 from game.menu import Menu
 # Menu
 
+from game.gamestate import GameState
+
 from view.display import Display
 # Fenêtre
 
@@ -38,14 +40,17 @@ config.DEBUG
 pygame.init()
 # Initialisation de pygame
 
+Camera.init()
+# Initialisation de la caméra
+
 Display.init(width=config.WINDOW_WIDTH,
              height=config.WINDOW_HEIGHT,
              start_fullscreen=config.START_FULLSCREEN,
              framerate=config.FRAMERATE)
 # Initialisation de la fenêtre
 
-Camera.init()
-# Initialisation de la caméra
+Menu.applyState(GameState.MENU)
+# Initialisation du menu
 
 Skins.init()
 # Initialisation et chargement des skins
@@ -53,9 +58,6 @@ Skins.init()
 Map.init(width=config.MAP_WIDTH,
          height=config.MAP_HEIGHT)
 # Initialisation du terrain de jeu
-
-Menu.init()
-# Initialisation du menu
 
 Game.run()
 # Lancement du jeu
