@@ -29,7 +29,7 @@ class Camera:
         Display.execWhenResized(cls.whenResized)
 
         cls.pos = Vect2d(0, 0)
-        cls.window_center = None
+        cls.window_center = Vect2d(0, 0)
 
     @classmethod
     def whenResized(cls, width: int, height: int) -> None:
