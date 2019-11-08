@@ -1,8 +1,10 @@
 ### AJOUTS :
 * Division du cercle pour attaquer (split)
-* Écran de mort
-* Réseau
+* Faire tableau des meilleurs scores
+* Demander nom joueur
+* Buissons
 * Commentaires
+* Réseau
 * Log
 
 ### CORRECTIONS :
@@ -16,14 +18,15 @@
 * Vect2d : pouvoir le choisir constant ?
 * Renommer la variable 'map' dans créature
 * Plutôt que BASE_SCORE faire proportionnel
+* Taille police proportionnel à taille créature
+* Plutôt que score afficher nom
 
 ### BUGS :
-* Grossisement sur les bords bug de déplacement
-* Bug cellule ne pas apparaitre sur le joueur direct
-* Cellule à manger apparaissent sur la ligne
 * Attention lors de l'apparition ne pas apparaitre à côté d'un joueur imposant sinon on perd direct, aucun intérêt
 * Changer curseur souris quand bouton
 * Effet de transition de bouton
+* F11 fin de jeu
+* Souris fin de jeu
 
 gota.io
 

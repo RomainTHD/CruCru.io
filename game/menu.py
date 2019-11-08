@@ -25,6 +25,7 @@ class Menu:
 
     @classmethod
     def play(cls):
+        Display.setCursorArrow()
         Map.reset()
         cls.can_play = True
 

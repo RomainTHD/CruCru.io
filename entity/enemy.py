@@ -118,6 +118,13 @@ class Enemy(Creature):
 
         # coeff_target *= coeff_hunter
 
+        bords = [Vect2d(self.pos.x, 0),
+                 Vect2d(self.pos.x, 0)]
+
+
+        dist_bord = min(0, 0)
+
+
         self.speed = self.speed * 0.97
         self.speed += speed_cell*(1-coeff_target)*(1-coeff_hunter)
         self.speed += speed_target*coeff_target*(1-coeff_hunter)

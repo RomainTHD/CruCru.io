@@ -1,5 +1,10 @@
 """Programme principal à exécuter, contient les initialisations"""
 
+import sys
+
+if (sys.version_info[0], sys.version_info[1]) < (3, 5):
+    raise Exception("Python 3.6 au moins demandé")
+
 #! Commentaires débug, à retirer pour la version finale
 
 import pygame
@@ -35,6 +40,11 @@ config.MAP_WIDTH
 config.MAP_HEIGHT
 config.START_FULLSCREEN
 config.DEBUG
+config.NB_ENEMIES
+config.MAX_CELLS
+config.NB_CELL_PER_SECOND
+config.DELTA_T_NEW_CELL
+
 # Test que toutes les variables de configuration existent
 
 pygame.init()

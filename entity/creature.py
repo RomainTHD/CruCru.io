@@ -89,3 +89,6 @@ class Creature:
 
     def killed(self):
         self.is_alive = False
+
+    def split(self):
+        pass

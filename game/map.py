@@ -48,13 +48,13 @@ class Map:
 
         cls.size = Vect2d(width, height)
 
-        cls.MAX_CELLS = 500
-        cls.NB_CELL_PER_SECOND = 10
-        cls.DELTA_T_NEW_CELL = 0.1
+        cls.MAX_CELLS = config.MAX_CELLS
+        cls.NB_CELL_PER_SECOND = config.NB_CELL_PER_SECOND
+        cls.DELTA_T_NEW_CELL = config.DELTA_T_NEW_CELL
 
         cls.grille_size = Vect2d(10, 10)
 
-        cls.ENEMIES_MAX_SIZE = 5
+        cls.ENEMIES_MAX_SIZE = config.NB_ENEMIES
 
         cls.reset()
 
@@ -68,19 +68,40 @@ class Map:
 
         cls.grille = [[[] for y in range(cls.grille_size.y)] for x in range(cls.grille_size.x)]
 
-        cls.player = Player(Vect2d(cls.size.x/2, cls.size.y/2), "Player", Color.randomColor(), id)
+        player_id = cls.generateId()
+
+        cls.player = Player(Vect2d(cls.size.x/2, cls.size.y/2), "Player", Color.randomColor(), player_id)
         # Création du joueur
 
         cls.enemies = []
 
     @classmethod
+    def generateId(cls):
+        ok = False
+        compt = 0
+
+        while not ok:
+            creature_id = random.randrange(10**64)
+
+            # if creature_id not in cls.enemies.keys() and creature_id != cls.player.creature_id:
+            ok = True
+
+            if compt == 1000:
+                raise Exception
+                # !
+
+            compt += 1
+
+    @classmethod
     def createEnemy(cls):
-        v = Vect2d(random.randrange(Creature.BASE_RADIUS*2, cls.size.x -Creature.BASE_RADIUS*2),
+        v = Vect2d(random.randrange(Creature.BASE_RADIUS*2, cls.size.x-Creature.BASE_RADIUS*2),
                    random.randrange(Creature.BASE_RADIUS*2, cls.size.y-Creature.BASE_RADIUS*2))
 
-        id = random.randrange(10**64)
+        enemy_id = random.randrange(10**64)
 
-        cls.enemies.append(Enemy(v, "Ennemi "+str(len(cls.enemies)), Color.randomColor(), id))
+        enemy = Enemy(v, "Ennemi "+str(len(cls.enemies)), Color.randomColor(), enemy_id)
+
+        cls.enemies.append(enemy)
 
     @classmethod
     def setMousePos(cls, mouse_pos: Vect2d):
@@ -160,15 +181,22 @@ class Map:
         if time.time() - cls.ref_time > cls.DELTA_T_NEW_CELL:
             cls.ref_time = time.time()
 
-            x = random.randrange(0, cls.size.x)
-            y = random.randrange(0, cls.size.y)
+            x = random.randrange(Cell.BASE_RADIUS, cls.size.x-Cell.BASE_RADIUS)
+            y = random.randrange(Cell.BASE_RADIUS, cls.size.y-Cell.BASE_RADIUS)
             cell = Cell(Vect2d(x, y))
 
-            x = int(cell.pos.x / cls.size.x  * cls.grille_size.x )
+            ok = True
+
+            for enemy in cls.enemies:
+                if Vect2d.dist(enemy.pos, cell.pos) < cell.radius + enemy.radius:
+                    ok = False
+
+            x = int(cell.pos.x / cls.size.x * cls.grille_size.x)
             y = int(cell.pos.y / cls.size.y * cls.grille_size.y)
 
-            cls.all_cells.append(cell)
-            cls.grille[x][y].append(cell)
+            if ok:
+                cls.all_cells.append(cell)
+                cls.grille[x][y].append(cell)
 
             if len(cls.all_cells) >= cls.MAX_CELLS:
                 cls.deleteCell(0)
@@ -218,6 +246,10 @@ class Map:
     def splitCreature(cls, creature):
         if creature.score > creature.BASE_SCORE*3:
             creature.split()
+
+    @classmethod
+    def splitPlayer(cls):
+        pass
 
     @classmethod
     def detectCellHitbox(cls, creature:"Creature") -> None:

@@ -19,6 +19,8 @@ class Cell:
         score (int): score que cette cellule donnera une fois mangée
     """
 
+    BASE_RADIUS = 5
+
     def __init__(self, pos: Vect2d) -> None:
         """
         Constructeur
@@ -32,7 +34,7 @@ class Cell:
 
         self.pos = pos
 
-        self.radius = 5
+        self.radius = self.BASE_RADIUS
         self.score = 1
 
     def display(self) -> None:

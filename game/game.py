@@ -65,6 +65,9 @@ class Game:
 
                 Menu.display()
 
+                if Menu.can_play:
+                    Display.setCursorArrow()
+
             elif cls.state == GameState.GAME:
                 Map.setMousePos(mouse_pos)
                 Map.update()
@@ -122,5 +125,7 @@ class Game:
                     Display.toggleFullscreen()
 
                 if event.key == pygame.K_SPACE:
-                    # Map.split(Map.player)
+                    Map.splitPlayer()
+
+                if event.key == pygame.K_RETURN:
                     Map.player.is_alive = False

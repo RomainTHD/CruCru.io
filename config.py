@@ -16,3 +16,9 @@ START_FULLSCREEN = False
 
 DEBUG = False
 # Mode de débogage, avec certaines informations supplémentaires affichées
+
+NB_ENEMIES = 10
+
+MAX_CELLS = 1000
+NB_CELL_PER_SECOND = 15
+DELTA_T_NEW_CELL = 0.1
