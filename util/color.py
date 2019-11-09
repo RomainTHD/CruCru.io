@@ -31,8 +31,8 @@ class Color:
     # Cette valeur est une valeur très particulière : elle est en effet remplacée par de la
     # transparence lors de l'affichage à l'écran
 
-    @classmethod
-    def randomColor(cls) -> (int, int, int):
+    @staticmethod
+    def randomColor() -> (int, int, int):
         """Retourne une couleur aléatoire dans l'espace RGB
         Pour cela, on passe d'abord dans l'espace HSV (teinte, saturation, valeur)
         Cet espace permet de choisir des couleurs très vives
@@ -44,13 +44,53 @@ class Color:
         hue = random.randrange(0, 360)
         # Teinte aléatoire
 
-        color = cls.HSVToRGB(hue, 100, 100)
+        color = Color.HSVToRGB(hue, 100, 100)
         # On passe de HSV à RGB
 
         return color
 
     @staticmethod
-    def HSVToRGB(h: int, s: int = 100, v: int = 100, a: int = 255) -> (int, int, int):
+    def oppositeColor(color: tuple):
+        hsv_color = Color.RGBToHSV(*color)
+
+        new_color = Color.HSVToRGB(hsv_color[0]+180, *hsv_color[1:])
+
+        return new_color
+
+    @staticmethod
+    def RGBToHSV(r: int, g: int, b: int, a: int = 255) -> (int, int, int, int):
+        r /= 255
+        g /= 255
+        b /= 255
+
+        mx = max(r, g, b)
+        mn = min(r, g, b)
+
+        df = mx-mn
+
+        if mx == mn:
+            h = 0
+        elif mx == r:
+            h = (60 * ((g-b)/df) + 360) % 360
+        elif mx == g:
+            h = (60 * ((b-r)/df) + 120) % 360
+        elif mx == b:
+            h = (60 * ((r-g)/df) + 240) % 360
+        if mx == 0:
+            s = 0
+        else:
+            s = (df/mx)*100
+
+        v = mx*100
+
+        h = int(h)
+        s = int(s)
+        v = int(v)
+
+        return (h, s, v, a)
+
+    @staticmethod
+    def HSVToRGB(h: int, s: int = 100, v: int = 100, a: int = 255) -> (int, int, int, int):
         """Retourne le code RGB d'une couleur dans l'espace HSV
 
         Args:

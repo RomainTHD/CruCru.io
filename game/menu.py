@@ -84,5 +84,12 @@ class Menu:
 
     @classmethod
     def display(cls):
+        hand_cursor = False
+
         for i in range(len(cls.buttons)):
-            cls.buttons[i].display(cls.mouse_pos)
+            hand_cursor = cls.buttons[i].display(cls.mouse_pos) or hand_cursor
+
+        if hand_cursor:
+            Display.setCursorHand()
+        else:
+            Display.setCursorArrow()

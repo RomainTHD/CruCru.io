@@ -39,11 +39,11 @@ class Game:
 
         cls.keytime = {}
 
-        cls.ESC_MAX_FRAMECOUNT = Display.framerate*0.25
-
         cls.state = GameState.MENU
 
         while not cls.finished:
+            cls.ESC_MAX_FRAMECOUNT = Display.real_framerate*0.25
+
             cls.handleKeys()
 
             mx, my = pygame.mouse.get_pos()
@@ -73,9 +73,9 @@ class Game:
                 Map.update()
                 Map.display()
 
-                Camera.setPos(Map.player.pos)
+                Camera.setPos(Map.getPlayerPos())
 
-                if not Map.player.is_alive:
+                if not Map.isPlayerAlive():
                     cls.state = GameState.END
                     Menu.applyState(GameState.END)
             else:
@@ -128,4 +128,6 @@ class Game:
                     Map.splitPlayer()
 
                 if event.key == pygame.K_RETURN:
-                    Map.player.is_alive = False
+                    Map.creatures[Map.player_id][0].is_alive = False
+
+                    #!

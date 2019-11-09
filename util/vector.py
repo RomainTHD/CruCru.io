@@ -458,7 +458,11 @@ class Vect2d:
             length (float): norme au carré
         """
 
-        length = Vect2d.distSq(self, Vect2d(0, 0))
+        if self.x == 0 and self.y == 0:
+            length = 0
+        else:
+            length = Vect2d.distSq(self, Vect2d(0, 0))
+
         return length
 
     def length(self):
@@ -468,7 +472,11 @@ class Vect2d:
             length (float): norme
         """
 
-        length = self.lengthSq()**0.5
+        if self.x == 0 and self.y == 0:
+            length = 0
+        else:
+            length = self.lengthSq()**0.5
+
         return length
 
 if __name__ == "__main__":

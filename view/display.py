@@ -1,8 +1,9 @@
 """Affichage, gestion de la fenêtre, dessin à l'écran"""
 
+import time
+
 import pygame
 import pygame.gfxdraw
-import time
 
 if __name__ == "__main__":
     import sys
@@ -49,8 +50,10 @@ class Display:
     is_fullscreen: bool = False
 
     framerate: int
+    real_framerate: int
     framecount: int = 0
-    frametime: float
+    frametime: float = time.time()
+    frametimes: [int] = [0]*10
 
     clock: pygame.time.Clock
 
@@ -96,10 +99,12 @@ class Display:
         cls.size = Vect2d(width, height)
         # Taille de la fenêtre
 
+        cls.zoom_factor = 1
+
         cls.windowed_size = cls.size.copy()
 
         cls.framerate = framerate
-        cls.frametime = 1/cls.framerate
+        cls.real_framerate = cls.framerate
 
         cls.clock = pygame.time.Clock()
 
@@ -118,14 +123,16 @@ class Display:
         cls.resize(cls.size.x, cls.size.y)
         # Cette opération va aussi créer la fenêtre
 
-        pygame.display.set_caption("Agar.io")
-        # On change le titre
-
         if start_fullscreen:
             cls.toggleFullscreen()
 
         cls.updateFrame()
         # On actualise la fenêtre
+
+    @classmethod
+    def updateTitle(cls):
+        pygame.display.set_caption("Agar.io - " + str(cls.real_framerate) + " fps")
+        # On change le titre
 
     @classmethod
     def toggleFullscreen(cls) -> None:
@@ -189,6 +196,20 @@ class Display:
         else:
             cls.drawRect(Vect2d(0, 0), cls.size, color)
 
+        cls.updateTitle()
+
+        del cls.frametimes[0]
+        cls.frametimes.append(time.time() - cls.frametime)
+
+        frametime = sum(cls.frametimes)/len(cls.frametimes)
+
+        if frametime == 0:
+            cls.real_framerate = float("inf")
+        else:
+            cls.real_framerate = round(1/frametime)
+
+        cls.frametime = time.time()
+
         cls.clock.tick(cls.framerate)
         # Pour actualiser la fenêtre après un certain temps
 
@@ -197,6 +218,10 @@ class Display:
     @classmethod
     def screenshot(cls) -> pygame.Surface:
         return cls.window.copy()
+
+    @classmethod
+    def zoom(cls, zoom_factor: int):
+        cls.zoom_factor = 1
 
     @classmethod
     def drawCircle(cls, pos: Vect2d, color: Color, radius: int, base_pos: Vect2d = Vect2d(0, 0), fill: bool = True) -> None:
@@ -210,7 +235,14 @@ class Display:
             fill (bool): cercle rempli ou non
         """
 
-        pos = (pos - base_pos).toIntValues()
+        pos = pos.copy()
+
+        if base_pos.length() != 0:
+            pos = (pos - base_pos)*cls.zoom_factor
+
+        pos = pos.toIntValues()
+
+        radius = int(radius*cls.zoom_factor)
 
         if fill:
             pygame.gfxdraw.filled_circle(cls.window, pos.x, pos.y, radius, color)
@@ -232,7 +264,17 @@ class Display:
             fill (bool): rectangle rempli ou non
         """
 
-        pos = (pos - base_pos).toIntValues()
+        size = size.copy()
+        pos = pos.copy()
+
+        if base_pos.length() != 0:
+            pos = (pos - base_pos)*cls.zoom_factor
+
+        pos = pos.toIntValues()
+
+        if base_pos.length() != 0:
+            size *= cls.zoom_factor
+
         size = size.toIntValues()
 
         rect = pygame.Rect(pos.toTuple(), size.toTuple())
@@ -256,7 +298,18 @@ class Display:
             base_pos (Vect2d): position de référence de la fenêtre
         """
 
+        pos = pos.copy()
+
+        if base_pos.length() != 0:
+            pos = (pos - base_pos)*cls.zoom_factor
+
+        pos = pos.toIntValues()
+
         font_family = "comicsansms"
+
+        if base_pos.length() != 0:
+            size *= cls.zoom_factor
+
         font_size = int(size)
 
         if cls.all_font.get(font_family, None) is None:
@@ -272,8 +325,6 @@ class Display:
 
         font = cls.all_font[font_family][font_size]
         # On utilise la police
-
-        pos = (pos - base_pos).toIntValues()
 
         text = str(text)
 
@@ -306,8 +357,15 @@ class Display:
             width (int): largeur de la ligne
         """
 
-        pos1 = (pos1 - base_pos).toIntValues()
-        pos2 = (pos2 - base_pos).toIntValues()
+        pos1 = pos1.copy()
+        pos2 = pos2.copy()
+
+        if base_pos.length() != 0:
+            pos1 = (pos1 - base_pos)*cls.zoom_factor
+            pos2 = (pos2 - base_pos)*cls.zoom_factor
+
+        pos1 = pos1.toIntValues()
+        pos2 = pos2.toIntValues()
 
         if width == 1:
             pygame.gfxdraw.line(cls.window, pos1.x, pos1.y, pos2.x, pos2.y, color)
@@ -328,7 +386,8 @@ class Display:
             radius (int): rayon désiré de l'image
         """
 
-        pos = (pos - base_pos).toIntValues()
+        pos = (pos - base_pos)*cls.zoom_factor
+        pos = pos.toIntValues()
 
         if radius is not None:
             pos -= Vect2d(radius, radius)

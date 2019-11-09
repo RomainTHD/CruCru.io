@@ -9,24 +9,16 @@
 
 ### CORRECTIONS :
 * D'abord chercher à vider le carré dans lequel l'ennemi est
- Quand player mort revenir au menu
 * HSV -> HSB (ou HSL)
 * Config custom (avec par exemple une valeur par défaut, un min, un max) -> cf. VISI201
 * Vect2d : héritage de list ?
 * Transformer toutes les couleurs en Color (qui hériterait de list)
 * Avec les 2 idées précédentes on peut utiliser directement Vect2d et Color en parametre de fonction
 * Vect2d : pouvoir le choisir constant ?
-* Renommer la variable 'map' dans créature
-* Plutôt que BASE_SCORE faire proportionnel
-* Taille police proportionnel à taille créature
-* Plutôt que score afficher nom
 
 ### BUGS :
-* Attention lors de l'apparition ne pas apparaitre à côté d'un joueur imposant sinon on perd direct, aucun intérêt
-* Changer curseur souris quand bouton
-* Effet de transition de bouton
 * F11 fin de jeu
-* Souris fin de jeu
+* Ennemis qui se chevauchent parfois
 
 gota.io
 

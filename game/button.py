@@ -73,14 +73,14 @@ class Button:
 
         return res
 
-    def display(self, mouse_pos: Vect2d) -> None:
+    def display(self, mouse_pos: Vect2d) -> bool:
         """Affichage du bouton
 
         Args:
             mouse_pos (Vect2d): pour permettre un affichage différent selon la position de la souris
         """
 
-        self.when_display(self, mouse_pos)
+        return self.when_display(self, mouse_pos)
 
 def buttonStart_Init(button: Button) -> None:
     """Initialisation du bouton Start"""
@@ -92,10 +92,10 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
     """Affichage du bouton Start"""
 
     if button.isMouseOver(mouse_pos):
-        Display.setCursorHand()
+        hand_cursor = True
         button.color_sat -= 3
     else:
-        Display.setCursorArrow()
+        hand_cursor = False
         button.color_sat = 100
         button.color_hue += 1
 
@@ -114,6 +114,8 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
                      button.pos + button.size/2,
                      color=Color.BLACK,
                      size=font_size)
+
+    return hand_cursor
 
 def buttonEnd_Init(button: Button, first_try: bool) -> None:
     if first_try:
@@ -145,11 +147,11 @@ def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
     font_size = min_size*50/400
 
     if button.isMouseOver(mouse_pos):
-        Display.setCursorHand()
+        hand_cursor = True
         c = Color.BLACK
         f = True
     else:
-        Display.setCursorArrow()
+        hand_cursor = False
         c = Color.RED
         f = False
 
@@ -162,3 +164,5 @@ def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
                      button.pos + button.size/2,
                      color=c,
                      size=font_size)
+
+    return hand_cursor

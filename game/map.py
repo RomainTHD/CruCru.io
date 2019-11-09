@@ -54,7 +54,26 @@ class Map:
 
         cls.grille_size = Vect2d(10, 10)
 
-        cls.ENEMIES_MAX_SIZE = config.NB_ENEMIES
+        cls.CREATURES_MAX_SIZE = config.MAX_CREATURES
+
+        try:
+            f = open("./data/usernames.txt", 'r')
+        except FileNotFoundError:
+            print("Pas de fichier usernames.txt")
+            cls.all_usernames = None
+        else:
+            cls.all_usernames = []
+
+            line = f.readline()
+
+            while line != "":
+                line = line.replace('\n', '')
+                line = line.replace('\r', '')
+
+                cls.all_usernames.append(line)
+                line = f.readline()
+
+            f.close()
 
         cls.reset()
 
@@ -68,112 +87,173 @@ class Map:
 
         cls.grille = [[[] for y in range(cls.grille_size.y)] for x in range(cls.grille_size.x)]
 
-        player_id = cls.generateId()
+        cls.player_id = cls.generateId()
 
-        cls.player = Player(Vect2d(cls.size.x/2, cls.size.y/2), "Player", Color.randomColor(), player_id)
+        cls.creatures = {}
+        cls.creatures[cls.player_id] = [Player(Vect2d(cls.size.x/2, cls.size.y/2),
+                                               "Player",
+                                               Color.randomColor(),
+                                               cls.player_id)
+                                       ]
         # Création du joueur
-
-        cls.enemies = []
 
     @classmethod
     def generateId(cls):
-        ok = False
-        compt = 0
-
-        while not ok:
-            creature_id = random.randrange(10**64)
-
-            # if creature_id not in cls.enemies.keys() and creature_id != cls.player.creature_id:
-            ok = True
-
-            if compt == 1000:
-                raise Exception
-                # !
-
-            compt += 1
+        return random.randrange(10**64)
 
     @classmethod
     def createEnemy(cls):
-        v = Vect2d(random.randrange(Creature.BASE_RADIUS*2, cls.size.x-Creature.BASE_RADIUS*2),
-                   random.randrange(Creature.BASE_RADIUS*2, cls.size.y-Creature.BASE_RADIUS*2))
+        ok = False
+        timed_out = False
+        compt = 0
 
-        enemy_id = random.randrange(10**64)
+        while not ok and not timed_out:
+            ok = True
 
-        enemy = Enemy(v, "Ennemi "+str(len(cls.enemies)), Color.randomColor(), enemy_id)
+            pos = Vect2d(random.randrange(Creature.BASE_RADIUS*2, cls.size.x-Creature.BASE_RADIUS*2),
+                         random.randrange(Creature.BASE_RADIUS*2, cls.size.y-Creature.BASE_RADIUS*2))
 
-        cls.enemies.append(enemy)
+            for k in cls.creatures.keys():
+                creatures_list = cls.creatures[k]
+
+                for creature in creatures_list:
+                    if Vect2d.dist(pos, creature.pos) < (Creature.BASE_RADIUS + creature.radius)*2:
+                        ok = False
+
+            if compt == 5:
+                timed_out = True
+
+            compt += 1
+
+        if not timed_out:
+            enemy_id = cls.generateId()
+
+            if cls.all_usernames is None:
+                size = random.randint(3, 5)
+                name = cls.generateNewName(size)
+            else:
+                name = cls.all_usernames[random.randrange(len(cls.all_usernames))]
+
+            enemy = Enemy(pos, name, Color.randomColor(), enemy_id)
+
+            cls.creatures[enemy_id] = [enemy]
+
+    @staticmethod
+    def generateNewName(size: int):
+        consonants = ('b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z')
+        vowels = ('a', 'e', 'i', 'o', 'u', 'y', 'ai', 'ei', 'eu', 'ey', 'ie', 'io', 'oi', 'ou', 'oy', 'ya', 'ye', 'yi', 'yo', 'yu')
+
+        name = ""
+
+        for i in range(size):
+            name += consonants[random.randrange(len(consonants))]
+            name += vowels[random.randrange(len(vowels))]
+
+        return name
 
     @classmethod
     def setMousePos(cls, mouse_pos: Vect2d):
-        cls.player.mouse_pos = mouse_pos - Vect2d(Display.size.x/2, Display.size.y/2)
+        for player in cls.creatures[cls.player_id]:
+            player.mouse_pos = mouse_pos - Vect2d(Display.size.x/2, Display.size.y/2)
 
     @classmethod
     def update(cls):
-        if len(cls.enemies) < cls.ENEMIES_MAX_SIZE:
+        if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
             cls.createEnemy()
 
-        cls.player.update(cls.size)
+        for player in cls.creatures[cls.player_id]:
+            player.update(cls.size)
 
-        enemies_info = []
+        creatures_info = []
 
-        for i in range(len(cls.enemies)):
-            v = cls.enemies[i].getMapPos(cls.size, cls.grille_size)
+        for k in cls.creatures.keys():
+            creatures_list = cls.creatures[k]
 
-            enemies_info.append((cls.enemies[i].pos.copy(), cls.enemies[i].score))
+            for creature in creatures_list:
+                creatures_info.append((creature.pos.copy(), creature.radius, creature.score))
 
-        v = cls.player.getMapPos(cls.size, cls.grille_size)
-        enemies_info.append((cls.player.pos.copy(), cls.player.score))
+        for k in cls.creatures.keys():
+            enemy_list = cls.creatures[k]
 
-        for i in range(len(cls.enemies)):
-            map_pos = cls.enemies[i].getMapPos(cls.size, cls.grille_size)
-            cls.enemies[i].map = cls.getCenteredSubMap(map_pos)
-            cls.enemies[i].creature_info = enemies_info
-            cls.enemies[i].update(cls.size)
+            if k != cls.player_id:
+                for enemy in enemy_list:
+                    enemy.setMapCell(cls.getCellPosMap())
+                    enemy.setCreaturesInfo(creatures_info)
+                    enemy.update(cls.size)
 
-        creatures = cls.enemies + [cls.player]
+        for k in cls.creatures.keys():
+            creatures_list = cls.creatures[k]
 
-        for i in range(len(creatures)):
-            cls.detectCellHitbox(creatures[i])
+            for creature in creatures_list:
+                cls.detectCellHitbox(creature)
 
-        cls.detectEnemyHitbox(creatures)
+        cls.detectEnemyHitbox()
 
-        for i in range(len(cls.enemies)-1, -1, -1):
-            if not cls.enemies[i].is_alive:
-                del cls.enemies[i]
+        for k in list(cls.creatures.keys()):
+            for i in range(len(cls.creatures[k])-1, -1, -1):
+                if not cls.creatures[k][i].is_alive:
+                    del cls.creatures[k][i]
+
+            if len(cls.creatures[k]) == 0:
+                del cls.creatures[k]
 
         for i in range(cls.NB_CELL_PER_SECOND):
             cls.createNewCell()
 
     @classmethod
-    def detectEnemyHitbox(cls, creatures):
-        for i in range(len(creatures)):
-            v = creatures[i].getMapPos(cls.size, cls.grille_size)
+    def getPlayerPos(cls):
+        pos = Vect2d(0, 0)
 
-            for j in range(i+1, len(creatures)):
-                if creatures[i].is_alive and creatures[j].is_alive:
-                    dist = Vect2d.dist(creatures[i].pos, creatures[j].pos)
+        if cls.isPlayerAlive():
+            for player in cls.creatures[cls.player_id]:
+                pos += player.pos
 
-                    if dist <= creatures[i].radius or dist <= creatures[j].radius:
-                        if creatures[i].score > creatures[j].score + Creature.BASE_SCORE:
-                            creatures[i].kill(creatures[j].score)
-                            creatures[j].killed()
-                        elif creatures[i].score + Creature.BASE_SCORE < creatures[j].score:
-                            creatures[j].kill(creatures[i].score)
-                            creatures[i].killed()
+            pos /= len(cls.creatures[cls.player_id])
+
+        return pos
 
     @classmethod
-    def getCenteredSubMap(cls, map_pos):
+    def isPlayerAlive(cls):
+        try:
+            is_alive = cls.creatures[cls.player_id][0].is_alive
+        except KeyError:
+            is_alive = False
+
+        return is_alive
+
+    @classmethod
+    def detectEnemyHitbox(cls):
+        for k1 in cls.creatures.keys():
+            for k2 in cls.creatures.keys():
+                if k1 != k2:
+                    enemy_list_1 = cls.creatures[k1]
+                    enemy_list_2 = cls.creatures[k2]
+
+                    for enemy_1 in enemy_list_1:
+                        for enemy_2 in enemy_list_2:
+                            if enemy_1.is_alive and enemy_2.is_alive:
+                                dist = Vect2d.dist(enemy_1.pos, enemy_2.pos)
+
+                                if dist <= max(enemy_1.radius, enemy_2.radius):
+                                    if Creature.canEat(enemy_1.score, enemy_2.score):
+                                        enemy_1.kill(enemy_2.score)
+                                        enemy_2.killed()
+                                    elif Creature.canEat(enemy_2.score, enemy_1.score):
+                                        enemy_2.kill(enemy_1.score)
+                                        enemy_1.killed()
+
+    @classmethod
+    def getCellPosMap(cls):
         res = [[None for i in range(cls.grille_size.y)] for j in range(cls.grille_size.x)]
 
-        for x in range(map_pos.x-cls.grille_size.x, map_pos.x+cls.grille_size.x+1):
-            for y in range(map_pos.y-cls.grille_size.y, map_pos.y+cls.grille_size.y+1):
-                if x >= 0 and x < cls.grille_size.x and y >= 0 and y < cls.grille_size.y:
-                    content = []
+        for x in range(cls.grille_size.x):
+            for y in range(cls.grille_size.y):
+                content = []
 
-                    for i in range(len(cls.grille[x][y])):
-                        content.append(cls.grille[x][y][i].pos.copy())
+                for cell in cls.grille[x][y]:
+                    content.append(cell.pos.copy())
 
-                    res[x][y] = tuple(content)
+                res[x][y] = tuple(content)
         return res
 
     @classmethod
@@ -187,9 +267,12 @@ class Map:
 
             ok = True
 
-            for enemy in cls.enemies:
-                if Vect2d.dist(enemy.pos, cell.pos) < cell.radius + enemy.radius:
-                    ok = False
+            for k in cls.creatures.keys():
+                enemy_list = cls.creatures[k]
+
+                for enemy in enemy_list:
+                    if Vect2d.dist(enemy.pos, cell.pos) < cell.radius + enemy.radius:
+                        ok = False
 
             x = int(cell.pos.x / cls.size.x * cls.grille_size.x)
             y = int(cell.pos.y / cls.size.y * cls.grille_size.y)
@@ -232,10 +315,16 @@ class Map:
 
         cls.displayCell()
 
-        for i in range(len(cls.enemies)):
-            cls.enemies[i].display()
+        for k in cls.creatures.keys():
+            enemy_list = cls.creatures[k]
 
-        cls.player.display()
+            if k != cls.player_id:
+                for enemy in enemy_list:
+                    enemy.display()
+
+        if cls.isPlayerAlive():
+            for player in cls.creatures[cls.player_id]:
+                player.display()
 
     @classmethod
     def displayCell(cls) -> None:
@@ -272,8 +361,8 @@ class Map:
     def deleteCell(cls, index:int):
         cell = cls.all_cells[index]
 
-        x = int(cell.pos.x / cls.size.x  * cls.grille_size.x )
-        y = int(cell.pos.y / cls.size.y * cls.grille_size.y)
+        x = int(cell.pos.x/cls.size.x * cls.grille_size.x)
+        y = int(cell.pos.y/cls.size.y * cls.grille_size.y)
 
         for i in range(len(cls.grille[x][y])-1, -1, -1):
             if cell == cls.grille[x][y][i]:

@@ -1,7 +1,13 @@
-import random
+"""Créature générique"""
+
+import math
+
+from abc import ABC, abstractmethod
+# Permet de forcer l'implémentation d'une méthode
 
 if __name__ == "__main__":
-    raise RuntimeError("Ne peut pas être lancé seul")
+    import sys
+    sys.path.append("..")
 
 from util.vector import Vect2d
 from util.color import Color
@@ -10,11 +16,43 @@ from view.camera import Camera
 from view.display import Display
 from view.skins import Skins
 
-class Creature:
-    BASE_RADIUS = 20
-    BASE_SCORE = 1
+import config
 
-    def __init__(self, pos: Vect2d, name: str, color: Color, id: int):
+class Creature(ABC):
+    """Créature générique
+    Classe mère des créatures Enemy et Player
+
+    Attributs:
+        BASE_RADIUS (int)
+        BASE_SCORE (int)
+        BASE_PERCENT (int):
+        SPEED_COEFF (int):
+        SPEED_SIZE_POWER (int):
+
+        pos (Vect2d):
+        radius (int):
+        score (int):
+        name (str):
+        color (Color):
+        creature_id (int):
+        is_alive (bool):
+        img (pygame.Surface):
+    """
+
+    BASE_RADIUS = 20
+    BASE_PERCENT = 25/100
+    BASE_SCORE = 10
+    SPEED_COEFF = config.SPEED_COEFF
+    SPEED_SIZE_POWER = config.SPEED_SIZE_POWER
+
+    def __init__(self, pos: Vect2d, name: str, color: Color, creature_id: int):
+        """Constructeur
+
+        Args:
+            pos (Vect2d): position de la créature
+            name (str): nom de la créature
+        """
+
         self.pos = pos.copy()
 
         self.radius = self.BASE_RADIUS
@@ -24,21 +62,31 @@ class Creature:
         self.name = name
 
         self.color = color
+        self.opposite_color = Color.oppositeColor(color)
 
-        self.id = id
+        self.creature_id = creature_id
 
         self.is_alive = True
 
         self.img = Skins.getRandomSkin()
 
-    def getMapPos(self, size, grille_size):
+    def getMapPos(self, size: Vect2d, grille_size: Vect2d):
+        """
+
+        """
+
         pos_x = int(self.pos.x/size.x * grille_size.x)
         pos_y = int(self.pos.y/size.y * grille_size.y)
 
         return Vect2d(pos_x, pos_y)
 
+    @abstractmethod
     def update(self, size):
-        pass
+        raise NotImplementedError("Cette méthode doit être définie")
+
+    @classmethod
+    def canEat(cls, score, other_score):
+        return score > other_score*(1+cls.BASE_PERCENT)
 
     def display(self) -> None:
         """
@@ -50,17 +98,25 @@ class Creature:
 
         Display.drawCircle(pos=self.pos, color=self.color, radius=self.radius, base_pos=Camera.pos)
 
-        Display.drawText(text=self.score,
-                         pos=self.pos,
+        if config.DEBUG:
+            txt = self.score
+        else:
+            txt = self.name
+
+        Display.drawText(text=txt,
+                         size=self.radius/2,
+                         color=self.opposite_color,
+                         pos=self.pos - Vect2d(0, self.radius/10),
                          base_pos=Camera.pos)
 
     def applyNewDirection(self, direction, size):
-        coeff_tps = 1
-        dist_per_sec = 200
+        dist_per_sec = 500
 
-        direction = direction*Display.frametime*dist_per_sec/coeff_tps
+        direction = direction*self.SPEED_COEFF/Display.real_framerate
 
-        direction *= ( 1/(self.score-self.BASE_SCORE+1) )**0.2
+        area = 2*math.pi*self.radius**2
+
+        direction *= area**(-self.SPEED_SIZE_POWER)
 
         new_pos = self.pos + direction
 

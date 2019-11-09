@@ -51,4 +51,4 @@ class Camera:
             height (int): nouvelle hauteur de la fenêtre
         """
 
-        cls.pos = pos - cls.window_center
+        cls.pos = pos - cls.window_center/Display.zoom_factor
