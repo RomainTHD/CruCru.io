@@ -65,6 +65,7 @@ class Creature(ABC):
         self.opposite_color = Color.oppositeColor(color)
 
         self.creature_id = creature_id
+        self.killer_id = None
 
         self.is_alive = True
 
@@ -96,7 +97,10 @@ class Creature(ABC):
                         base_pos=Camera.pos)
         """
 
-        Display.drawCircle(pos=self.pos, color=self.color, radius=self.radius, base_pos=Camera.pos)
+        Display.drawCircle(pos=self.pos,
+                           color=self.color,
+                           radius=self.radius,
+                           base_pos=Camera.pos)
 
         if config.DEBUG:
             txt = self.score
@@ -140,11 +144,12 @@ class Creature(ABC):
 
         self.radius = round(self.BASE_RADIUS + self.score/2)
 
-    def kill(self, score):
+    def kill(self, score: int):
         self.score += score
 
-    def killed(self):
+    def killed(self, killer_id: int):
         self.is_alive = False
+        self.killer_id = killer_id
 
     def split(self):
         pass

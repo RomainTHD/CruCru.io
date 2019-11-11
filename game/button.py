@@ -119,7 +119,6 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
 
 def buttonEnd_Init(button: Button, first_try: bool) -> None:
     if first_try:
-        button.screenshot = Display.screenshot()
         button.alpha = 0
 
 def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
@@ -129,9 +128,9 @@ def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
 
     font_size = min_size*50/400
 
-    if button.alpha < 256:
-        Display.drawImg(button.screenshot, Vect2d(0, 0))
-        Display.drawRect(Vect2d(0, 0), Display.size, (0, 0, 0, button.alpha))
+    Display.drawRect(Vect2d(0, 0), Display.size, (0, 0, 0, button.alpha))
+
+    if button.alpha < 127:
         button.alpha += 1
 
     Display.drawText(button.text,

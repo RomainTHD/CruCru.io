@@ -1,5 +1,7 @@
 """Affichage, gestion de la fenêtre, dessin à l'écran"""
 
+import os
+
 import time
 
 import pygame
@@ -25,9 +27,15 @@ class Display:
                                 la sortie du mode plein écran
         is_fullscreen (bool): si la fenêtre est en plein écran ou non
 
-        framerate (int): nombre d'images par seconde
+        zoom_factor (float): facteur de zoom, 1 = normal
+                                              ]0; 1] = zoom arrière
+                                              [1; +inf[ = zoom avant
+
+        framerate (int): nombre d'images par seconde théorique
+        real_framerate (float): nombre d'images par seconde en application
         framecount (int): nombre d'images écoulées
-        frametime (float): temps d'une image
+        last_frametime (float): temps à la dernière image
+        frametimes (list of float): temps des 10 dernières images
 
         clock (pygame.time.Clock): horloge interne
 
@@ -43,19 +51,19 @@ class Display:
     exec_when_resized: list = []
 
     screen_size: Vect2d
-
-    windowed_size: Vect2d
-
     size: Vect2d
+    windowed_size: Vect2d
     is_fullscreen: bool = False
+
+    zoom_factor: float = 1
 
     framerate: int
     real_framerate: int
     framecount: int = 0
-    frametime: float = time.time()
-    frametimes: [int] = [0]*10
+    last_frametime: float = time.time()
+    frametimes: list = [0 for i in range(10)]
 
-    clock: pygame.time.Clock
+    clock: pygame.time.Clock = pygame.time.Clock()
 
     all_font: dict = {}
 
@@ -72,12 +80,16 @@ class Display:
         raise RuntimeError("Classe statique, instanciation impossible")
 
     @staticmethod
-    def setCursorArrow():
+    def setCursorArrow() -> None:
+        """Change le curseur de la souris en flèche"""
+
         pygame.mouse.set_cursor(*pygame.cursors.arrow)
-        # pygame.mouse.set_cursor(*pygame.cursors.tri_left)
+        #! pygame.mouse.set_cursor(*pygame.cursors.tri_left)
 
     @staticmethod
-    def setCursorHand():
+    def setCursorHand() -> None:
+        """Change le curseur de la souris en main"""
+
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
 
     @classmethod
@@ -92,36 +104,40 @@ class Display:
         """
 
         cls.setCursorArrow()
+        # On définit le curseur comme étant une flèche
 
-        cls.screen_size = Vect2d(pygame.display.Info().current_w, pygame.display.Info().current_h)
+        cls.screen_size = Vect2d(pygame.display.Info().current_w,
+                                 pygame.display.Info().current_h)
         # Taille de l'écran
+
 
         cls.size = Vect2d(width, height)
         # Taille de la fenêtre
 
-        cls.zoom_factor = 1
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "{0},{1}".format(*((cls.screen_size - cls.size)/2).toTuple())
+        os.environ['SDL_VIDEO_CENTERED'] = '0'
 
         cls.windowed_size = cls.size.copy()
+        # La taille fenêtre sera la même que la taille actuelle
 
         cls.framerate = framerate
         cls.real_framerate = cls.framerate
 
-        cls.clock = pygame.time.Clock()
-
-        PATH = "data/icon.png"
+        ICON_PATH = "data/icon.png"
 
         try:
-            f = open(PATH, 'r')
+            f = open(ICON_PATH, 'r')
         except FileNotFoundError:
             print("Icône introuvable")
         else:
             f.close()
 
-            icon = pygame.image.load(PATH)
+            icon = pygame.image.load(ICON_PATH)
             pygame.display.set_icon(icon)
+            # On charge l'icône de la fenêtre
 
         cls.resize(cls.size.x, cls.size.y)
-        # Cette opération va aussi créer la fenêtre
+        # Cette opération va créer la fenêtre
 
         if start_fullscreen:
             cls.toggleFullscreen()
@@ -130,7 +146,9 @@ class Display:
         # On actualise la fenêtre
 
     @classmethod
-    def updateTitle(cls):
+    def updateTitle(cls) -> None:
+        """Met à jour le titre de la fenêtre"""
+
         pygame.display.set_caption("Agar.io - " + str(cls.real_framerate) + " fps")
         # On change le titre
 
@@ -162,14 +180,12 @@ class Display:
             cls.window = pygame.display.set_mode((w, h), pygame.FULLSCREEN)
         else:
             cls.window = pygame.display.set_mode((w, h), pygame.RESIZABLE)
-            cls.windowed_size.x = w
-            cls.windowed_size.y = h
+            cls.windowed_size = Vect2d(w, h)
 
-        cls.size.x = w
-        cls.size.y = h
+        cls.size = Vect2d(w, h)
 
-        for f in cls.exec_when_resized:
-            f(w, h)
+        for func in cls.exec_when_resized:
+            func(w, h)
 
     @classmethod
     def execWhenResized(cls, f: 'function') -> None:
@@ -199,7 +215,7 @@ class Display:
         cls.updateTitle()
 
         del cls.frametimes[0]
-        cls.frametimes.append(time.time() - cls.frametime)
+        cls.frametimes.append(time.time() - cls.last_frametime)
 
         frametime = sum(cls.frametimes)/len(cls.frametimes)
 
@@ -208,7 +224,8 @@ class Display:
         else:
             cls.real_framerate = round(1/frametime)
 
-        cls.frametime = time.time()
+        cls.last_frametime = time.time()
+        # On met à jour les frametimes
 
         cls.clock.tick(cls.framerate)
         # Pour actualiser la fenêtre après un certain temps

@@ -88,6 +88,7 @@ class Map:
         cls.grille = [[[] for y in range(cls.grille_size.y)] for x in range(cls.grille_size.x)]
 
         cls.player_id = cls.generateId()
+        cls.focused_creature_id = cls.player_id
 
         cls.creatures = {}
         cls.creatures[cls.player_id] = [Player(Vect2d(cls.size.x/2, cls.size.y/2),
@@ -161,8 +162,9 @@ class Map:
         if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
             cls.createEnemy()
 
-        for player in cls.creatures[cls.player_id]:
-            player.update(cls.size)
+        if cls.isPlayerAlive():
+            for player in cls.creatures[cls.player_id]:
+                player.update(cls.size)
 
         creatures_info = []
 
@@ -189,26 +191,34 @@ class Map:
 
         cls.detectEnemyHitbox()
 
-        for k in list(cls.creatures.keys()):
+        focused_killer_id = None
+
+        for k in cls.creatures.keys():
             for i in range(len(cls.creatures[k])-1, -1, -1):
                 if not cls.creatures[k][i].is_alive:
+                    if k == cls.focused_creature_id:
+                        focused_killer_id = cls.creatures[k][i].killer_id
+
                     del cls.creatures[k][i]
 
+        for k in list(cls.creatures.keys()):
             if len(cls.creatures[k]) == 0:
+                if k == cls.focused_creature_id:
+                    cls.focused_creature_id = focused_killer_id
+
                 del cls.creatures[k]
 
         for i in range(cls.NB_CELL_PER_SECOND):
             cls.createNewCell()
 
     @classmethod
-    def getPlayerPos(cls):
+    def getFocusedPos(cls):
         pos = Vect2d(0, 0)
 
-        if cls.isPlayerAlive():
-            for player in cls.creatures[cls.player_id]:
-                pos += player.pos
+        for player in cls.creatures[cls.focused_creature_id]:
+            pos += player.pos
 
-            pos /= len(cls.creatures[cls.player_id])
+        pos /= len(cls.creatures[cls.focused_creature_id])
 
         return pos
 
@@ -237,10 +247,7 @@ class Map:
                                 if dist <= max(enemy_1.radius, enemy_2.radius):
                                     if Creature.canEat(enemy_1.score, enemy_2.score):
                                         enemy_1.kill(enemy_2.score)
-                                        enemy_2.killed()
-                                    elif Creature.canEat(enemy_2.score, enemy_1.score):
-                                        enemy_2.kill(enemy_1.score)
-                                        enemy_1.killed()
+                                        enemy_2.killed(k1)
 
     @classmethod
     def getCellPosMap(cls):

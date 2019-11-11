@@ -108,6 +108,9 @@ class Skins:
     def imgToCircle(cls, img: pygame.Surface):
         """Méthode transformant l'image de base afin de la rendre ronde
         et d'ajouter la transparence
+
+        Args:
+            img (pygame.Surface): image carrée à transformer en cercle
         """
 
         width = img.get_width()

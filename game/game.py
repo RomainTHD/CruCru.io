@@ -54,7 +54,7 @@ class Game:
 
             Menu.state = GameState.MENU
 
-            if cls.state == GameState.MENU or cls.state == GameState.END:
+            if cls.state == GameState.MENU:
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if Menu.can_play:
@@ -68,12 +68,30 @@ class Game:
                 if Menu.can_play:
                     Display.setCursorArrow()
 
+            elif cls.state == GameState.END:
+                Menu.update(mouse_pos, mouse_pressed)
+
+                Map.update()
+                Camera.setPos(Map.getFocusedPos())
+
+                if Menu.can_play:
+                    cls.state = GameState.GAME
+
+                if Menu.can_quit:
+                    cls.finished = True
+
+                Map.display()
+                Menu.display()
+
+                if Menu.can_play:
+                    Display.setCursorArrow()
+
             elif cls.state == GameState.GAME:
                 Map.setMousePos(mouse_pos)
                 Map.update()
                 Map.display()
 
-                Camera.setPos(Map.getPlayerPos())
+                Camera.setPos(Map.getFocusedPos())
 
                 if not Map.isPlayerAlive():
                     cls.state = GameState.END
@@ -126,8 +144,3 @@ class Game:
 
                 if event.key == pygame.K_SPACE:
                     Map.splitPlayer()
-
-                if event.key == pygame.K_RETURN:
-                    Map.creatures[Map.player_id][0].is_alive = False
-
-                    #!

@@ -19,6 +19,9 @@
 ### BUGS :
 * F11 fin de jeu
 * Ennemis qui se chevauchent parfois
+* Ennemis qui tapent les bords
+* Rotation dans le sens des aiguilles d'une montre
+* Si target dans coin alors hunter l'aura jamais et va bug dessus
 
 gota.io
 
