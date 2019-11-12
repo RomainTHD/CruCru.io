@@ -7,6 +7,8 @@ if __name__ == "__main__":
 from util.vector import Vect2d
 from util.color import Color
 
+from game.map import Map
+
 from view.display import Display
 
 class Button:
@@ -131,6 +133,8 @@ def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
     Display.drawRect(Vect2d(0, 0), Display.size, (0, 0, 0, button.alpha))
 
     if button.alpha < 127:
+        button.alpha += 1
+    elif button.alpha < 255 and Map.game_finished:
         button.alpha += 1
 
     Display.drawText(button.text,

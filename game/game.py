@@ -71,8 +71,9 @@ class Game:
             elif cls.state == GameState.END:
                 Menu.update(mouse_pos, mouse_pressed)
 
-                Map.update()
-                Camera.setPos(Map.getFocusedPos())
+                if not Map.game_finished:
+                    Map.update()
+                    Camera.setPos(Map.getFocusedPos())
 
                 if Menu.can_play:
                     cls.state = GameState.GAME

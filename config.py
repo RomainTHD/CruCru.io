@@ -4,10 +4,10 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 # Largeur et hauteur de la fenêtre
 
-FRAMERATE = 144
+FRAMERATE = 60
 # Images par seconde
 
-MAP_WIDTH = 2000
+MAP_WIDTH = 500
 MAP_HEIGHT = 2000
 # Largeur et hauteur de la map
 

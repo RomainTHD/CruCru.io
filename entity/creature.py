@@ -71,13 +71,13 @@ class Creature(ABC):
 
         self.img = Skins.getRandomSkin()
 
-    def getMapPos(self, size: Vect2d, grille_size: Vect2d):
+    def getMapPos(self, size: Vect2d, grid_size: Vect2d):
         """
 
         """
 
-        pos_x = int(self.pos.x/size.x * grille_size.x)
-        pos_y = int(self.pos.y/size.y * grille_size.y)
+        pos_x = int(self.pos.x/size.x * grid_size.x)
+        pos_y = int(self.pos.y/size.y * grid_size.y)
 
         return Vect2d(pos_x, pos_y)
 
@@ -108,9 +108,9 @@ class Creature(ABC):
             txt = self.name
 
         Display.drawText(text=txt,
-                         size=self.radius/2,
+                         size=self.radius*0.75,
                          color=self.opposite_color,
-                         pos=self.pos - Vect2d(0, self.radius/10),
+                         pos=self.pos,
                          base_pos=Camera.pos)
 
     def applyNewDirection(self, direction, size):

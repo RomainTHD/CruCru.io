@@ -30,11 +30,12 @@ class Map:
         ref_time
         MAX_CELLS
         NB_CELL_PER_SECOND
-        grille_size
-        grille
+        grid_size
+        grid
         player
         enemies
         ENEMIES_MAX_SIZE
+        game_finished
     """
 
     @classmethod
@@ -52,7 +53,7 @@ class Map:
         cls.NB_CELL_PER_SECOND = config.NB_CELL_PER_SECOND
         cls.DELTA_T_NEW_CELL = config.DELTA_T_NEW_CELL
 
-        cls.grille_size = Vect2d(10, 10)
+        cls.grid_size = Vect2d(10, 10)
 
         cls.CREATURES_MAX_SIZE = config.MAX_CREATURES
 
@@ -79,13 +80,15 @@ class Map:
 
     @classmethod
     def reset(cls):
+        cls.game_finished = False
+
         cls.ref_time = -1*cls.DELTA_T_NEW_CELL
 
         cls.all_cells = []
 
         cls.ref_time = -1*cls.DELTA_T_NEW_CELL
 
-        cls.grille = [[[] for y in range(cls.grille_size.y)] for x in range(cls.grille_size.x)]
+        cls.grid = [[[] for y in range(cls.grid_size.y)] for x in range(cls.grid_size.x)]
 
         cls.player_id = cls.generateId()
         cls.focused_creature_id = cls.player_id
@@ -171,6 +174,17 @@ class Map:
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
 
+            creature_total_diameter = 0
+
+            for creature in creatures_list:
+                creature_total_diameter += creature.radius*2
+
+            if creature_total_diameter >= min(cls.size.toTuple()):
+                cls.game_finished = True
+
+        for k in cls.creatures.keys():
+            creatures_list = cls.creatures[k]
+
             for creature in creatures_list:
                 creatures_info.append((creature.pos.copy(), creature.radius, creature.score))
 
@@ -251,13 +265,13 @@ class Map:
 
     @classmethod
     def getCellPosMap(cls):
-        res = [[None for i in range(cls.grille_size.y)] for j in range(cls.grille_size.x)]
+        res = [[None for i in range(cls.grid_size.y)] for j in range(cls.grid_size.x)]
 
-        for x in range(cls.grille_size.x):
-            for y in range(cls.grille_size.y):
+        for x in range(cls.grid_size.x):
+            for y in range(cls.grid_size.y):
                 content = []
 
-                for cell in cls.grille[x][y]:
+                for cell in cls.grid[x][y]:
                     content.append(cell.pos.copy())
 
                 res[x][y] = tuple(content)
@@ -281,12 +295,12 @@ class Map:
                     if Vect2d.dist(enemy.pos, cell.pos) < cell.radius + enemy.radius:
                         ok = False
 
-            x = int(cell.pos.x / cls.size.x * cls.grille_size.x)
-            y = int(cell.pos.y / cls.size.y * cls.grille_size.y)
+            x = int(cell.pos.x / cls.size.x * cls.grid_size.x)
+            y = int(cell.pos.y / cls.size.y * cls.grid_size.y)
 
             if ok:
                 cls.all_cells.append(cell)
-                cls.grille[x][y].append(cell)
+                cls.grid[x][y].append(cell)
 
             if len(cls.all_cells) >= cls.MAX_CELLS:
                 cls.deleteCell(0)
@@ -297,21 +311,21 @@ class Map:
         h = cls.size.y
 
         if config.DEBUG:
-            for x in range(cls.grille_size.x):
-                for y in range(cls.grille_size.y):
-                    Display.drawText(len(cls.grille[x][y]),
-                                     Vect2d((x+0.5)*cls.size.x/cls.grille_size.x, (y+0.5)*cls.size.y/cls.grille_size.y),
+            for x in range(cls.grid_size.x):
+                for y in range(cls.grid_size.y):
+                    Display.drawText(len(cls.grid[x][y]),
+                                     Vect2d((x+0.5)*cls.size.x/cls.grid_size.x, (y+0.5)*cls.size.y/cls.grid_size.y),
                                      base_pos=Camera.pos)
 
-        for x in range(1, cls.grille_size.x):
-            Display.drawLine(Vect2d(x*w/cls.grille_size.x, 0),
-                             Vect2d(x*w/cls.grille_size.x, h),
+        for x in range(1, cls.grid_size.x):
+            Display.drawLine(Vect2d(x*w/cls.grid_size.x, 0),
+                             Vect2d(x*w/cls.grid_size.x, h),
                              color=Color.DARK_GRAY,
                              base_pos=Camera.pos)
 
-        for y in range(1, cls.grille_size.y):
-            Display.drawLine(Vect2d(0, y*h/cls.grille_size.y),
-                             Vect2d(w, y*h/cls.grille_size.y),
+        for y in range(1, cls.grid_size.y):
+            Display.drawLine(Vect2d(0, y*h/cls.grid_size.y),
+                             Vect2d(w, y*h/cls.grid_size.y),
                              color=Color.DARK_GRAY,
                              base_pos=Camera.pos)
 
@@ -368,11 +382,11 @@ class Map:
     def deleteCell(cls, index:int):
         cell = cls.all_cells[index]
 
-        x = int(cell.pos.x/cls.size.x * cls.grille_size.x)
-        y = int(cell.pos.y/cls.size.y * cls.grille_size.y)
+        x = int(cell.pos.x/cls.size.x * cls.grid_size.x)
+        y = int(cell.pos.y/cls.size.y * cls.grid_size.y)
 
-        for i in range(len(cls.grille[x][y])-1, -1, -1):
-            if cell == cls.grille[x][y][i]:
-                del cls.grille[x][y][i]
+        for i in range(len(cls.grid[x][y])-1, -1, -1):
+            if cell == cls.grid[x][y][i]:
+                del cls.grid[x][y][i]
 
         del cls.all_cells[index]

@@ -261,13 +261,14 @@ class Display:
 
         radius = int(radius*cls.zoom_factor)
 
-        if fill:
-            pygame.gfxdraw.filled_circle(cls.window, pos.x, pos.y, radius, color)
-            # Dessine un cercle plein
+        if pos.x in range(-radius, cls.size.x+radius) and pos.y in range(-radius, cls.size.y+radius):
+            if fill:
+                pygame.gfxdraw.filled_circle(cls.window, pos.x, pos.y, radius, color)
+                # Dessine un cercle plein
 
-        pygame.gfxdraw.aacircle(cls.window, pos.x, pos.y, radius, color)
-        # Dessine un cercle vide étant soumis à l'anti-aliasing (anticrénelage), ayant un rendu plus
-        # lisse qu'un cercle normal
+            pygame.gfxdraw.aacircle(cls.window, pos.x, pos.y, radius, color)
+            # Dessine un cercle vide étant soumis à l'anti-aliasing (anticrénelage), ayant un rendu plus
+            # lisse qu'un cercle normal
 
     @classmethod
     def drawRect(cls, pos: Vect2d, size: Vect2d, color: Color, base_pos: Vect2d = Vect2d(0, 0), fill: bool = True) -> None:
@@ -322,12 +323,15 @@ class Display:
 
         pos = pos.toIntValues()
 
-        font_family = "comicsansms"
-
         if base_pos.length() != 0:
             size *= cls.zoom_factor
 
-        font_size = int(size)
+        font_size = round(size)
+
+        if not (pos.x in range(-font_size*len(text), cls.size.x+font_size*len(text)) and pos.y in range(-font_size, cls.size.y+font_size)):
+            return
+
+        font_family = "comicsansms"
 
         if cls.all_font.get(font_family, None) is None:
             # Si la police n'existe pas encore

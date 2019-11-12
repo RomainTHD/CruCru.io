@@ -45,13 +45,13 @@ class Enemy(Creature):
 
         score = 0
 
-        grille_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
+        grid_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
 
-        map_pos = self.getMapPos(map_size, grille_size)
+        map_pos = self.getMapPos(map_size, grid_size)
 
         for x in range(map_pos.x-radius, map_pos.x+radius+1):
             for y in range(map_pos.y-radius, map_pos.y+radius+1):
-                if x in range(grille_size.x) and y in range(grille_size.y):
+                if x in range(grid_size.x) and y in range(grid_size.y):
                     taille = len(self.map_cell[x][y])
 
                     if taille == maxi:
@@ -125,9 +125,9 @@ class Enemy(Creature):
         return speed_target, coeff_target, speed_hunter, coeff_hunter
 
     def update(self, map_size):
-        grille_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
+        grid_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
 
-        max_radius = grille_size.x
+        max_radius = grid_size.x
         radius = 1
         speed_cell = None
         cell_score = 0
