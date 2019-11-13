@@ -164,7 +164,7 @@ class Enemy(Creature):
         print(self.speed)
         """
 
-        self.speed = self.speed * 0.98
+        self.speed *= 0.98
 
         self.speed += speed_cell*(1-coeff_target)*(1-coeff_hunter)
         self.speed += speed_target*coeff_target*(1-coeff_hunter)
@@ -182,6 +182,6 @@ class Enemy(Creature):
         self.speed.y += 0.1 * coeff_bords[3] * self.speed.x
         self.speed.x -= 0.1 * coeff_bords[3] * abs(self.speed.x) + 1
 
-        direction = self.speed.normalize()
+        self.direction = self.speed.normalize()
 
-        self.applyNewDirection(direction, map_size)
+        self.applySpeed(map_size)

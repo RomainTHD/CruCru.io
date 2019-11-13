@@ -71,6 +71,9 @@ class Creature(ABC):
 
         self.img = Skins.getRandomSkin()
 
+        self.speed = Vect2d(0, 0)
+        self.direction = Vect2d(0, 0)
+
     def getMapPos(self, size: Vect2d, grid_size: Vect2d):
         """
 
@@ -113,16 +116,14 @@ class Creature(ABC):
                          pos=self.pos,
                          base_pos=Camera.pos)
 
-    def applyNewDirection(self, direction, size):
-        dist_per_sec = 500
-
-        direction = direction*self.SPEED_COEFF/Display.real_framerate
+    def applySpeed(self, size):
+        self.direction = self.direction*self.SPEED_COEFF/Display.real_framerate
 
         area = 2*math.pi*self.radius**2
 
-        direction *= area**(-self.SPEED_SIZE_POWER)
+        self.direction *= area**(-self.SPEED_SIZE_POWER)
 
-        new_pos = self.pos + direction
+        new_pos = self.pos + self.direction
 
         if new_pos.x > self.radius and new_pos.x < size.x-self.radius:
             self.pos.x = new_pos.x

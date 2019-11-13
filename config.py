@@ -7,7 +7,7 @@ WINDOW_HEIGHT = 600
 FRAMERATE = 60
 # Images par seconde
 
-MAP_WIDTH = 500
+MAP_WIDTH = 2000
 MAP_HEIGHT = 2000
 # Largeur et hauteur de la map
 
