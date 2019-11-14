@@ -145,3 +145,12 @@ class Game:
 
                 if event.key == pygame.K_SPACE:
                     Map.splitPlayer()
+
+                if event.key == pygame.K_RETURN:
+                    for k in Map.creatures.keys():
+                        if k != Map.player_id:
+                            for enemy in Map.creatures[k]:
+                                enemy.score += 10
+
+                    # for player in Map.creatures[Map.player_id]:
+                    #    player.score += 10

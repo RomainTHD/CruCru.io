@@ -22,8 +22,8 @@ class Enemy(Creature):
         speed (Vect2d)
     """
 
-    def __init__(self, pos, name, color, id) -> None:
-        super().__init__(pos, name, color, id)
+    def __init__(self, pos, name, color, creature_id) -> None:
+        super().__init__(pos, name, color, creature_id)
 
         self.map_cell = None
         self.creatures_info = None
@@ -125,6 +125,7 @@ class Enemy(Creature):
         return speed_target, coeff_target, speed_hunter, coeff_hunter
 
     def update(self, map_size):
+        print(self.speed)
         grid_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
 
         max_radius = grid_size.x
@@ -164,11 +165,19 @@ class Enemy(Creature):
         print(self.speed)
         """
 
+        speed_family = Vect2d(0, 0)
+
+        for creature in self.family:
+            speed_family += creature.pos - self.pos
+
         self.speed *= 0.98
 
-        self.speed += speed_cell*(1-coeff_target)*(1-coeff_hunter)
-        self.speed += speed_target*coeff_target*(1-coeff_hunter)
-        self.speed -= speed_hunter*(1-coeff_target)*coeff_hunter
+        self.speed += (speed_cell*(1-coeff_target)*(1-coeff_hunter)).normalize()
+        self.speed += (speed_target*coeff_target*(1-coeff_hunter)).normalize()
+        self.speed -= (speed_hunter*(1-coeff_target)*coeff_hunter).normalize()
+
+        if speed_family.lengthSq() > self.radius**2:
+            self.speed += speed_family
 
         self.speed.x -= 0.1 * coeff_bords[0] * self.speed.y
         self.speed.y += 0.1 * coeff_bords[0] * abs(self.speed.y) + 1

@@ -53,6 +53,8 @@ class Creature(ABC):
             name (str): nom de la créature
         """
 
+        self.family = [self]
+
         self.pos = pos.copy()
 
         self.radius = self.BASE_RADIUS
@@ -70,6 +72,8 @@ class Creature(ABC):
         self.is_alive = True
 
         self.img = Skins.getRandomSkin()
+
+        self.split_speed = 0
 
         self.speed = Vect2d(0, 0)
         self.direction = Vect2d(0, 0)
@@ -89,8 +93,12 @@ class Creature(ABC):
         raise NotImplementedError("Cette méthode doit être définie")
 
     @classmethod
-    def canEat(cls, score, other_score):
-        return score > other_score*(1+cls.BASE_PERCENT)
+    def canEat(cls, radius, other_radius):
+        area = 2*math.pi*radius**2
+        other_area = 2*math.pi*other_radius**2
+        BASE_AREA = 2*math.pi*Creature.BASE_RADIUS**2
+
+        return area > other_area + other_area/BASE_AREA
 
     def display(self) -> None:
         """
@@ -117,7 +125,9 @@ class Creature(ABC):
                          base_pos=Camera.pos)
 
     def applySpeed(self, size):
-        self.direction = self.direction*self.SPEED_COEFF/Display.real_framerate
+        self.direction = self.direction*self.SPEED_COEFF*(1+self.split_speed)/Display.real_framerate
+
+        self.split_speed *= 0.98
 
         area = 2*math.pi*self.radius**2
 
@@ -143,7 +153,14 @@ class Creature(ABC):
         while self.pos.y > size.y-self.radius:
             self.pos.y -= 1
 
-        self.radius = round(self.BASE_RADIUS + self.score/2)
+        if self.radiusFormula() > self.radius:
+            self.radius += 1
+
+        if self.radiusFormula() < self.radius:
+            self.radius -= 1
+
+    def radiusFormula(self):
+        return round(self.BASE_RADIUS + self.score/2)
 
     def kill(self, score: int):
         self.score += score
@@ -152,5 +169,12 @@ class Creature(ABC):
         self.is_alive = False
         self.killer_id = killer_id
 
-    def split(self):
-        pass
+    @classmethod
+    def notifyMapNewCreature(cls, parent, is_player=False):
+        raise NotImplementedError("Est supposé être réécrit par Map")
+
+    def split(self, is_player=False):
+        if self.score > Creature.BASE_SCORE*3:
+            self.score //= 2
+
+            Creature.notifyMapNewCreature(self, is_player)

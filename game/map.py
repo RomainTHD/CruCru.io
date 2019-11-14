@@ -47,6 +47,8 @@ class Map:
             height (int): hauteur de la map
         """
 
+        Creature.notifyMapNewCreature = cls.createCreatureFromParent
+
         cls.size = Vect2d(width, height)
 
         cls.MAX_CELLS = config.MAX_CELLS
@@ -106,6 +108,23 @@ class Map:
         return random.randrange(10**64)
 
     @classmethod
+    def createCreatureFromParent(cls, parent: Creature, is_player=False):
+        if is_player:
+            creature = Player(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
+        else:
+            creature = Enemy(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
+
+        creature.family.extend(parent.family)
+        creature.score = parent.score
+        creature.radius = parent.radius
+        creature.img = parent.img
+
+        creature.speed = parent.speed.copy()
+        creature.split_speed = 3
+
+        cls.creatures[parent.creature_id].append(creature)
+
+    @classmethod
     def createEnemy(cls):
         ok = False
         timed_out = False
@@ -162,6 +181,11 @@ class Map:
 
     @classmethod
     def update(cls):
+        print("")
+        for k in cls.creatures.keys():
+            if k != cls.player_id:
+                cls.creatures[k][0].split()
+
         if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
             cls.createEnemy()
 
@@ -259,7 +283,7 @@ class Map:
                                 dist = Vect2d.dist(enemy_1.pos, enemy_2.pos)
 
                                 if dist <= max(enemy_1.radius, enemy_2.radius):
-                                    if Creature.canEat(enemy_1.score, enemy_2.score):
+                                    if Creature.canEat(enemy_1.radius, enemy_2.radius):
                                         enemy_1.kill(enemy_2.score)
                                         enemy_2.killed(k1)
 
@@ -353,13 +377,11 @@ class Map:
             cls.all_cells[i].display()
 
     @classmethod
-    def splitCreature(cls, creature):
-        if creature.score > creature.BASE_SCORE*3:
-            creature.split()
-
-    @classmethod
     def splitPlayer(cls):
-        pass
+        player_list = cls.creatures[cls.player_id]
+
+        for player in player_list:
+            player.split(is_player=True)
 
     @classmethod
     def detectCellHitbox(cls, creature:"Creature") -> None:

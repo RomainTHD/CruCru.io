@@ -7,8 +7,8 @@ WINDOW_HEIGHT = 600
 FRAMERATE = 60
 # Images par seconde
 
-MAP_WIDTH = 2000
-MAP_HEIGHT = 2000
+MAP_WIDTH = 1000
+MAP_HEIGHT = 1000
 # Largeur et hauteur de la map
 
 START_FULLSCREEN = False
@@ -17,7 +17,7 @@ START_FULLSCREEN = False
 DEBUG = False
 # Mode de débogage, avec certaines informations supplémentaires affichées
 
-MAX_CREATURES = 10
+MAX_CREATURES = 2
 # Nombre maximal de créatures sur la map
 
 MAX_CELLS = 1000
