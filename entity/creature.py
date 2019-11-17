@@ -55,6 +55,8 @@ class Creature(ABC):
 
         self.family = [self]
 
+        self.invincibility_family_time = 300
+
         self.pos = pos.copy()
 
         self.radius = self.BASE_RADIUS
@@ -75,6 +77,8 @@ class Creature(ABC):
 
         self.split_speed = 0
 
+        self.inertia = 0
+
         self.speed = Vect2d(0, 0)
         self.direction = Vect2d(0, 0)
 
@@ -92,13 +96,12 @@ class Creature(ABC):
     def update(self, size):
         raise NotImplementedError("Cette méthode doit être définie")
 
-    @classmethod
-    def canEat(cls, radius, other_radius):
+    @staticmethod
+    def canEat(radius, other_radius):
         area = 2*math.pi*radius**2
         other_area = 2*math.pi*other_radius**2
-        BASE_AREA = 2*math.pi*Creature.BASE_RADIUS**2
 
-        return area > other_area + other_area/BASE_AREA
+        return area > other_area*(1+Creature.BASE_PERCENT)
 
     def display(self) -> None:
         """
@@ -125,9 +128,13 @@ class Creature(ABC):
                          base_pos=Camera.pos)
 
     def applySpeed(self, size):
+        if self.invincibility_family_time > 0:
+            self.invincibility_family_time -= 1
+
         self.direction = self.direction*self.SPEED_COEFF*(1+self.split_speed)/Display.real_framerate
 
         self.split_speed *= 0.98
+        self.inertia *= 0.99
 
         area = 2*math.pi*self.radius**2
 
@@ -153,11 +160,9 @@ class Creature(ABC):
         while self.pos.y > size.y-self.radius:
             self.pos.y -= 1
 
-        if self.radiusFormula() > self.radius:
-            self.radius += 1
+        r = self.radiusFormula()
 
-        if self.radiusFormula() < self.radius:
-            self.radius -= 1
+        self.radius += (r - self.radius)/10
 
     def radiusFormula(self):
         return round(self.BASE_RADIUS + self.score/2)
@@ -175,6 +180,4 @@ class Creature(ABC):
 
     def split(self, is_player=False):
         if self.score > Creature.BASE_SCORE*3:
-            self.score //= 2
-
             Creature.notifyMapNewCreature(self, is_player)

@@ -125,7 +125,6 @@ class Enemy(Creature):
         return speed_target, coeff_target, speed_hunter, coeff_hunter
 
     def update(self, map_size):
-        print(self.speed)
         grid_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
 
         max_radius = grid_size.x
@@ -168,9 +167,14 @@ class Enemy(Creature):
         speed_family = Vect2d(0, 0)
 
         for creature in self.family:
-            speed_family += creature.pos - self.pos
+            dist = Vect2d.dist(creature.pos, self.pos)
 
-        self.speed *= 0.98
+            if dist > min(self.radius, creature.radius)/2:
+                coeff = dist - min(self.radius, creature.radius)/2
+                coeff /= 300
+                speed_family += (creature.pos - self.pos)*coeff
+
+        self.speed *= 0.98 + self.inertia
 
         self.speed += (speed_cell*(1-coeff_target)*(1-coeff_hunter)).normalize()
         self.speed += (speed_target*coeff_target*(1-coeff_hunter)).normalize()

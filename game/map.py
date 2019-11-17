@@ -54,6 +54,7 @@ class Map:
         cls.MAX_CELLS = config.MAX_CELLS
         cls.NB_CELL_PER_SECOND = config.NB_CELL_PER_SECOND
         cls.DELTA_T_NEW_CELL = config.DELTA_T_NEW_CELL
+        cls.MAX_SPLIT = config.MAX_SPLIT
 
         cls.grid_size = Vect2d(10, 10)
 
@@ -109,20 +110,24 @@ class Map:
 
     @classmethod
     def createCreatureFromParent(cls, parent: Creature, is_player=False):
-        if is_player:
-            creature = Player(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
-        else:
-            creature = Enemy(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
+        if len(cls.creatures[parent.creature_id]) < cls.MAX_SPLIT:
+            parent.score //= 2
+            parent.inertia = 0.25
 
-        creature.family.extend(parent.family)
-        creature.score = parent.score
-        creature.radius = parent.radius
-        creature.img = parent.img
+            if is_player:
+                creature = Player(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
+            else:
+                creature = Enemy(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
 
-        creature.speed = parent.speed.copy()
-        creature.split_speed = 3
+            creature.family.extend(parent.family)
+            creature.score = parent.score
+            creature.radius = parent.radius
+            creature.img = parent.img
 
-        cls.creatures[parent.creature_id].append(creature)
+            creature.speed = parent.speed.copy()
+            creature.split_speed = 2
+
+            cls.creatures[parent.creature_id].append(creature)
 
     @classmethod
     def createEnemy(cls):
@@ -178,10 +183,10 @@ class Map:
     def setMousePos(cls, mouse_pos: Vect2d):
         for player in cls.creatures[cls.player_id]:
             player.mouse_pos = mouse_pos - Vect2d(Display.size.x/2, Display.size.y/2)
+            player.mouse_pos += Camera.pos - player.pos + Vect2d(Display.size.x/2, Display.size.y/2)
 
     @classmethod
     def update(cls):
-        print("")
         for k in cls.creatures.keys():
             if k != cls.player_id:
                 cls.creatures[k][0].split()
@@ -273,12 +278,14 @@ class Map:
     def detectEnemyHitbox(cls):
         for k1 in cls.creatures.keys():
             for k2 in cls.creatures.keys():
-                if k1 != k2:
-                    enemy_list_1 = cls.creatures[k1]
-                    enemy_list_2 = cls.creatures[k2]
+                enemy_list_1 = cls.creatures[k1]
+                enemy_list_2 = cls.creatures[k2]
 
-                    for enemy_1 in enemy_list_1:
-                        for enemy_2 in enemy_list_2:
+                for enemy_1 in enemy_list_1:
+                    for enemy_2 in enemy_list_2:
+                        if k1 == k2 and (enemy_1.invincibility_family_time > 0 or enemy_2.invincibility_family_time > 0):
+                            break
+                        else:
                             if enemy_1.is_alive and enemy_2.is_alive:
                                 dist = Vect2d.dist(enemy_1.pos, enemy_2.pos)
 
@@ -371,6 +378,13 @@ class Map:
             for player in cls.creatures[cls.player_id]:
                 player.display()
 
+        x = Display.size.x/2
+        y = Display.size.y/2
+        r = min(x, y)/50
+
+        Display.drawLine(Vect2d(x-r, y-r), Vect2d(x+r, y+r), color=Color.RED)
+        Display.drawLine(Vect2d(x-r, y+r), Vect2d(x+r, y-r), color=Color.RED)
+
     @classmethod
     def displayCell(cls) -> None:
         for i in range(len(cls.all_cells)):
@@ -379,8 +393,12 @@ class Map:
     @classmethod
     def splitPlayer(cls):
         player_list = cls.creatures[cls.player_id]
+        player_list_tmp = []
 
         for player in player_list:
+            player_list_tmp.append(player)
+
+        for player in player_list_tmp:
             player.split(is_player=True)
 
     @classmethod

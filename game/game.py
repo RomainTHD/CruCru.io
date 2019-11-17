@@ -152,5 +152,6 @@ class Game:
                             for enemy in Map.creatures[k]:
                                 enemy.score += 10
 
+                    #!
                     # for player in Map.creatures[Map.player_id]:
                     #    player.score += 10

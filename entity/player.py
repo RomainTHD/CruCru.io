@@ -22,5 +22,7 @@ class Player(Creature):
             coeff_dist_mouse = self.mouse_pos.length()/self.BASE_RADIUS
             coeff_dist_mouse = coeff_dist_mouse**2
 
-        self.direction = self.mouse_pos.normalize()*coeff_dist_mouse
+        self.speed = self.mouse_pos.normalize()*coeff_dist_mouse + self.speed*0.95
+
+        self.direction = self.speed.normalize()*coeff_dist_mouse
         self.applySpeed(size)

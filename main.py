@@ -25,6 +25,7 @@ config.NB_CELL_PER_SECOND
 config.DELTA_T_NEW_CELL
 config.SPEED_COEFF
 config.SPEED_SIZE_POWER
+config.MAX_SPLIT
 # Test que toutes les variables de configuration existent
 
 from game.map import Map

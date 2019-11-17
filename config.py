@@ -34,3 +34,5 @@ SPEED_SIZE_POWER = 0.1
 # > 0 : décélère avec la taille
 # 0 : vitesse constante
 # < 0 : accélère avec la taille
+
+MAX_SPLIT = 5
