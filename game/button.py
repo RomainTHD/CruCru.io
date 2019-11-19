@@ -119,7 +119,9 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
 
     return hand_cursor
 
-def buttonEnd_Init(button: Button, first_try: bool) -> None:
+def buttonWinOrEnd_Init(button: Button, first_try: bool, color: Color) -> None:
+    button.color = color
+
     if first_try:
         button.alpha = 0
 
@@ -139,7 +141,7 @@ def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
 
     Display.drawText(button.text,
                      button.pos + button.size/2,
-                     color=Color.RED,
+                     color=button.color,
                      size=font_size)
 
 def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
@@ -155,12 +157,12 @@ def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
         f = True
     else:
         hand_cursor = False
-        c = Color.RED
+        c = button.color
         f = False
 
     Display.drawRect(button.pos,
                      button.size,
-                     color=Color.RED,
+                     color=button.color,
                      fill=f)
 
     Display.drawText(button.text,
@@ -169,3 +171,35 @@ def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
                      size=font_size)
 
     return hand_cursor
+
+def buttonWin_Display(button: Button, mouse_pos: Vect2d, ) -> None:
+    """Affichage du texte de fin"""
+
+    min_size = max(button.size.x, button.size.y)
+
+    font_size = min_size*50/400
+
+    Display.drawRect(Vect2d(0, 0), Display.size, (0, 0, 0, button.alpha))
+
+    if button.alpha < 127:
+        button.alpha += 1
+    elif button.alpha < 255 and Map.game_finished:
+        button.alpha += 1
+
+    score = Map.player_infos.get("score", 0)
+    tps = Map.player_infos.get("time", 0)
+
+    Display.drawText(button.text,
+                     button.pos + button.size/2,
+                     color=button.color,
+                     size=font_size)
+
+    Display.drawText("Score : " + str(score),
+                     button.pos + button.size/2 + Vect2d(0, button.size.y),
+                     color=button.color,
+                     size=font_size)
+
+    Display.drawText("Temps : " + str(tps) + " secondes",
+                     button.pos + button.size/2 + Vect2d(0, button.size.y*2),
+                     color=button.color,
+                     size=font_size)

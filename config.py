@@ -7,8 +7,8 @@ WINDOW_HEIGHT = 600
 FRAMERATE = 60
 # Images par seconde
 
-MAP_WIDTH = 1000
-MAP_HEIGHT = 1000
+MAP_WIDTH = 500
+MAP_HEIGHT = 500
 # Largeur et hauteur de la map
 
 START_FULLSCREEN = False
@@ -36,3 +36,5 @@ SPEED_SIZE_POWER = 0.1
 # < 0 : accélère avec la taille
 
 MAX_SPLIT = 5
+
+RADIUS_POWER_SCORE = 0.65

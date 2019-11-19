@@ -44,6 +44,7 @@ class Creature(ABC):
     BASE_SCORE = 10
     SPEED_COEFF = config.SPEED_COEFF
     SPEED_SIZE_POWER = config.SPEED_SIZE_POWER
+    RADIUS_POWER_SCORE = config.RADIUS_POWER_SCORE
 
     def __init__(self, pos: Vect2d, name: str, color: Color, creature_id: int):
         """Constructeur
@@ -165,7 +166,7 @@ class Creature(ABC):
         self.radius += (r - self.radius)/10
 
     def radiusFormula(self):
-        return round(self.BASE_RADIUS + self.score/2)
+        return round(self.BASE_RADIUS + self.score**self.RADIUS_POWER_SCORE)
 
     def kill(self, score: int):
         self.score += score

@@ -86,7 +86,19 @@ class Game:
 
                 if Menu.can_play:
                     Display.setCursorArrow()
+            elif cls.state == GameState.WIN:
+                Menu.update(mouse_pos, mouse_pressed)
 
+                if Menu.can_play:
+                    cls.state = GameState.GAME
+
+                if Menu.can_quit:
+                    cls.finished = True
+
+                Menu.display()
+
+                if Menu.can_play:
+                    Display.setCursorArrow()
             elif cls.state == GameState.GAME:
                 Map.setMousePos(mouse_pos)
                 Map.update()
@@ -94,7 +106,11 @@ class Game:
 
                 Camera.setPos(Map.getFocusedPos())
 
-                if not Map.isPlayerAlive():
+                if Map.isPlayerAlive():
+                    if Map.game_finished:
+                        cls.state = GameState.WIN
+                        Menu.applyState(GameState.WIN)
+                else:
                     cls.state = GameState.END
                     Menu.applyState(GameState.END)
             else:
@@ -115,6 +131,12 @@ class Game:
         """Méthode permettant de traiter les entrées clavier"""
 
         keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RETURN]:
+            for k in Map.creatures.keys():
+                if k == Map.player_id:
+                    for enemy in Map.creatures[k]:
+                        enemy.score += 100
 
         if keys[pygame.K_ESCAPE]:
             # Si la touche ESC est pressée
@@ -145,13 +167,3 @@ class Game:
 
                 if event.key == pygame.K_SPACE:
                     Map.splitPlayer()
-
-                if event.key == pygame.K_RETURN:
-                    for k in Map.creatures.keys():
-                        if k != Map.player_id:
-                            for enemy in Map.creatures[k]:
-                                enemy.score += 10
-
-                    #!
-                    # for player in Map.creatures[Map.player_id]:
-                    #    player.score += 10

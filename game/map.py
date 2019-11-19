@@ -83,7 +83,11 @@ class Map:
 
     @classmethod
     def reset(cls):
+        cls.start_time = time.time()
+
         cls.game_finished = False
+
+        cls.player_infos = {}
 
         cls.ref_time = -1*cls.DELTA_T_NEW_CELL
 
@@ -203,13 +207,18 @@ class Map:
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
 
-            creature_total_diameter = 0
+            if k == cls.player_id:
+                score_player = 0
+
+                for creature in creatures_list:
+                    score_player += creature.score
+
+                cls.player_infos["score"] = score_player
+                cls.player_infos["time"] = int(1000*(time.time() - cls.start_time))/1000
 
             for creature in creatures_list:
-                creature_total_diameter += creature.radius*2
-
-            if creature_total_diameter >= min(cls.size.toTuple()):
-                cls.game_finished = True
+                if creature.radius*2 >= min(cls.size.toTuple()):
+                    cls.game_finished = True
 
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]

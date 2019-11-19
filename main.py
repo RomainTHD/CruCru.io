@@ -26,6 +26,7 @@ config.DELTA_T_NEW_CELL
 config.SPEED_COEFF
 config.SPEED_SIZE_POWER
 config.MAX_SPLIT
+config.RADIUS_POWER_SCORE
 # Test que toutes les variables de configuration existent
 
 from game.map import Map
