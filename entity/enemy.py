@@ -6,6 +6,7 @@ if __name__ == "__main__":
 
 import math
 import random
+import time
 
 from util.vector import Vect2d
 
@@ -86,6 +87,10 @@ class Enemy(Creature):
         speed_target = None
         speed_hunter = None
 
+        can_split = False
+
+        score_target = None
+
         for enemy_pos, enemy_radius, enemy_score in self.creatures_info:
             dist = Vect2d.dist(self.pos, enemy_pos) - self.radius - enemy_radius
 
@@ -93,10 +98,17 @@ class Enemy(Creature):
                 if dist < dist_hunter:
                     speed_hunter = enemy_pos - self.pos
                     dist_hunter = dist
+
             elif Creature.canEat(self.score, enemy_score):
                 if dist < dist_target:
                     speed_target = enemy_pos - self.pos
                     dist_target = dist
+                    score_target = enemy_score
+
+        if score_target is not None:
+            if score_target < self.score//2:
+                if dist_target > self.radius and dist_target < self.radius*2:
+                    can_split = True
 
         if speed_hunter is None:
             speed_hunter = Vect2d(0, 0)
@@ -122,7 +134,7 @@ class Enemy(Creature):
         elif coeff_hunter >= 1:
             coeff_hunter = 1
 
-        return speed_target, coeff_target, speed_hunter, coeff_hunter
+        return speed_target, coeff_target, speed_hunter, coeff_hunter, can_split
 
     def update(self, map_size):
         grid_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
@@ -131,6 +143,7 @@ class Enemy(Creature):
         radius = 1
         speed_cell = None
         cell_score = 0
+        can_split = False
 
         while speed_cell is None and radius < max_radius:
             speed_cell, cell_score = self.searchCellDest(radius, map_size)
@@ -141,7 +154,7 @@ class Enemy(Creature):
         else:
             speed_cell = speed_cell - self.pos
 
-        speed_target, coeff_target, speed_hunter, coeff_hunter = self.speedEnemies(map_size)
+        speed_target, coeff_target, speed_hunter, coeff_hunter, can_split = self.speedEnemies(map_size)
 
         bords = [Vect2d(self.pos.x, self.radius),
                  Vect2d(self.pos.x, map_size.y-self.radius),
@@ -166,22 +179,40 @@ class Enemy(Creature):
 
         speed_family = Vect2d(0, 0)
 
-        for creature in self.family:
-            dist = Vect2d.dist(creature.pos, self.pos)
+        coeff_family = 0
+        taille = 0
 
-            if dist > min(self.radius, creature.radius)/2:
-                coeff = dist - min(self.radius, creature.radius)/2
-                coeff /= 300
+        for creature in self.family:
+            if self is not creature:
+                taille += 1
+
+                coeff = (time.time() - creature.invincibility_family_time)/self.SPLIT_TIME
+
+                if coeff > 1:
+                    coeff = 1
+
+                coeff = coeff ** 3
+                coeff_family += coeff
                 speed_family += (creature.pos - self.pos)*coeff
 
         self.speed *= 0.98 + self.inertia
 
-        self.speed += (speed_cell*(1-coeff_target)*(1-coeff_hunter)).normalize()
-        self.speed += (speed_target*coeff_target*(1-coeff_hunter)).normalize()
-        self.speed -= (speed_hunter*(1-coeff_target)*coeff_hunter).normalize()
+        if taille != 0:
+            coeff_family /= taille
 
-        if speed_family.lengthSq() > self.radius**2:
-            self.speed += speed_family
+        direction = (speed_cell*(1-coeff_target)*(1-coeff_hunter)*(1-coeff_family)).normalize()\
+                  + (speed_target*coeff_target*(1-coeff_hunter)*(1-coeff_family)).normalize()\
+                  - (speed_hunter*(1-coeff_target)*coeff_hunter*(1-coeff_family)).normalize()\
+                  + (speed_family*coeff_target*(1-coeff_hunter)*coeff_family).normalize()
+
+        if can_split:
+            if self.speed != Vect2d(0, 0) and speed_target != Vect2d(0, 0):
+                angle = Vect2d.angleBetween(self.speed, speed_target)
+
+                if abs(angle) < 10:
+                    self.split()
+
+        self.speed += direction
 
         self.speed.x -= 0.1 * coeff_bords[0] * self.speed.y
         self.speed.y += 0.1 * coeff_bords[0] * abs(self.speed.y) + 1

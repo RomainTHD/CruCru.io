@@ -25,6 +25,7 @@
 * Si target dans coin alors hunter l'aura jamais et va bug dessus
 * Ennemis bizarres
 * Écran de win
+* Size marche mal
 
 gota.io
 

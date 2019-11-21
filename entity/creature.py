@@ -2,6 +2,8 @@
 
 import math
 
+import time
+
 from abc import ABC, abstractmethod
 # Permet de forcer l'implémentation d'une méthode
 
@@ -45,6 +47,7 @@ class Creature(ABC):
     SPEED_COEFF = config.SPEED_COEFF
     SPEED_SIZE_POWER = config.SPEED_SIZE_POWER
     RADIUS_POWER_SCORE = config.RADIUS_POWER_SCORE
+    SPLIT_TIME = config.SPLIT_TIME
 
     def __init__(self, pos: Vect2d, name: str, color: Color, creature_id: int):
         """Constructeur
@@ -56,7 +59,7 @@ class Creature(ABC):
 
         self.family = [self]
 
-        self.invincibility_family_time = 300
+        self.invincibility_family_time = time.time()
 
         self.pos = pos.copy()
 
@@ -129,9 +132,6 @@ class Creature(ABC):
                          base_pos=Camera.pos)
 
     def applySpeed(self, size):
-        if self.invincibility_family_time > 0:
-            self.invincibility_family_time -= 1
-
         self.direction = self.direction*self.SPEED_COEFF*(1+self.split_speed)/Display.real_framerate
 
         self.split_speed *= 0.98

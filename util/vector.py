@@ -2,6 +2,8 @@
 Vecteur à 2 dimensions
 """
 
+import math
+
 class Vect2d:
     """Vecteur à 2 dimensions
 
@@ -478,6 +480,27 @@ class Vect2d:
             length = self.lengthSq()**0.5
 
         return length
+
+    @staticmethod
+    def dotProduct(v1: 'Vect2d', v2: 'Vect2d'):
+        return v1.x*v2.x + v1.y*v2.y
+
+    @staticmethod
+    def angleBetween(v1: 'Vect2d', v2: 'Vect2d'):
+        v1 = v1.copy().normalize()
+        v2 = v2.copy().normalize()
+
+        angle = 0
+
+        angle = Vect2d.dotProduct(v1, v2) / (v1.length()*v2.length())
+
+        if angle > 1:
+            angle = 1
+
+        angle = math.acos(angle)
+        angle = math.degrees(angle)
+
+        return angle
 
 if __name__ == "__main__":
     print("__truediv__")

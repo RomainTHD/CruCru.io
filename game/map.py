@@ -125,8 +125,10 @@ class Map:
                 creature = Enemy(parent.pos.copy(), parent.name, parent.color, parent.creature_id)
 
             creature.family.extend(parent.family)
+            parent.family = creature.family
+
             creature.score = parent.score
-            creature.radius = parent.radius
+            creature.radius = 1
             creature.img = parent.img
 
             creature.speed = parent.speed.copy()
@@ -192,18 +194,12 @@ class Map:
 
     @classmethod
     def update(cls):
-        for k in cls.creatures.keys():
-            if k != cls.player_id:
-                cls.creatures[k][0].split()
-
         if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
             cls.createEnemy()
 
         if cls.isPlayerAlive():
             for player in cls.creatures[cls.player_id]:
                 player.update(cls.size)
-
-        creatures_info = []
 
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
@@ -221,11 +217,15 @@ class Map:
                 if creature.radius*2 >= min(cls.size.toTuple()):
                     cls.game_finished = True
 
+        creatures_info = {}
+
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
 
+            creatures_info[k] = []
+
             for creature in creatures_list:
-                creatures_info.append((creature.pos.copy(), creature.radius, creature.score))
+                creatures_info[k].append((creature.pos.copy(), creature.radius, creature.score))
 
         for k in cls.creatures.keys():
             enemy_list = cls.creatures[k]
@@ -233,7 +233,15 @@ class Map:
             if k != cls.player_id:
                 for enemy in enemy_list:
                     enemy.setMapCell(cls.getCellPosMap())
-                    enemy.setCreaturesInfo(creatures_info)
+
+                    other_creatures_infos = []
+
+                    for k2 in creatures_info.keys():
+                        if k != k2:
+                            for elem in creatures_info[k2]:
+                                other_creatures_infos.append(elem)
+
+                    enemy.setCreaturesInfo(other_creatures_infos)
                     enemy.update(cls.size)
 
         for k in cls.creatures.keys():
@@ -304,16 +312,31 @@ class Map:
 
                 for enemy_1 in enemy_list_1:
                     for enemy_2 in enemy_list_2:
-                        if k1 == k2 and (enemy_1.invincibility_family_time > 0 or enemy_2.invincibility_family_time > 0):
-                            break
-                        else:
-                            if enemy_1.is_alive and enemy_2.is_alive:
-                                dist = Vect2d.dist(enemy_1.pos, enemy_2.pos)
+                        if enemy_1 is not enemy_2 and enemy_1.is_alive and enemy_2.is_alive:
+                            dist = Vect2d.dist(enemy_1.pos, enemy_2.pos)
 
-                                if dist <= max(enemy_1.radius, enemy_2.radius):
-                                    if Creature.canEat(enemy_1.radius, enemy_2.radius):
+                            if k1 == k2 :
+                                t1 = time.time() - enemy_1.invincibility_family_time
+                                t2 = time.time() - enemy_2.invincibility_family_time
+
+                                if t1 > Creature.SPLIT_TIME and t2 > Creature.SPLIT_TIME:
+                                    if dist <= max(enemy_1.radius, enemy_2.radius):
                                         enemy_1.kill(enemy_2.score)
                                         enemy_2.killed(k1)
+
+                                        family_tmp = []
+
+                                        for creature in enemy_1.family:
+                                            if creature is not enemy_2:
+                                                family_tmp.append(creature)
+
+                                        enemy_1.family = family_tmp
+                            else:
+                                if Creature.canEat(enemy_1.radius, enemy_2.radius):
+                                    if dist <= max(enemy_1.radius, enemy_2.radius):
+                                        enemy_1.kill(enemy_2.score)
+                                        enemy_2.killed(k1)
+
 
     @classmethod
     def getCellPosMap(cls):

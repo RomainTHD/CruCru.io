@@ -7,8 +7,8 @@ WINDOW_HEIGHT = 600
 FRAMERATE = 60
 # Images par seconde
 
-MAP_WIDTH = 500
-MAP_HEIGHT = 500
+MAP_WIDTH = 2000
+MAP_HEIGHT = 2000
 # Largeur et hauteur de la map
 
 START_FULLSCREEN = False
@@ -17,7 +17,7 @@ START_FULLSCREEN = False
 DEBUG = False
 # Mode de débogage, avec certaines informations supplémentaires affichées
 
-MAX_CREATURES = 2
+MAX_CREATURES = 100
 # Nombre maximal de créatures sur la map
 
 MAX_CELLS = 1000
@@ -26,7 +26,7 @@ MAX_CELLS = 1000
 NB_CELL_PER_SECOND = 20
 DELTA_T_NEW_CELL = 0.1
 
-SPEED_COEFF = 500
+SPEED_COEFF = 700
 # Vitesse des créatures
 
 SPEED_SIZE_POWER = 0.1
@@ -35,6 +35,8 @@ SPEED_SIZE_POWER = 0.1
 # 0 : vitesse constante
 # < 0 : accélère avec la taille
 
-MAX_SPLIT = 5
+MAX_SPLIT = 4
 
 RADIUS_POWER_SCORE = 0.65
+
+SPLIT_TIME = 5

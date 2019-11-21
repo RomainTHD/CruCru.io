@@ -27,6 +27,7 @@ config.SPEED_COEFF
 config.SPEED_SIZE_POWER
 config.MAX_SPLIT
 config.RADIUS_POWER_SCORE
+config.SPLIT_TIME
 # Test que toutes les variables de configuration existent
 
 from game.map import Map
