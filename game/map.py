@@ -2,6 +2,7 @@
 
 import time
 import random
+import math
 
 if __name__ == "__main__":
     import sys
@@ -267,12 +268,23 @@ class Map:
     def getFocusedPos(cls):
         pos = Vect2d(0, 0)
 
-        for player in cls.creatures[cls.focused_creature_id]:
-            pos += player.pos
+        for creature in cls.creatures[cls.focused_creature_id]:
+            pos += creature.pos
 
         pos /= len(cls.creatures[cls.focused_creature_id])
 
         return pos
+
+    @classmethod
+    def getFocusedRadius(cls):
+        radius = 0
+
+        for creature in cls.creatures[cls.focused_creature_id]:
+            radius += creature.radius
+
+        radius /= len(cls.creatures[cls.focused_creature_id])
+
+        return radius
 
     @classmethod
     def isPlayerAlive(cls):
@@ -393,6 +405,13 @@ class Map:
 
         Display.drawLine(Vect2d(x-r, y-r), Vect2d(x+r, y+r), color=Color.RED)
         Display.drawLine(Vect2d(x-r, y+r), Vect2d(x+r, y-r), color=Color.RED)
+
+        Camera.setPos(cls.getFocusedPos())
+
+        r = cls.getFocusedRadius() - Creature.BASE_RADIUS
+        r = r**0.1
+        z = math.exp(-r+1)
+        Display.zoom(z)
 
     @classmethod
     def displayCell(cls) -> None:

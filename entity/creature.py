@@ -40,7 +40,7 @@ class Creature(ABC):
     """
 
     BASE_RADIUS = 20
-    BASE_PERCENT = 25/100
+    BASE_PERCENT = 10/100
     BASE_SCORE = 10
     SPEED_COEFF = config.SPEED_COEFF
     SPEED_SIZE_POWER = config.SPEED_SIZE_POWER
@@ -166,7 +166,7 @@ class Creature(ABC):
         self.radius += (r - self.radius)/10
 
     def radiusFormula(self):
-        return round(self.BASE_RADIUS + self.score**self.RADIUS_POWER_SCORE)
+        return round(self.BASE_RADIUS + 2*self.score**self.RADIUS_POWER_SCORE)
 
     def kill(self, score: int):
         self.score += score

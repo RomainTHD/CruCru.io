@@ -13,7 +13,6 @@ from game.gamestate import GameState
 from util.vector import Vect2d
 
 from view.display import Display
-from view.camera import Camera
 
 class Game:
     """Gestion du jeu
@@ -73,7 +72,6 @@ class Game:
 
                 if not Map.game_finished:
                     Map.update()
-                    Camera.setPos(Map.getFocusedPos())
 
                 if Menu.can_play:
                     cls.state = GameState.GAME
@@ -100,11 +98,9 @@ class Game:
                 if Menu.can_play:
                     Display.setCursorArrow()
             elif cls.state == GameState.GAME:
-                Map.setMousePos(mouse_pos)
+                Map.setMousePos(mouse_pos/Display.zoom_factor)
                 Map.update()
                 Map.display()
-
-                Camera.setPos(Map.getFocusedPos())
 
                 if Map.isPlayerAlive():
                     if Map.game_finished:

@@ -238,7 +238,12 @@ class Display:
 
     @classmethod
     def zoom(cls, zoom_factor: int):
-        cls.zoom_factor = 1
+        if zoom_factor == 0:
+            raise ValueError("Zoom nul")
+        elif zoom_factor < 0:
+            raise ValueError("Zoom négatif")
+
+        cls.zoom_factor += (zoom_factor - cls.zoom_factor)/10
 
     @classmethod
     def drawCircle(cls, pos: Vect2d, color: Color, radius: int, base_pos: Vect2d = Vect2d(0, 0), fill: bool = True) -> None:
