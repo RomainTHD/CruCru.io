@@ -6,6 +6,7 @@
 * Commentaires
 * Réseau
 * Log
+* Monde infini
 
 ### CORRECTIONS :
 * D'abord chercher à vider le carré dans lequel l'ennemi est
