@@ -14,13 +14,18 @@ from view.display import Display
 
 class Menu:
     @classmethod
+    def init(cls):
+        cls.applyState(GameState.MENU)
+        Display.execWhenResized(cls.createButtons)
+    
+    @classmethod
     def applyState(cls, state):
         cls.can_play = False
         cls.state = state
         cls.can_quit = False
 
-        Display.execWhenResized(cls.createButtons)
-
+        print("abcd")
+        
         cls.createButtons(Display.size.x, Display.size.y, first_try=True)
 
     @classmethod
@@ -32,8 +37,10 @@ class Menu:
     @classmethod
     def createButtons(cls, width: int, height: int, first_try: bool = False):
         cls.buttons = []
-
+        
         cls.first_try = first_try
+        
+        print(cls.state)
 
         if cls.state == GameState.MENU:
             cls.applyMenu(width, height)
@@ -119,3 +126,4 @@ class Menu:
             Display.setCursorHand()
         else:
             Display.setCursorArrow()
+

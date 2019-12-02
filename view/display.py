@@ -4,6 +4,8 @@ import os
 
 import time
 
+import math
+
 import pygame
 import pygame.gfxdraw
 
@@ -195,6 +197,8 @@ class Display:
         Args:
             f (function): fonction à exécuter
         """
+        
+        print(f)
 
         cls.exec_when_resized.append(f)
         # On ajoute la fonction
@@ -400,6 +404,26 @@ class Display:
 
         # pygame.draw.line permet d'avoir une largeur de ligne, mais pygame.gfxdraw.line profite de
         # l'accélération matérielle de la SDL
+    
+    @classmethod
+    def drawTriangle(cls, pos: Vect2d, color: Color, radius: int, angle: float, base_pos: Vect2d = Vect2d(0, 0)) -> None:
+        pos = pos.copy()
+
+        if base_pos.length() != 0:
+            pos = (pos - base_pos)*cls.zoom_factor
+
+        pos = pos.toIntValues()
+        
+        nodes = []
+        
+        for i in range(3):
+            local_angle = 2*i*math.pi/3 + angle
+            
+            nodes.append(int(pos.x + math.cos(local_angle)*radius*cls.zoom_factor))
+            nodes.append(int(pos.y + math.sin(local_angle)*radius*cls.zoom_factor))
+            
+        pygame.gfxdraw.filled_trigon(cls.window, *nodes, color)
+        pygame.gfxdraw.aatrigon(cls.window, *nodes, color)
 
     @classmethod
     def drawImg(cls, img: pygame.Surface, pos: Vect2d, base_pos: Vect2d = Vect2d(0, 0), radius: int = None) -> None:
@@ -438,6 +462,11 @@ if __name__ == "__main__":
 
     print("Ligne")
     Display.drawLine(Vect2d(200, 300), Vect2d(400, 500), Color.BLUE)
+
+    Display.drawTriangle(pos=Vect2d(100, 100),
+                         color=Color.RED,
+                         radius=50,
+                         angle=0)
 
     print("Update 1")
     Display.updateFrame()

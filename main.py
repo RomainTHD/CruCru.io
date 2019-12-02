@@ -63,7 +63,7 @@ Display.init(width=config.WINDOW_WIDTH,
              framerate=config.FRAMERATE)
 # Initialisation de la fenêtre
 
-Menu.applyState(GameState.MENU)
+Menu.init()
 # Initialisation du menu
 
 Skins.init()

@@ -130,7 +130,7 @@ class Game:
 
         if keys[pygame.K_RETURN]:
             for k in Map.creatures.keys():
-                if k != Map.player_id:
+                if k == Map.player_id:
                     for enemy in Map.creatures[k]:
                         enemy.score += 100
 
