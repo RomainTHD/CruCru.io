@@ -25,8 +25,8 @@ class Color:
     GRAY = (127, 127, 127)
     LIGHT_GRAY = (191, 191, 191)
     WHITE = (255, 255, 255)
-    
-    BUISSON_COLOR = (0, 255, 0)
+
+    BUSH_COLOR = (0, 255, 0)
 
     TRANSPARENT = (255, 255, 255, 0)
     TO_TRANSPARENT = (99, 28, 11)

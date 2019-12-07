@@ -13,9 +13,9 @@ from view.display import Display
 
 from view.camera import Camera
 
-class Buisson:
+class Bush:
     RADIUS = 50
-    COLOR = Color.BUISSON_COLOR
+    COLOR = Color.BUSH_COLOR
     SPEED = 1/1000
 
     def __init__(self, pos: Vect2d) -> None:
@@ -23,19 +23,19 @@ class Buisson:
 
         self.pos = pos
         self.angle = 0
-    
+
     def update(self):
-        self.angle += Buisson.SPEED
+        self.angle += Bush.SPEED
 
     def display(self) -> None:
         for i in range(8):
             Display.drawTriangle(pos=self.pos,
-                                 color=Buisson.COLOR,
-                                 radius=Buisson.RADIUS*1.1,
+                                 color=Bush.COLOR,
+                                 radius=Bush.RADIUS*1.1,
                                  angle=i*math.pi/4 + self.angle,
                                  base_pos=Camera.pos)
 
         Display.drawCircle(pos=self.pos,
-                           color=Buisson.COLOR,
-                           radius=Buisson.RADIUS,
+                           color=Bush.COLOR,
+                           radius=Bush.RADIUS,
                            base_pos=Camera.pos)

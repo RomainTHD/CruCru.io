@@ -17,7 +17,7 @@ from util.color import Color
 from entity.cell import Cell
 from entity.player import Player
 from entity.enemy import Enemy
-from entity.buisson import Buisson
+from entity.bush import Bush
 from entity.creature import Creature
 
 import config
@@ -110,38 +110,38 @@ class Map:
                                        ]
         # Création du joueur
 
-        cls.buissons = []
-        
+        cls.bushes = []
+
         for i in range(config.NB_BUISSONS):
-            cls.createBuisson()
+            cls.createBush()
 
     @classmethod
     def generateId(cls):
         return random.randrange(10**64)
 
     @classmethod
-    def createBuisson(cls):
+    def createBush(cls):
         ok = False
         timeout = 0
 
         while not ok and timeout < 1000:
             ok = True
 
-            pos = Vect2d(random.randrange(Buisson.RADIUS*2, cls.size.x-Buisson.RADIUS*2),
-                         random.randrange(Buisson.RADIUS*2, cls.size.x-Buisson.RADIUS*2))
+            pos = Vect2d(random.randrange(Bush.RADIUS*2, cls.size.x-Bush.RADIUS*2),
+                         random.randrange(Bush.RADIUS*2, cls.size.x-Bush.RADIUS*2))
 
-            for buisson in cls.buissons:
-                if Vect2d.dist(pos, buisson.pos) < Buisson.RADIUS*4:
+            for bush in cls.bushes:
+                if Vect2d.dist(pos, bush.pos) < Bush.RADIUS*4:
                     ok = False
-            
+
             timeout += 1
-        
+
         if ok:
-            cls.buissons.append(Buisson(pos))
+            cls.bushes.append(Bush(pos))
 
     @classmethod
-    def createCreatureFromParent(cls, parent: Creature, is_player=False):
-        if len(cls.creatures[parent.creature_id]) < cls.MAX_SPLIT:
+    def createCreatureFromParent(cls, parent: Creature, is_player, override_limit):
+        if len(cls.creatures[parent.creature_id]) < cls.MAX_SPLIT or override_limit:
             parent.score //= 2
             parent.inertia = 0.25
 
@@ -222,9 +222,9 @@ class Map:
     def update(cls):
         if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
             cls.createEnemy()
-            
-        for buisson in cls.buissons:
-            buisson.update()
+
+        for bush in cls.bushes:
+            bush.update()
 
         if cls.isPlayerAlive():
             for player in cls.creatures[cls.player_id]:
@@ -245,6 +245,17 @@ class Map:
             for creature in creatures_list:
                 if creature.radius*2 >= min(cls.size.toTuple()):
                     cls.game_finished = True
+
+        for k in cls.creatures.keys():
+            creatures_list = cls.creatures[k]
+
+            for creature in creatures_list:
+                if creature.radius > Bush.RADIUS:
+                    for bush in cls.bushes:
+                        if Vect2d.dist(bush.pos, creature.pos) < creature.radius:
+                            creature.split(is_player=(creature.creature_id == cls.player_id),
+                                           override_limit=True)
+
 
         creatures_info = {}
 
@@ -298,18 +309,8 @@ class Map:
 
                 del cls.creatures[k]
 
-        for k in cls.creatures.keys():
-            creatures_list = cls.creatures[k]
-
-            for creature in creatures_list:
-                
-                if creature.radius > Buisson.RADIUS:
-                    for buisson in cls.buissons:
-                        if Vect2d.dist(buisson.pos, creature.pos) < creature.radius:
-                            creature.split()
-                
-            for i in range(cls.NB_CELL_PER_SECOND):
-                cls.createNewCell()
+        for i in range(cls.NB_CELL_PER_SECOND):
+            cls.createNewCell()
 
     @classmethod
     def getFocusedPos(cls):
@@ -461,8 +462,8 @@ class Map:
             for player in cls.creatures[cls.player_id]:
                 player.display()
 
-        for i in range(len(cls.buissons)):
-            cls.buissons[i].display()
+        for i in range(len(cls.bushes)):
+            cls.bushes[i].display()
 
         x = Display.size.x/2
         y = Display.size.y/2

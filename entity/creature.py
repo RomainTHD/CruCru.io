@@ -176,9 +176,9 @@ class Creature(ABC):
         self.killer_id = killer_id
 
     @classmethod
-    def notifyMapNewCreature(cls, parent, is_player=False):
+    def notifyMapNewCreature(cls, parent, is_player, override_limit):
         raise NotImplementedError("Est supposé être réécrit par Map")
 
-    def split(self, is_player=False):
+    def split(self, is_player=False, override_limit=False):
         if self.score > Creature.BASE_SCORE*3:
-            Creature.notifyMapNewCreature(self, is_player)
+            Creature.notifyMapNewCreature(self, is_player, override_limit)
