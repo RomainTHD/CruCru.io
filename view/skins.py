@@ -39,9 +39,6 @@ class Skins:
     def init(cls):
         """Initialisation, chargement des images"""
 
-        if config.DEBUG:
-            print("Loading skins...")
-
         cls.all_skins = {}
 
         all_img = cls.loadAll() # On charge les images
@@ -57,12 +54,6 @@ class Skins:
             cls.all_skins[name] = (circle, desc)
 
             compt += 1
-
-            if config.DEBUG:
-                print("{0}/{1}".format(compt, len(all_img.values())))
-
-        if config.DEBUG:
-            print("Skins loaded")
 
     @classmethod
     def loadAll(cls):

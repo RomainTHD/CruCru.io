@@ -7,20 +7,16 @@ WINDOW_HEIGHT = 600
 FRAMERATE = 120
 # Images par seconde
 
-w = 1000
-
-MAP_WIDTH = w
-MAP_HEIGHT = w
+MAP_WIDTH = 1000
+MAP_HEIGHT = 1000
 # Largeur et hauteur de la map
 
-START_FULLSCREEN = False
-# Si la fenêtre est en plein écran ou non
+GRID_WIDTH = 10
+GRID_HEIGHT = 10
+# Nombre de cases sur la map. Utilisé pour les hitbox et l'affichage
 
-DEBUG = False
-# Mode de débogage, avec certaines informations supplémentaires affichées
-
-MAX_CREATURES = 1
-# Nombre maximal de créatures sur la map
+NB_ENEMIES = 1
+# Nombre d'ennemis sur la map (sans compter les split)
 
 MAX_CELLS = 1000
 # Nombre maximal de cellules sur la map
@@ -32,15 +28,19 @@ SPEED_COEFF = 700
 # Vitesse des créatures
 
 SPEED_SIZE_POWER = 0.1
-# Puissance relative à la taille
+# Accélération relative à la taille
 # > 0 : décélère avec la taille
 # 0 : vitesse constante
 # < 0 : accélère avec la taille
 
 MAX_SPLIT = 4
+# Nombre maximal d'enfants au total pour le split
 
 RADIUS_POWER_SCORE = 0.65
+# Taux de grossissement des créatures en fonction de leur score
 
 SPLIT_TIME = 5
+# Temps d'invincibilité relative à sa propre famille d'une créature
 
-NB_BUISSONS = 1
+NB_BUSHES = 1
+# Nombre de buissons

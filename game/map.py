@@ -58,9 +58,11 @@ class Map:
         cls.DELTA_T_NEW_CELL = config.DELTA_T_NEW_CELL
         cls.MAX_SPLIT = config.MAX_SPLIT
 
-        cls.grid_size = Vect2d(10, 10)
+        cls.grid_size = Vect2d(config.GRID_WIDTH, config.GRID_HEIGHT)
 
-        cls.CREATURES_MAX_SIZE = config.MAX_CREATURES
+        cls.CREATURES_MAX_SIZE = config.NB_ENEMIES+1
+
+        cls.creatures = {}
 
         try:
             f = open("./data/usernames.txt", 'r')
@@ -99,20 +101,22 @@ class Map:
 
         cls.grid = [[[] for y in range(cls.grid_size.y)] for x in range(cls.grid_size.x)]
 
+        cls.creatures = {}
+
         cls.player_id = cls.generateId()
         cls.focused_creature_id = cls.player_id
 
-        cls.creatures = {}
-        cls.creatures[cls.player_id] = [Player(Vect2d(cls.size.x/2, cls.size.y/2),
-                                               "Player",
-                                               Color.randomColor(),
-                                               cls.player_id)
-                                       ]
+        player = Player(Vect2d(cls.size.x/2, cls.size.y/2),
+                        "Player",
+                        Color.randomColor(),
+                        cls.player_id)
+
+        cls.creatures[cls.player_id] = [player]
         # Création du joueur
 
         cls.bushes = []
 
-        for i in range(config.NB_BUISSONS):
+        for i in range(config.NB_BUSHES):
             cls.createBush()
 
     @classmethod
@@ -226,6 +230,8 @@ class Map:
         for bush in cls.bushes:
             bush.update()
 
+        Creature.map_size = Map.size
+
         if cls.isPlayerAlive():
             for player in cls.creatures[cls.player_id]:
                 player.update(cls.size)
@@ -292,6 +298,13 @@ class Map:
 
         cls.detectEnemyHitbox()
 
+        cls.garbageCollect()
+
+        for i in range(cls.NB_CELL_PER_SECOND):
+            cls.createNewCell()
+
+    @classmethod
+    def garbageCollect(cls):
         focused_killer_id = None
 
         for k in cls.creatures.keys():
@@ -308,9 +321,6 @@ class Map:
                     cls.focused_creature_id = focused_killer_id
 
                 del cls.creatures[k]
-
-        for i in range(cls.NB_CELL_PER_SECOND):
-            cls.createNewCell()
 
     @classmethod
     def getFocusedPos(cls):
@@ -422,17 +432,13 @@ class Map:
 
     @classmethod
     def display(cls):
+        """Affichage de la map"""
+
         w = cls.size.x
         h = cls.size.y
 
-        if config.DEBUG:
-            for x in range(cls.grid_size.x):
-                for y in range(cls.grid_size.y):
-                    Display.drawText(len(cls.grid[x][y]),
-                                     Vect2d((x+0.5)*cls.size.x/cls.grid_size.x, (y+0.5)*cls.size.y/cls.grid_size.y),
-                                     base_pos=Camera.pos)
-
         for x in range(1, cls.grid_size.x):
+            # Lignes entre la grille
             Display.drawLine(Vect2d(x*w/cls.grid_size.x, 0),
                              Vect2d(x*w/cls.grid_size.x, h),
                              color=Color.DARK_GRAY,

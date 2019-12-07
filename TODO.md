@@ -1,14 +1,11 @@
 ### AJOUTS :
-* Division du cercle pour attaquer (split)
 * Faire tableau des meilleurs scores
-* Demander nom joueur
-* Buissons
-* Commentaires
-* Réseau
-* Log
 * Monde infini
+* Demander nom joueur
+* Serveur
 
 ### CORRECTIONS :
+* Threads IA
 * D'abord chercher à vider le carré dans lequel l'ennemi est
 * HSV -> HSB (ou HSL)
 * Config custom (avec par exemple une valeur par défaut, un min, un max) -> cf. VISI201
@@ -16,7 +13,6 @@
 * Transformer toutes les couleurs en Color (qui hériterait de list)
 * Avec les 2 idées précédentes on peut utiliser directement Vect2d et Color en parametre de fonction
 * Vect2d : pouvoir le choisir constant ?
-* Split : sacrifice de 5% de score ?
 
 ### BUGS :
 * F11 fin de jeu

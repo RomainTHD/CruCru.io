@@ -95,7 +95,7 @@ class Display:
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
 
     @classmethod
-    def init(cls, width: int, height: int, start_fullscreen: bool, framerate: int) -> None:
+    def init(cls, width: int, height: int, framerate: int) -> None:
         """Initialisation de l'affichage
 
         Args:
@@ -140,9 +140,6 @@ class Display:
 
         cls.resize(cls.size.x, cls.size.y)
         # Cette opération va créer la fenêtre
-
-        if start_fullscreen:
-            cls.toggleFullscreen()
 
         cls.updateFrame()
         # On actualise la fenêtre
@@ -197,7 +194,7 @@ class Display:
         Args:
             f (function): fonction à exécuter
         """
-        
+
         print(f)
 
         cls.exec_when_resized.append(f)
@@ -404,7 +401,7 @@ class Display:
 
         # pygame.draw.line permet d'avoir une largeur de ligne, mais pygame.gfxdraw.line profite de
         # l'accélération matérielle de la SDL
-    
+
     @classmethod
     def drawTriangle(cls, pos: Vect2d, color: Color, radius: int, angle: float, base_pos: Vect2d = Vect2d(0, 0)) -> None:
         pos = pos.copy()
@@ -413,15 +410,15 @@ class Display:
             pos = (pos - base_pos)*cls.zoom_factor
 
         pos = pos.toIntValues()
-        
+
         nodes = []
-        
+
         for i in range(3):
             local_angle = 2*i*math.pi/3 + angle
-            
+
             nodes.append(int(pos.x + math.cos(local_angle)*radius*cls.zoom_factor))
             nodes.append(int(pos.y + math.sin(local_angle)*radius*cls.zoom_factor))
-            
+
         pygame.gfxdraw.filled_trigon(cls.window, *nodes, color)
         pygame.gfxdraw.aatrigon(cls.window, *nodes, color)
 

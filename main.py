@@ -17,9 +17,7 @@ config.WINDOW_HEIGHT
 config.FRAMERATE
 config.MAP_WIDTH
 config.MAP_HEIGHT
-config.START_FULLSCREEN
-config.DEBUG
-config.MAX_CREATURES
+config.NB_ENEMIES
 config.MAX_CELLS
 config.NB_CELL_PER_SECOND
 config.DELTA_T_NEW_CELL
@@ -28,6 +26,7 @@ config.SPEED_SIZE_POWER
 config.MAX_SPLIT
 config.RADIUS_POWER_SCORE
 config.SPLIT_TIME
+config.NB_BUSHES
 # Test que toutes les variables de configuration existent
 
 from game.map import Map
@@ -59,7 +58,6 @@ Camera.init()
 
 Display.init(width=config.WINDOW_WIDTH,
              height=config.WINDOW_HEIGHT,
-             start_fullscreen=config.START_FULLSCREEN,
              framerate=config.FRAMERATE)
 # Initialisation de la fenêtre
 
