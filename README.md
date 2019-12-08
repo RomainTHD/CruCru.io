@@ -12,7 +12,7 @@ Manger les éléments plus petits que soi en évitant ceux plus gros que soi.
 
 * **Contrôles**
     * Vous contrôlez le joueur à la souris
-    * Vous pouvez vous diviser en appuyant sur ```(?)```
+    * Vous pouvez vous diviser en appuyant sur ```SPACE```
     * Pour quitter, maintenez la touche ```ESC``` enfoncée
 
 ### Comment lancer le jeu
