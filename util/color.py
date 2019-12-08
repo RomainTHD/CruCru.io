@@ -52,7 +52,16 @@ class Color:
         return color
 
     @staticmethod
-    def oppositeColor(color: tuple):
+    def oppositeColor(color: tuple) -> (int, int, int, int):
+        """Retourne la couleur opposée d'une couleur
+
+        Args:
+            color (3-tuple int or 4-tuple int): couleur RGB ou RGBA
+
+        Returns:
+            new_color (4-tuple int): couleur RGBA opposée
+        """
+
         hsv_color = Color.RGBToHSV(*color)
 
         new_color = Color.HSVToRGB(hsv_color[0]+180, *hsv_color[1:])
@@ -61,6 +70,21 @@ class Color:
 
     @staticmethod
     def RGBToHSV(r: int, g: int, b: int, a: int = 255) -> (int, int, int, int):
+        """Transforme une couleur RGBA en couleur HSVA
+
+        Args:
+            r (int): 0 <= rouge < 256
+            g (int): 0 <= vert < 256
+            b (int): 0 <= bleu < 256
+            a (int): 0 (transparent) <= alpha < 256 (opaque)
+
+        Returns:
+            h (int): 0 <= hue < 360
+            s (int): 0 <= saturation < 100
+            v (int): 0 <= value / brightness < 100
+            a (int): 0 (transparent) <= alpha < 256 (opaque)
+        """
+
         r /= 255
         g /= 255
         b /= 255
@@ -103,7 +127,7 @@ class Color:
             a (int): opacité entre 0 et 255, transparent ou opaque
 
         Returns:
-            s (tuple of 4 int): couleurs RGBA entre 0 et 255
+            s (4-tuple int): couleurs RGBA entre 0 et 255
         """
 
         while h < 0:

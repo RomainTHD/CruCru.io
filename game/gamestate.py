@@ -6,10 +6,11 @@ class GameState(Enum):
     """Énumération des différents états du jeu
     Chaque état doit avoir une valeur différente
 
-    États :
-        MENU : au démarrage, le menu
-        GAME : le jeu en lui-même
-        END : fin du jeu
+    Attributs:
+        MENU: au démarrage, le menu
+        GAME: le jeu en lui-même
+        END: fin du jeu
+        WIN: victoire
     """
 
     MENU = 0

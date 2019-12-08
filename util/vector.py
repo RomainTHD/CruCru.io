@@ -367,7 +367,7 @@ class Vect2d:
 
         return new_vect
 
-    def toIntValues(self):
+    def toIntValues(self) -> 'Vect2d':
         """Fonction permettant de transformer les composantes en entier 'int'
 
         Exemple:
@@ -386,7 +386,7 @@ class Vect2d:
 
         return new_vect
 
-    def toTuple(self):
+    def toTuple(self) -> (float, float):
         """Fonction permettant de transformer le vecteur en tuple
 
         Exemple:
@@ -482,19 +482,38 @@ class Vect2d:
         return length
 
     @staticmethod
-    def dotProduct(v1: 'Vect2d', v2: 'Vect2d'):
+    def dotProduct(v1: 'Vect2d', v2: 'Vect2d') -> float:
+        """Produit de deux vecteurs
+
+        Args:
+            v1 (Vect2d): vecteur 1
+            v2 (Vect2d): vecteur 2
+
+        Returns:
+            float
+        """
+
         return v1.x*v2.x + v1.y*v2.y
 
     @staticmethod
-    def angleBetween(v1: 'Vect2d', v2: 'Vect2d'):
+    def angleBetween(v1: 'Vect2d', v2: 'Vect2d') -> float:
+        """Angle entre deux vecteurs
+
+        Args:
+            v1 (Vect2d): vecteur 1
+            v2 (Vect2d): vecteur 2
+
+        Returns:
+            angle (float): angle entre v1 et v2 en degrés
+        """
+
         v1 = v1.copy().normalize()
         v2 = v2.copy().normalize()
-
-        angle = 0
 
         angle = Vect2d.dotProduct(v1, v2) / (v1.length()*v2.length())
 
         if angle > 1:
+            # Pour éviter les arrondis 1.000001
             angle = 1
 
         angle = math.acos(angle)

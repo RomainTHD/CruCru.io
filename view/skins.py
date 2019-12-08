@@ -20,9 +20,6 @@ from util.color import Color
 from util.vector import Vect2d
 # Pour les positions
 
-import config
-# Pour connaitre la valeur de DEBUG
-
 class Skins:
     """Classe s'occupant des skins
 
@@ -36,7 +33,7 @@ class Skins:
     PATH = "./data"
 
     @classmethod
-    def init(cls):
+    def init(cls) -> None:
         """Initialisation, chargement des images"""
 
         cls.all_skins = {}
@@ -56,7 +53,7 @@ class Skins:
             compt += 1
 
     @classmethod
-    def loadAll(cls):
+    def loadAll(cls) -> dict:
         """Charge toutes les images carrées
 
         Returns:
@@ -96,12 +93,15 @@ class Skins:
         return all_img
 
     @classmethod
-    def imgToCircle(cls, img: pygame.Surface):
+    def imgToCircle(cls, img: pygame.Surface) -> pygame.Surface:
         """Méthode transformant l'image de base afin de la rendre ronde
         et d'ajouter la transparence
 
         Args:
             img (pygame.Surface): image carrée à transformer en cercle
+
+        Returns:
+            circle_surface (pygame.Surface): surface circulaire
         """
 
         width = img.get_width()

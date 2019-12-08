@@ -118,6 +118,7 @@ class Display:
 
         os.environ['SDL_VIDEO_WINDOW_POS'] = "{0},{1}".format(*((cls.screen_size - cls.size)/2).toTuple())
         os.environ['SDL_VIDEO_CENTERED'] = '0'
+        # Centre la fenêtre
 
         cls.windowed_size = cls.size.copy()
         # La taille fenêtre sera la même que la taille actuelle
@@ -235,10 +236,24 @@ class Display:
 
     @classmethod
     def screenshot(cls) -> pygame.Surface:
+        """Retourne une copie de l'écran à ce moment
+
+        Returns:
+            pygame.Surface: instantané de l'écran
+        """
+
         return cls.window.copy()
 
     @classmethod
-    def zoom(cls, zoom_factor: int):
+    def zoom(cls, zoom_factor: int) -> None:
+        """Règle le coefficient de zoom
+
+        Args:
+            zoom_factor (int): facteur de zoom, 1 = normal
+                               ]0; 1] = zoom arrière
+                               [1; +inf[ = zoom avant
+        """
+
         if zoom_factor == 0:
             raise ValueError("Zoom nul")
         elif zoom_factor < 0:
@@ -403,7 +418,17 @@ class Display:
         # l'accélération matérielle de la SDL
 
     @classmethod
-    def drawTriangle(cls, pos: Vect2d, color: Color, radius: int, angle: float, base_pos: Vect2d = Vect2d(0, 0)) -> None:
+    def drawTriangle(cls, pos: Vect2d, color: Color, radius: int, angle: float, base_pos: Vect2d = Vect2d(0, 0), fill: bool = True) -> None:
+        """Procédure pour dessiner un triangle à l'écran
+
+        Args:
+            pos (Vect2d): position du centre du rectangle
+            color (Color): couleur RGBA
+            radius (int): distance du centre aux sommets
+            base_pos (Vect2d): position de référence de la fenêtre
+            fill (bool): triangle rempli ou non
+        """
+
         pos = pos.copy()
 
         if base_pos.length() != 0:
@@ -412,6 +437,7 @@ class Display:
         pos = pos.toIntValues()
 
         nodes = []
+        # Sommets du triangle
 
         for i in range(3):
             local_angle = 2*i*math.pi/3 + angle
@@ -419,8 +445,12 @@ class Display:
             nodes.append(int(pos.x + math.cos(local_angle)*radius*cls.zoom_factor))
             nodes.append(int(pos.y + math.sin(local_angle)*radius*cls.zoom_factor))
 
-        pygame.gfxdraw.filled_trigon(cls.window, *nodes, color)
+        if fill:
+            pygame.gfxdraw.filled_trigon(cls.window, *nodes, color)
+            # Triangle plein
+
         pygame.gfxdraw.aatrigon(cls.window, *nodes, color)
+        # Anti-aliasing
 
     @classmethod
     def drawImg(cls, img: pygame.Surface, pos: Vect2d, base_pos: Vect2d = Vect2d(0, 0), radius: int = None) -> None:
@@ -449,7 +479,7 @@ if __name__ == "__main__":
     pygame.init()
 
     print("Init")
-    Display.init(width=1920, height=1080, start_fullscreen=False, framerate=60)
+    Display.init(width=1920, height=1080, framerate=60)
 
     print("Cercle")
     Display.drawCircle(Vect2d(100, 100), Color.RED, radius=50)
@@ -461,7 +491,7 @@ if __name__ == "__main__":
     Display.drawLine(Vect2d(200, 300), Vect2d(400, 500), Color.BLUE)
 
     Display.drawTriangle(pos=Vect2d(100, 100),
-                         color=Color.RED,
+                         color=Color.GREEN,
                          radius=50,
                          angle=0)
 

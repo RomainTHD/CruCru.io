@@ -29,3 +29,8 @@ gota.io
 https://docs.python.org/3/library/enum.html
 https://docs.python.org/3/library/abc.html
 https://docs.python.org/3/library/functions.html?highlight=property#property
+
+enemy.py
+button.py
+game.py
+map.py

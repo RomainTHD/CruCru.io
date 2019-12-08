@@ -62,7 +62,7 @@ class Creature(ABC):
     RADIUS_POWER_SCORE = config.RADIUS_POWER_SCORE
     SPLIT_TIME = config.SPLIT_TIME
 
-    def __init__(self, pos: Vect2d, name: str, color: Color, creature_id: int):
+    def __init__(self, pos: Vect2d, name: str, color: Color, creature_id: int) -> None:
         """Constructeur
 
         Args:
@@ -92,7 +92,7 @@ class Creature(ABC):
         self.score = Creature.BASE_SCORE
         self.is_alive = True
 
-    def getMapPos(self, size: Vect2d, grid_size: Vect2d):
+    def getMapPos(self, size: Vect2d, grid_size: Vect2d) -> Vect2d:
         """Permet de translater une position absolue en position dans une grille
 
         Args:
@@ -109,7 +109,7 @@ class Creature(ABC):
         return Vect2d(pos_x, pos_y)
 
     @abstractmethod
-    def update(self, map_size: Vect2d):
+    def update(self, map_size: Vect2d) -> None:
         """Met à jour la créature
         Méthode à implémenter
 
@@ -143,7 +143,7 @@ class Creature(ABC):
                          pos=self.pos,
                          base_pos=Camera.pos)
 
-    def applySpeed(self, size: Vect2d):
+    def applySpeed(self, size: Vect2d) -> None:
         """Permet de faire avancer la créature en appliquant sa vitesse
 
         Args:
@@ -197,13 +197,16 @@ class Creature(ABC):
         # Calcul du nouveau rayon, qui sera progressif
 
     @staticmethod
-    def canEat(radius: float, other_radius: float):
+    def canEat(radius: float, other_radius: float) -> bool:
         """Fonction permettant de savoir si une créature A peut manger une autre
            créature B
 
         Args:
             radius (float): rayon de la créature A
             other_radius (float): rayon de la créature B
+
+        Returns:
+            bool: si la créature A peut manger la créature B
         """
 
         area = 2*math.pi*radius**2
@@ -212,7 +215,7 @@ class Creature(ABC):
         return area > other_area*(1+Creature.BASE_PERCENT)
 
     @staticmethod
-    def radiusFormula(score: int):
+    def radiusFormula(score: int) -> float:
         """Fonction permettant de calculer le rayon d'une créature en fonction
         de son score
 
@@ -225,7 +228,7 @@ class Creature(ABC):
 
         return Creature.BASE_RADIUS + 2*score**Creature.RADIUS_POWER_SCORE
 
-    def kill(self, score: int):
+    def kill(self, score: int) -> None:
         """Procédure exécutée lorsque cette créature en tue une autre
 
         Args:
@@ -234,7 +237,7 @@ class Creature(ABC):
 
         self.score += score
 
-    def killed(self, killer_id: int):
+    def killed(self, killer_id: int) -> None:
         """Procédure exécutée lorsque cette créature est tuée
 
         Args:
@@ -245,7 +248,7 @@ class Creature(ABC):
         self.is_alive = False
 
     @classmethod
-    def notifyMapNewCreature(cls, parent: 'Creature', is_player: bool, override_limit: bool):
+    def notifyMapNewCreature(cls, parent: 'Creature', is_player: bool, override_limit: bool) -> None:
         """Notifie la Map qu'une nouvelle créature doit être créée
 
         Args:
@@ -257,7 +260,7 @@ class Creature(ABC):
 
         raise NotImplementedError("Est supposé être réécrit par Map")
 
-    def split(self, is_player: bool = False, override_limit: bool = False):
+    def split(self, is_player: bool = False, override_limit: bool = False) -> None:
         """Split de la créature
 
         Args:

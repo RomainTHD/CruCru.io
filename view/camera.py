@@ -23,7 +23,7 @@ class Camera:
     # Taille du centre de la fenêtre
 
     @classmethod
-    def init(cls):
+    def init(cls) -> None:
         """Initialisation de la caméra"""
 
         Display.execWhenResized(cls.whenResized)
