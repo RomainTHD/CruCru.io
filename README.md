@@ -21,14 +21,14 @@ Pour jouer à ce jeu, il vous faudra avoir installé Python (au moins 3.7) et py
 * Linux :
 ```Bash
 sudo apt-get install python3
-python3 -m pip install pygame
+python3 -m pip install pygame --user
 # ou `pip3 install pygame`
 ```
 
 * Window :
 Téléchargez et installez Python 3 [ici](https://www.python.org/ftp/python/3.8.0/python-3.8.0-amd64.exe)
 ```Powershell
-python -m pip install pygame
+python -m pip install pygame --user
 # ou `pip install pygame`
 ```
 
