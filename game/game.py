@@ -42,6 +42,7 @@ class Game:
 
         while not cls.finished:
             cls.ESC_MAX_FRAMECOUNT = Display.real_framerate*0.25
+            # On veut quitter après 0.25 secondes
 
             cls.handleKeys()
 
@@ -50,27 +51,37 @@ class Game:
             # Position de la souris
 
             mouse_pressed = pygame.mouse.get_pressed()[0]
+            # Clic ou non
 
             Menu.state = GameState.MENU
 
             if cls.state == GameState.MENU:
+                # Affichage du menu
+                
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if Menu.can_play:
+                    # Si l'on veut rejouer
                     cls.state = GameState.GAME
 
                 if Menu.can_quit:
+                    # Si l'on veut quitter
                     cls.finished = True
 
                 Menu.display()
 
                 if Menu.can_play:
+                    # Si l'on veut rejouer on remet le curseur normal
                     Display.setCursorArrow()
 
             elif cls.state == GameState.END:
+                # Partie perdue
+                
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if not Map.game_finished:
+                    # On update la map tant que la partie n'est pas terminée pour de bon
+                    # afin de faire jouer les IA
                     Map.update()
 
                 if Menu.can_play:
@@ -81,10 +92,13 @@ class Game:
 
                 Map.display()
                 Menu.display()
+                # Affichage du menu et de l'effet de transparence au dessus de la map
 
                 if Menu.can_play:
                     Display.setCursorArrow()
             elif cls.state == GameState.WIN:
+                # Victoire
+                
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if Menu.can_play:
@@ -98,7 +112,11 @@ class Game:
                 if Menu.can_play:
                     Display.setCursorArrow()
             elif cls.state == GameState.GAME:
+                # Jeu en cours
+                
                 Map.setMousePos(mouse_pos/Display.zoom_factor)
+                # On envoie la position de la souris à la map
+                
                 Map.update()
                 Map.display()
 
@@ -120,7 +138,10 @@ class Game:
                              size=16,
                              base_pos=Vect2d(0, 0))
 
+            # Affichage du "Quitter" rouge en haut à gauche proportionnellement au temps d'appui de la touche ESC
+
             Display.updateFrame()
+            # Mise à jour de l'affichage
 
     @classmethod
     def handleKeys(cls) -> None:
@@ -131,8 +152,9 @@ class Game:
         if keys[pygame.K_RETURN]:
             for k in Map.creatures.keys():
                 if k == Map.player_id:
-                    for enemy in Map.creatures[k]:
-                        enemy.score += 100
+                    for creature in Map.creatures[k]:
+                        creature.score += 100
+                        #! à retirer
 
         if keys[pygame.K_ESCAPE]:
             # Si la touche ESC est pressée
@@ -163,3 +185,4 @@ class Game:
 
                 if event.key == pygame.K_SPACE:
                     Map.splitPlayer()
+                    # Split du joueur
