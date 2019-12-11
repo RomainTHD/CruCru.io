@@ -22,11 +22,11 @@ class Button:
         text (text): texte sur le bouton
     """
 
-    pos: Vect2d
-    size: Vect2d
-    on_click: 'function'
-    when_display: 'function'
-    text: str
+    pos: Vect2d # Position du bouton
+    size: Vect2d # Taille du bouton
+    on_click: 'function' # Fonction exécutée lors d'un clic
+    when_display: 'function' # Fonction exécutée pour un affichage
+    text: str # Texte affiché
 
     def __init__(self,
                  pos: Vect2d,
@@ -42,9 +42,9 @@ class Button:
             pos (Vect2d): position du bouton
             size (Vect2d): largeur et hauteur du bouton
             text (text): texte sur le bouton
-            on_click (function): fonction à appeler lors du clic sur ce bouton
-            when_display (function): fonction à appeler lors de l'affichage de ce bouton
-            when_init (function): fonction à appeler lors de l'initialisation du bouton
+            on_click (function): fonction à appeler lors du clic sur ce bouton, par défaut aucune
+            when_display (function): fonction à appeler lors de l'affichage de ce bouton, par défaut aucune
+            when_init (function): fonction à appeler lors de l'initialisation du bouton, par défaut aucune
         """
 
         self.pos = pos
@@ -85,25 +85,44 @@ class Button:
         return self.when_display(self, mouse_pos)
 
 def buttonStart_Init(button: Button) -> None:
-    """Initialisation du bouton Start"""
+    """Initialisation du bouton Start
+    
+    Args:
+        button (Button): bouton start
+    
+    Attributs:
+        color_hue (int): couleur du bouton
+        color_sat (int): saturation du bouton
+    """
 
-    button.color_hue = 100
+    button.color_hue = 0
     button.color_sat = 100
 
-def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
-    """Affichage du bouton Start"""
+def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> bool:
+    """Affichage du bouton Start
+
+    Args:
+        button (Button): bouton start
+        mouse_pos (Vect2d): position de la souris
+    
+    Returns:
+        hand_cursor (bool): si la souris doit être affichée comme une main ou un curseur
+    """
 
     if button.isMouseOver(mouse_pos):
+        # Arc-en-ciel
         hand_cursor = True
-        button.color_sat -= 3
+        button.color_sat = (button.color_sat - 3 + 100)%100
     else:
+        # Flash épileptique
         hand_cursor = False
         button.color_sat = 100
-        button.color_hue += 1
+        button.color_hue = (button.color_hue + 1)%360
 
     button_color = Color.HSVToRGB(button.color_hue, button.color_sat, 100)
 
     min_size = max(button.size.x, button.size.y)
+    # Taille minimale entre la largeur et la hauteur
 
     font_size = min_size*50/400
 
@@ -111,15 +130,29 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> None:
                      button.size,
                      color=button_color,
                      fill=True)
+    # Rectangle du bouton
 
     Display.drawText(button.text,
                      button.pos + button.size/2,
                      color=Color.BLACK,
                      size=font_size)
-
+    # Texte du bouton
+    
     return hand_cursor
 
 def buttonWinOrEnd_Init(button: Button, first_try: bool, color: Color) -> None:
+    """Initialisation du bouton de fin
+    
+    Args:
+        button (Button): bouton de fin
+        first_try (bool): si ce bouton vient d'être initialisé pour la première fois ou non
+        color (Color): couleur du bouton
+    
+    Attributs:
+        color (Color): couleur du bouton
+        alpha (int): composante alpha de la couleur
+    """
+    
     button.color = color
 
     if first_try:
@@ -131,12 +164,16 @@ def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
     min_size = max(button.size.x, button.size.y)
 
     font_size = min_size*50/400
+    # Taille de la police
 
     Display.drawRect(Vect2d(0, 0), Display.size, (0, 0, 0, button.alpha))
+    # Fondu transparent
 
     if button.alpha < 127:
+        # Si le jeu est en cours on a un fondu jusqu'à 50%
         button.alpha += 1
     elif button.alpha < 255 and Map.game_finished:
+        # Sinon le fondu se fait jusqu'à 100%
         button.alpha += 1
 
     Display.drawText(button.text,
@@ -144,7 +181,7 @@ def buttonEnd_Display(button: Button, mouse_pos: Vect2d) -> None:
                      color=button.color,
                      size=font_size)
 
-def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> None:
+def buttonEndChoice_Display(button: Button, mouse_pos: Vect2d) -> bool:
     """Affichage du bouton rejouer"""
 
     min_size = max(button.size.x, button.size.y)
