@@ -26,18 +26,31 @@ class Map:
     """Terrain de jeu
 
     Attributs:
-        size
-        all_cells
-        DELTA_T_NEW_CELL
-        ref_time
-        MAX_CELLS
-        NB_CELL_PER_SECOND
-        grid_size
-        grid
-        player
-        enemies
-        ENEMIES_MAX_SIZE
-        game_finished
+        size (Vect2d): taille de la map
+        grid_size (Vect2d): taille de la grille des cellules
+        grid (list of list of list of Cell): grille, tableau tridimensionnel
+
+        game_finished (bool): jeu fini ou non
+
+        bushes (list of Bush): buissons
+
+        start_time (float): temps de début de jeu
+        creatures (dict of list of Creature): créatures dans le jeu
+                                              chaque clé du dictionnaire est
+                                              l'id de la famille
+        player_id (int): id du joueur
+        focused_creature_id (int): id de la créature centrée par la caméra
+        MAX_SPLIT (int): nombre maximal de créatures par famille
+        CREATURES_MAX_SIZE (int): nombre total de familles de créatures
+
+        player_infos (dict): score et temps du joueur
+        all_usernames (list): liste de tous les noms d'utilisateur possibles
+
+        all_cells (list of Cell): liste de toutes les cellules
+        MAX_CELLS (int): nombre maximal de cellules
+        NB_CELL_PER_SECOND (int): nombre de cellules par secondes
+        DELTA_T_NEW_CELL (float): temps entre le spawn de deux cellules
+        ref_time (float): temps depuis le dernier spawn de cellule
     """
 
     @classmethod
@@ -62,8 +75,6 @@ class Map:
 
         cls.CREATURES_MAX_SIZE = config.NB_ENEMIES+1
 
-        cls.creatures = {}
-
         try:
             f = open("./data/usernames.txt", 'r')
         except FileNotFoundError:
@@ -82,18 +93,17 @@ class Map:
                 line = f.readline()
 
             f.close()
-
         cls.reset()
 
     @classmethod
-    def reset(cls):
+    def reset(cls) -> None:
+        """Réinitialise la map"""
+
         cls.start_time = time.time()
 
         cls.game_finished = False
 
         cls.player_infos = {}
-
-        cls.ref_time = -1*cls.DELTA_T_NEW_CELL
 
         cls.all_cells = []
 
@@ -120,11 +130,20 @@ class Map:
             cls.createBush()
 
     @classmethod
-    def generateId(cls):
+    def generateId(cls) -> int:
+        """Génère un nouvel id
+        On pourrait aussi générer un id incrémentiel, mais ici c'est booon ça va
+
+        Returns:
+            int: id
+        """
+
         return random.randrange(10**64)
 
     @classmethod
-    def createBush(cls):
+    def createBush(cls) -> None:
+        """Crée un buisson qui ne soit pas en collision avec un autre buisson"""
+
         ok = False
         timeout = 0
 
@@ -144,7 +163,16 @@ class Map:
             cls.bushes.append(Bush(pos))
 
     @classmethod
-    def createCreatureFromParent(cls, parent: Creature, is_player, override_limit):
+    def createCreatureFromParent(cls, parent: Creature, is_player: bool, override_limit: bool) -> None:
+        """Crée une nouvelle créature en fonction du parent pour le split
+
+        Args:
+            parent (Creature): créature parente
+            is_player (bool): joueur ou ennemi ?
+            override_limit (bool): si la limite de split doit être prise
+                                   en compte ou non
+        """
+
         if len(cls.creatures[parent.creature_id]) < cls.MAX_SPLIT or override_limit:
             parent.score //= 2
             parent.inertia = 0.25
@@ -167,7 +195,10 @@ class Map:
             cls.creatures[parent.creature_id].append(creature)
 
     @classmethod
-    def createEnemy(cls):
+    def createEnemy(cls) -> None:
+        """Crée un nouvel ennemi en évitant le spawn-kill, apparition sur une
+        autre créature"""
+
         ok = False
         timed_out = False
         compt = 0
@@ -185,7 +216,7 @@ class Map:
                     if Vect2d.dist(pos, creature.pos) < (Creature.BASE_RADIUS + creature.radius)*2:
                         ok = False
 
-            if compt == 5:
+            if compt == 10:
                 timed_out = True
 
             compt += 1
@@ -204,7 +235,17 @@ class Map:
             cls.creatures[enemy_id] = [enemy]
 
     @staticmethod
-    def generateNewName(size: int):
+    def generateNewName(size: int) -> str:
+        """Génère un nouveau nom
+        Fonction utilisée si le fichier usernames.txt n'existe pas
+
+        Args:
+            size (int): nombre de syllabes du nom voulu
+
+        Returns:
+            name (str): nom généré
+        """
+
         consonants = ('b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z')
         vowels = ('a', 'e', 'i', 'o', 'u', 'y', 'ai', 'ei', 'eu', 'ey', 'ie', 'io', 'oi', 'ou', 'oy', 'ya', 'ye', 'yi', 'yo', 'yu')
 
@@ -217,24 +258,20 @@ class Map:
         return name
 
     @classmethod
-    def setMousePos(cls, mouse_pos: Vect2d):
+    def setMousePos(cls, mouse_pos: Vect2d) -> None:
+        """Applique la nouvelle position de la souris
+
+        Args:
+            mouse_pos (Vect2d): nouvelle position
+        """
+
         for player in cls.creatures[cls.player_id]:
             player.mouse_pos = mouse_pos - Vect2d(Display.size.x/2, Display.size.y/2)
             player.mouse_pos += Camera.pos - player.pos + Vect2d(Display.size.x/2, Display.size.y/2)
 
     @classmethod
-    def update(cls):
-        if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
-            cls.createEnemy()
-
-        for bush in cls.bushes:
-            bush.update()
-
-        Creature.map_size = Map.size
-
-        if cls.isPlayerAlive():
-            for player in cls.creatures[cls.player_id]:
-                player.update(cls.size)
+    def updateStats(cls) -> None:
+        """Met à jour les statistiques du jeu"""
 
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
@@ -252,6 +289,10 @@ class Map:
                 if creature.radius*2 >= min(cls.size.toTuple()):
                     cls.game_finished = True
 
+    @classmethod
+    def handleBushSplit(cls) -> None:
+        """Gère le split lié aux buissons"""
+
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
 
@@ -262,6 +303,9 @@ class Map:
                             creature.split(is_player=(creature.creature_id == cls.player_id),
                                            override_limit=True)
 
+    @classmethod
+    def updateEnemies(cls) -> None:
+        """Met à jour les ennemis"""
 
         creatures_info = {}
 
@@ -290,6 +334,28 @@ class Map:
                     enemy.setCreaturesInfo(other_creatures_infos)
                     enemy.update(cls.size)
 
+    @classmethod
+    def update(cls) -> None:
+        """Mise à jour générale de la map"""
+
+        if len(cls.creatures) < cls.CREATURES_MAX_SIZE:
+            cls.createEnemy()
+
+        for bush in cls.bushes:
+            bush.update()
+
+        cls.handleBushSplit()
+
+        Creature.map_size = Map.size
+
+        if cls.isPlayerAlive():
+            for player in cls.creatures[cls.player_id]:
+                player.update(cls.size)
+
+        cls.updateEnemies()
+
+        cls.updateStats()
+
         for k in cls.creatures.keys():
             creatures_list = cls.creatures[k]
 
@@ -304,7 +370,9 @@ class Map:
             cls.createNewCell()
 
     @classmethod
-    def garbageCollect(cls):
+    def garbageCollect(cls) -> None:
+        """Purge les créatures mortes"""
+
         focused_killer_id = None
 
         for k in cls.creatures.keys():
@@ -323,7 +391,13 @@ class Map:
                 del cls.creatures[k]
 
     @classmethod
-    def getFocusedPos(cls):
+    def getFocusedPos(cls) -> Vect2d:
+        """Retourne la position de focus, pour la caméra
+
+        Returns:
+            pos (Vect2d): position
+        """
+
         pos = Vect2d(0, 0)
 
         for creature in cls.creatures[cls.focused_creature_id]:
@@ -334,7 +408,9 @@ class Map:
         return pos
 
     @classmethod
-    def getFocusedRadius(cls):
+    def getFocusedRadius(cls) -> float:
+        """Retourne le rayon de la créature focusée, pour le zoom"""
+
         radius = 0
 
         for creature in cls.creatures[cls.focused_creature_id]:
@@ -345,7 +421,9 @@ class Map:
         return radius
 
     @classmethod
-    def isPlayerAlive(cls):
+    def isPlayerAlive(cls) -> bool:
+        """Joueur vivant ou non ?"""
+
         try:
             is_alive = cls.creatures[cls.player_id][0].is_alive
         except KeyError:
@@ -354,7 +432,9 @@ class Map:
         return is_alive
 
     @classmethod
-    def detectEnemyHitbox(cls):
+    def detectEnemyHitbox(cls) -> None:
+        """Gère la hitbox des créatures"""
+
         for k1 in cls.creatures.keys():
             for k2 in cls.creatures.keys():
                 enemy_list_1 = cls.creatures[k1]
@@ -386,7 +466,6 @@ class Map:
                                     if dist <= max(enemy_1.radius, enemy_2.radius):
                                         enemy_1.kill(enemy_2.score)
                                         enemy_2.killed(k1)
-
 
     @classmethod
     def getCellPosMap(cls):
@@ -481,6 +560,7 @@ class Map:
         Camera.setPos(cls.getFocusedPos())
 
         r = cls.getFocusedRadius() - Creature.BASE_RADIUS
+        r = abs(r)
         r = r**0.1
         z = math.exp(-r+1)
         Display.zoom(z)
@@ -492,25 +572,18 @@ class Map:
 
     @classmethod
     def splitPlayer(cls):
-        player_list = cls.creatures[cls.player_id]
-        player_list_tmp = []
+        if cls.isPlayerAlive():
+            player_list = cls.creatures[cls.player_id]
+            player_list_tmp = []
 
-        for player in player_list:
-            player_list_tmp.append(player)
+            for player in player_list:
+                player_list_tmp.append(player)
 
-        for player in player_list_tmp:
-            player.split(is_player=True)
+            for player in player_list_tmp:
+                player.split(is_player=True)
 
     @classmethod
-    def detectCellHitbox(cls, creature:"Creature") -> None:
-        """
-
-        INPUT :
-
-        OUTPUT :
-            None
-        """
-
+    def detectCellHitbox(cls, creature: Creature) -> None:
         for i in range(len(cls.all_cells)-1, -1, -1):
             cell_i = cls.all_cells[i]
 
@@ -519,7 +592,14 @@ class Map:
                 cls.deleteCell(i)
 
     @classmethod
-    def deleteCell(cls, index:int):
+    def deleteCell(cls, index: int):
+        """Supprime une cellule
+
+        Args:
+            index (int): index de cls.all_cells de la cellule à supprimer,
+                         supprimée aussi dans cls.grid
+        """
+        
         cell = cls.all_cells[index]
 
         x = int(cell.pos.x/cls.size.x * cls.grid_size.x)

@@ -1,11 +1,12 @@
 ### AJOUTS :
 * Faire tableau des meilleurs scores
+* Slider sur menu principal pour config
 * Monde infini
 * Demander nom joueur
 * Serveur
 
 ### CORRECTIONS :
-* Threads IA
+* Threads IA ?
 * D'abord chercher à vider le carré dans lequel l'ennemi est
 * HSV -> HSB (ou HSL)
 * Config custom (avec par exemple une valeur par défaut, un min, un max) -> cf. VISI201
@@ -30,7 +31,6 @@ https://docs.python.org/3/library/enum.html
 https://docs.python.org/3/library/abc.html
 https://docs.python.org/3/library/functions.html?highlight=property#property
 
+### Commentaires à faire :
 enemy.py
-button.py
-game.py
 map.py

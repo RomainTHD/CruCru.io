@@ -57,7 +57,7 @@ class Game:
 
             if cls.state == GameState.MENU:
                 # Affichage du menu
-                
+
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if Menu.can_play:
@@ -76,7 +76,7 @@ class Game:
 
             elif cls.state == GameState.END:
                 # Partie perdue
-                
+
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if not Map.game_finished:
@@ -98,7 +98,7 @@ class Game:
                     Display.setCursorArrow()
             elif cls.state == GameState.WIN:
                 # Victoire
-                
+
                 Menu.update(mouse_pos, mouse_pressed)
 
                 if Menu.can_play:
@@ -113,10 +113,10 @@ class Game:
                     Display.setCursorArrow()
             elif cls.state == GameState.GAME:
                 # Jeu en cours
-                
+
                 Map.setMousePos(mouse_pos/Display.zoom_factor)
                 # On envoie la position de la souris à la map
-                
+
                 Map.update()
                 Map.display()
 
@@ -184,5 +184,6 @@ class Game:
                     Display.toggleFullscreen()
 
                 if event.key == pygame.K_SPACE:
-                    Map.splitPlayer()
-                    # Split du joueur
+                    if Map.isPlayerAlive():
+                        Map.splitPlayer()
+                        # Split du joueur
