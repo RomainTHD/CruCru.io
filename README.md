@@ -18,7 +18,7 @@ Manger les éléments plus petits que soi en évitant ceux plus gros que soi.
 
 #### Comment lancer le jeu
 
-Pour jouer à ce jeu, il vous faudra avoir installé Python (au moins 3.7) et pygame
+Pour jouer à ce jeu, il vous faudra avoir installé Python (**≥ 3.7**) et pygame
 * Linux :
 ```Bash
 sudo apt-get install python3
