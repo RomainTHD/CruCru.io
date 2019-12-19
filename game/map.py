@@ -300,6 +300,7 @@ class Map:
                 if creature.radius > Bush.RADIUS:
                     for bush in cls.bushes:
                         if Vect2d.dist(bush.pos, creature.pos) < creature.radius:
+                            bush.hit()
                             creature.split(is_player=(creature.creature_id == cls.player_id),
                                            override_limit=True)
 
@@ -372,6 +373,10 @@ class Map:
     @classmethod
     def garbageCollect(cls) -> None:
         """Purge les créatures mortes"""
+
+        for i in range(len(cls.bushes)):
+            if not cls.bushes[i].is_alive:
+                del cls.bushes[i]
 
         focused_killer_id = None
 
@@ -599,7 +604,7 @@ class Map:
             index (int): index de cls.all_cells de la cellule à supprimer,
                          supprimée aussi dans cls.grid
         """
-        
+
         cell = cls.all_cells[index]
 
         x = int(cell.pos.x/cls.size.x * cls.grid_size.x)

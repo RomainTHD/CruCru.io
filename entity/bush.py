@@ -18,7 +18,6 @@ class Bush:
 
     Attributs:
         RADIUS (int): rayon du buisson
-        COLOR (Color): couleur du buisson
         SPEED (float): vitesse de rotation lors de l'affichage
         SHARPNESS (float): facteur de la taille des pics par rapport au rayon
         NB_TRIANGLES (int): nombre de triangles pour dessiner
@@ -26,10 +25,9 @@ class Bush:
     """
 
     RADIUS = 50
-    COLOR = Color.BUSH_COLOR
-    SPEED = 1/500
-    SHARPNESS = 1.125
-    NB_TRIANGLES = 6
+    SPEED = 1/1000
+    SHARPNESS = 0.1
+    BASE_HEALTH = 18
 
     def __init__(self, pos: Vect2d) -> None:
         """Constructeur
@@ -40,25 +38,44 @@ class Bush:
 
         self.pos = pos
         self.angle = 0
+        self.health = Bush.BASE_HEALTH
+
+        self.is_alive = True
 
     def update(self) -> None:
         """Update le buisson"""
 
         self.angle += Bush.SPEED
 
+    def hit(self) -> None:
+        """En cas de collision"""
+
+        self.health -= 1
+
+        if self.health == 0:
+            self.is_alive = False
+
     def display(self) -> None:
         """Affichage du buisson"""
 
-        for i in range(Bush.NB_TRIANGLES):
+        c = Color.linearGradient(Color.BUSH_COLOR_FULL,
+                                 Color.BUSH_COLOR_DEAD,
+                                 1-(self.health-1)/(Bush.BASE_HEALTH-1))
+
+        for i in range(self.health):
             # Les pics du buisson
-            Display.drawTriangle(pos=self.pos,
-                                 color=Bush.COLOR,
+            angle = i/self.health*2*math.pi + self.angle
+
+            offset = Vect2d(math.cos(angle), math.sin(angle))*Bush.RADIUS*(1+Bush.SHARPNESS/3)
+
+            Display.drawTriangle(pos=self.pos + offset,
+                                 color=c,
                                  radius=Bush.RADIUS*Bush.SHARPNESS,
-                                 angle=i/Bush.NB_TRIANGLES*2*math.pi/3 + self.angle,
+                                 angle=2*math.pi/self.health*i + self.angle,
                                  base_pos=Camera.pos)
 
         # Le cercle du buisson
         Display.drawCircle(pos=self.pos,
-                           color=Bush.COLOR,
+                           color=c,
                            radius=Bush.RADIUS,
                            base_pos=Camera.pos)

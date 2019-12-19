@@ -26,7 +26,8 @@ class Color:
     LIGHT_GRAY = (191, 191, 191)
     WHITE = (255, 255, 255)
 
-    BUSH_COLOR = (0, 255, 0)
+    BUSH_COLOR_FULL = (0, 255, 0)
+    BUSH_COLOR_DEAD = (255, 0, 0)
 
     TRANSPARENT = (255, 255, 255, 0)
     TO_TRANSPARENT = (99, 28, 11)
@@ -40,7 +41,7 @@ class Color:
         Cet espace permet de choisir des couleurs très vives
 
         Returns:
-            color (tuple of 4 int): tuple avec les composantes RGB
+            color (tuple of 4 int): tuple avec les composantes RGB (alpha=100)
         """
 
         hue = random.randrange(0, 360)
@@ -50,6 +51,29 @@ class Color:
         # On passe de HSV à RGB
 
         return color
+
+    @staticmethod
+    def linearGradient(color: tuple, goal: tuple, progress: float) -> (int, int, int, int):
+        """Interpolation linéaire entre 2 couleurs
+
+        Args:
+            color (tuple): couleur RGBA (ou RGB) de départ
+            goal (tuple): couleur RGBA (ou RGB) d'arrivée
+            progress (float): taux de progression entre les 2 couleurs, entre 0
+                              et 1
+
+        Returns:
+            new_color (tuple of 4 int): tuple avec les composantes RGBA
+        """
+
+        hsv_c = Color.RGBToHSV(*color)
+        hsv_g = Color.RGBToHSV(*goal)
+
+        new_color = tuple([hsv_c[i] + (hsv_g[i]-hsv_c[i])*progress for i in range(len(hsv_c))])
+
+        new_color = Color.HSVToRGB(*new_color)
+
+        return new_color
 
     @staticmethod
     def oppositeColor(color: tuple) -> (int, int, int, int):

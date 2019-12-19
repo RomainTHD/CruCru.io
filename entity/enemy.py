@@ -210,17 +210,17 @@ class Enemy(Creature):
 
         self.speed += direction
 
-        self.speed.x -= 0.1 * coeff_bords[0] * self.speed.y
-        self.speed.y += 0.1 * coeff_bords[0] * abs(self.speed.y) + 1
+        self.speed.x -= 1 * coeff_bords[0] * self.speed.y
+        self.speed.y += 1 * coeff_bords[0] * abs(self.speed.y)
 
-        self.speed.x -= 0.1 * coeff_bords[1] * self.speed.y
-        self.speed.y -= 0.1 * coeff_bords[1] * abs(self.speed.y) + 1
+        self.speed.x -= 1 * coeff_bords[1] * self.speed.y
+        self.speed.y -= 1 * coeff_bords[1] * abs(self.speed.y)
 
-        self.speed.y += 0.1 * coeff_bords[2] * self.speed.x
-        self.speed.x += 0.1 * coeff_bords[2] * abs(self.speed.x) + 1
+        self.speed.y += 1 * coeff_bords[2] * self.speed.x
+        self.speed.x += 1 * coeff_bords[2] * abs(self.speed.x)
 
-        self.speed.y += 0.1 * coeff_bords[3] * self.speed.x
-        self.speed.x -= 0.1 * coeff_bords[3] * abs(self.speed.x) + 1
+        self.speed.y += 1 * coeff_bords[3] * self.speed.x
+        self.speed.x -= 1 * coeff_bords[3] * abs(self.speed.x)
 
         self.direction = self.speed.normalize()
 
