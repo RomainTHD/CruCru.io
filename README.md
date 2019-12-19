@@ -34,7 +34,8 @@ python -m pip install pygame --user
 
 Vous devrez ensuite exécuter le fichier main.py <br />
 Certains paramètres sont modifiables dans le fichier config.py <br />
-Vous pouvez ajouter des skins dans le dossier data/skins, avec éventuellement une description de ce skin dans le dossier data/description
+Vous pouvez ajouter des skins dans le dossier data/skins/, avec éventuellement une description de ce skin dans le dossier data/description/<br />
+Vous pouvez aussi ajouter des noms dans le fichier data/usernames.txt
 
 ## Crédits
 
