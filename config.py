@@ -7,21 +7,21 @@ WINDOW_HEIGHT = 600
 FRAMERATE = 120
 # Images par seconde
 
-MAP_WIDTH = 1000
-MAP_HEIGHT = 1000
+MAP_WIDTH = 2000
+MAP_HEIGHT = 2000
 # Largeur et hauteur de la map
 
 GRID_WIDTH = 10
 GRID_HEIGHT = 10
 # Nombre de cases sur la map. Utilisé pour les hitbox et l'affichage
 
-NB_ENEMIES = 1
+NB_ENEMIES = 5
 # Nombre d'ennemis sur la map (sans compter les split)
 
-MAX_CELLS = 1000
+MAX_CELLS = 4000
 # Nombre maximal de cellules sur la map
 
-NB_CELL_PER_SECOND = 20
+NB_CELL_PER_SECOND = 50
 DELTA_T_NEW_CELL = 0.1
 
 SPEED_COEFF = 700
@@ -44,3 +44,5 @@ SPLIT_TIME = 5
 
 NB_BUSHES = 1
 # Nombre de buissons
+
+ALLOW_SKINS = True
