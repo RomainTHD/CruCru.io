@@ -196,8 +196,6 @@ class Display:
             f (function): fonction à exécuter
         """
 
-        print(f)
-
         cls.exec_when_resized.append(f)
         # On ajoute la fonction
 
