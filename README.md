@@ -1,6 +1,6 @@
 # CruCru.io
 
-## Principe du jeu
+### Principe du jeu
 
 #### But
 
@@ -9,7 +9,7 @@ Manger les éléments plus petits que soi en évitant ceux plus gros que soi.
 #### Comment jouer
 
 * **Menu**
-
+    * Assez explicite dans le jeu
 * **Contrôles**
     * Vous contrôlez le joueur à la souris
     * Vous pouvez vous diviser en appuyant sur ```SPACE```
@@ -38,13 +38,13 @@ Certains paramètres sont modifiables dans le fichier ```./config.py``` <br />
 Vous pouvez ajouter des skins dans le dossier data/skins/, avec éventuellement une description de ce skin dans le dossier ```./data/description/```<br />
 Vous pouvez aussi ajouter des noms dans le fichier ```./data/usernames.txt```
 
-## Crédits
+### Crédits
 
 Romain THEODET (@Rominos111) <br />
 Sarah CRUMIERE (@crumiers)
 
 Projet VISI301, L2 CMI INFO + MATHS, USMB, 2019
 
-## Licence
+### Licence
 
 Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0)  
