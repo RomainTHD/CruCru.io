@@ -460,9 +460,15 @@ class Display:
             base_pos (Vect2d): position de référence de la fenêtre
             radius (int): rayon désiré de l'image
         """
+        
+        pos = pos.copy()
 
-        pos = (pos - base_pos)*cls.zoom_factor
+        if base_pos.length() != 0:
+            pos = (pos - base_pos)*cls.zoom_factor
+
         pos = pos.toIntValues()
+
+        radius = int(radius*cls.zoom_factor)
 
         if radius is not None:
             pos -= Vect2d(radius, radius)
