@@ -1,6 +1,6 @@
 # CruCru.io
 
-### Principe du jeu
+## Principe du jeu
 
 #### But
 
@@ -16,7 +16,7 @@ Manger les éléments plus petits que soi en évitant ceux plus gros que soi.
     * Pour quitter, maintenez la touche ```ESC``` enfoncée
     * Pour se mettre en plein écran, c'est la touche ```F11``` qu'il faut enfoncer
 
-### Comment lancer le jeu
+#### Comment lancer le jeu
 
 Pour jouer à ce jeu, il vous faudra avoir installé Python (au moins 3.7) et pygame
 * Linux :
@@ -35,8 +35,8 @@ python -m pip install pygame --user
 
 Vous devrez ensuite exécuter le fichier ```./main.py``` <br />
 Certains paramètres sont modifiables dans le fichier ```./config.py``` <br />
-Vous pouvez ajouter des skins dans le dossier data/skins/, avec éventuellement une description de ce skin dans le dossier ```data/description/```<br />
-Vous pouvez aussi ajouter des noms dans le fichier ```data/usernames.txt```
+Vous pouvez ajouter des skins dans le dossier data/skins/, avec éventuellement une description de ce skin dans le dossier ```./data/description/```<br />
+Vous pouvez aussi ajouter des noms dans le fichier ```./data/usernames.txt```
 
 ## Crédits
 
