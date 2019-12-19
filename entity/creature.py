@@ -61,6 +61,7 @@ class Creature(ABC):
     SPEED_SIZE_POWER = config.SPEED_SIZE_POWER
     RADIUS_POWER_SCORE = config.RADIUS_POWER_SCORE
     SPLIT_TIME = config.SPLIT_TIME
+    ALLOW_SKINS = config.ALLOW_SKINS
 
     def __init__(self, pos: Vect2d, name: str, color: Color, creature_id: int) -> None:
         """Constructeur
@@ -122,20 +123,17 @@ class Creature(ABC):
     def display(self) -> None:
         """Permet d'afficher la créature"""
 
+        if Creature.ALLOW_SKINS:
+            Display.drawImg(img=self.img,
+                            pos=self.pos,
+                            radius=self.radius,
+                            base_pos=Camera.pos)
+        else:
+            Display.drawCircle(pos=self.pos,
+                               color=self.color,
+                               radius=self.radius,
+                               base_pos=Camera.pos)
 
-
-        #!
-        """
-        Display.drawImg(img=self.img,
-                        pos=self.pos,
-                        radius=self.radius,
-                        base_pos=Camera.pos)
-        """
-
-        Display.drawCircle(pos=self.pos,
-                           color=self.color,
-                           radius=self.radius,
-                           base_pos=Camera.pos)
 
         Display.drawText(text=self.name,
                          size=self.radius*0.75,
