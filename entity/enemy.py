@@ -23,24 +23,28 @@ class Enemy(Creature):
         speed (Vect2d)
     """
 
-    def __init__(self, pos, name, color, creature_id) -> None:
+    def __init__(self, pos: Vect2d, name: str, color: 'Color', creature_id: int) -> None:
+        """Constructeur
+
+        Args:
+            pos (Vect2d): position du centre de l'ennemi
+            name (str): nom de l'ennemi
+            color (Color): couleur de l'ennemi
+            creature_id (int): id de la famille de la créature
+        """
+
         super().__init__(pos, name, color, creature_id)
 
         self.map_cell = None
         self.creatures_info = None
 
         self.speed = Vect2d(random.random()*2-1, random.random()*2-1)
+        # Vitesse initiale
 
-        #!
-        """
-        self.pos = Vect2d(1000, 1000)
-        self.speed = Vect2d(0, -1)
-        """
-
-    def setMapCell(self, map_cell):
+    def setMapCell(self, map_cell: list) -> None:
         self.map_cell = map_cell
 
-    def searchCellDest(self, radius, map_size):
+    def searchCellDest(self, radius: int, map_size: Vect2d) -> None:
         maxi = 0
         liste_pos_maxi = []
 
@@ -77,10 +81,10 @@ class Enemy(Creature):
 
         return coords_mini, score
 
-    def setCreaturesInfo(self, creatures_info: list):
+    def setCreaturesInfo(self, creatures_info: list) -> None:
         self.creatures_info = creatures_info
 
-    def speedEnemies(self, map_size: Vect2d):
+    def speedEnemies(self, map_size: Vect2d) -> tuple:
         dist_target = float("inf")
         dist_hunter = float("inf")
 
@@ -136,7 +140,7 @@ class Enemy(Creature):
 
         return speed_target, coeff_target, speed_hunter, coeff_hunter, can_split
 
-    def update(self, map_size):
+    def update(self, map_size: Vect2d) -> None:
         grid_size = Vect2d(len(self.map_cell), len(self.map_cell[0]))
 
         max_radius = grid_size.x
@@ -168,14 +172,6 @@ class Enemy(Creature):
             coeff_bord = math.exp(-(dist_bord**0.2)/2)**3
             coeff_bord = coeff_bord if coeff_bord <= 1 else 0
             coeff_bords.append(coeff_bord)
-
-        #!
-        """
-        for i in range(4):
-            print(int(coeff_bords[i]*100)/100, end=', ')
-
-        print(self.speed)
-        """
 
         speed_family = Vect2d(0, 0)
 
