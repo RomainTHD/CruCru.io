@@ -27,6 +27,7 @@ config.MAX_SPLIT
 config.RADIUS_POWER_SCORE
 config.SPLIT_TIME
 config.NB_BUSHES
+config.ALLOW_SKINS
 # Test que toutes les variables de configuration existent
 
 from game.map import Map
