@@ -1,4 +1,4 @@
-# Agar.io
+# CruCru.io
 
 ### Principe du jeu
 
