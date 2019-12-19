@@ -14,6 +14,7 @@ Manger les éléments plus petits que soi en évitant ceux plus gros que soi.
     * Vous contrôlez le joueur à la souris
     * Vous pouvez vous diviser en appuyant sur ```SPACE```
     * Pour quitter, maintenez la touche ```ESC``` enfoncée
+    * Pour se mettre en plein écran, c'est la touche ```F11``` qu'il faut enfoncer
 
 ### Comment lancer le jeu
 
@@ -32,10 +33,10 @@ python -m pip install pygame --user
 # ou `pip install pygame`
 ```
 
-Vous devrez ensuite exécuter le fichier main.py <br />
-Certains paramètres sont modifiables dans le fichier config.py <br />
-Vous pouvez ajouter des skins dans le dossier data/skins/, avec éventuellement une description de ce skin dans le dossier data/description/<br />
-Vous pouvez aussi ajouter des noms dans le fichier data/usernames.txt
+Vous devrez ensuite exécuter le fichier ```./main.py``` <br />
+Certains paramètres sont modifiables dans le fichier ```./config.py``` <br />
+Vous pouvez ajouter des skins dans le dossier data/skins/, avec éventuellement une description de ce skin dans le dossier ```data/description/```<br />
+Vous pouvez aussi ajouter des noms dans le fichier ```data/usernames.txt```
 
 ## Crédits
 
