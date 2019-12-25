@@ -4,6 +4,8 @@ if __name__ == "__main__":
     import sys
     sys.path.append("..")
 
+from menu.widget import Widget
+
 from util.vector import Vect2d
 from util.color import Color
 
@@ -11,7 +13,7 @@ from game.map import Map
 
 from view.display import Display
 
-class Button:
+class Button(Widget):
     """Bouton
 
     Attributs:
@@ -47,49 +49,20 @@ class Button:
             when_init (function): fonction à appeler lors de l'initialisation du bouton, par défaut aucune
         """
 
-        self.pos = pos
-        self.size = size
+        super().__init__(pos, size, text)
 
         self.on_click = on_click
 
         self.when_display = when_display
-        self.text = text
 
         when_init(self)
 
-    def isMouseOver(self, mouse_pos: Vect2d) -> bool:
-        """Fonction permettant de savoir si la souris est au dessus de ce bouton ou non
-
-        Args:
-            mouse_pos (Vect2d): position de la souris
-
-        Returns:
-            res (bool): si la souris est sur le bouton ou non
-        """
-
-        res = False
-
-        if mouse_pos.x > self.pos.x and mouse_pos.x < self.pos.x + self.size.x:
-            if mouse_pos.y > self.pos.y and mouse_pos.y < self.pos.y + self.size.y:
-                res = True
-
-        return res
-
-    def display(self, mouse_pos: Vect2d) -> bool:
-        """Affichage du bouton
-
-        Args:
-            mouse_pos (Vect2d): pour permettre un affichage différent selon la position de la souris
-        """
-
-        return self.when_display(self, mouse_pos)
-
 def buttonStart_Init(button: Button) -> None:
     """Initialisation du bouton Start
-    
+
     Args:
         button (Button): bouton start
-    
+
     Attributs:
         color_hue (int): couleur du bouton
         color_sat (int): saturation du bouton
@@ -104,7 +77,7 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> bool:
     Args:
         button (Button): bouton start
         mouse_pos (Vect2d): position de la souris
-    
+
     Returns:
         hand_cursor (bool): si la souris doit être affichée comme une main ou un curseur
     """
@@ -137,22 +110,22 @@ def buttonStart_Display(button: Button, mouse_pos: Vect2d) -> bool:
                      color=Color.BLACK,
                      size=font_size)
     # Texte du bouton
-    
+
     return hand_cursor
 
 def buttonWinOrEnd_Init(button: Button, first_try: bool, color: Color) -> None:
     """Initialisation du bouton de fin
-    
+
     Args:
         button (Button): bouton de fin
         first_try (bool): si ce bouton vient d'être initialisé pour la première fois ou non
         color (Color): couleur du bouton
-    
+
     Attributs:
         color (Color): couleur du bouton
         alpha (int): composante alpha de la couleur
     """
-    
+
     button.color = color
 
     if first_try:

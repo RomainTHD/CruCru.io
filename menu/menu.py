@@ -8,7 +8,10 @@ import pygame
 
 from util.vector import Vect2d
 
-from game.button import *
+from menu.button import *
+from menu.slider import *
+from menu.textarea import *
+
 from game.gamestate import GameState
 from game.map import Map
 
@@ -48,7 +51,7 @@ class Menu:
         cls.createButtons(Display.size.x, Display.size.y, first_try=True)
 
     @classmethod
-    def play(cls) -> None:
+    def play(cls, *args) -> None:
         """Lorsqu'un bouton pour rejouer est cliqué"""
 
         Display.setCursorArrow()
@@ -79,7 +82,7 @@ class Menu:
             cls.applyEnd(width, height)
 
     @classmethod
-    def quit(cls) -> None:
+    def quit(cls, *args) -> None:
         """Méthode appelée lorsque le joueur veut quitter"""
 
         cls.can_quit = True
@@ -93,12 +96,29 @@ class Menu:
             height (int): hauteur de la fenêtre
         """
 
-        cls.buttons.append(Button(pos=Vect2d(width/4, height/3),
-                                  size=Vect2d(width/2, height/3),
+        cls.buttons.append(Button(pos=Vect2d(width/4, height/5),
+                                  size=Vect2d(width/2, height/5),
                                   text="Jouer",
                                   on_click=cls.play,
                                   when_display=buttonStart_Display,
-                                  when_init=buttonStart_Init))
+                                  when_init=buttonStart_Init
+                                 ))
+
+        cls.buttons.append(TextArea(pos=Vect2d(width/4, height*3/5),
+                                    size=Vect2d(width/2, height/5),
+                                    text="Pseudo :",
+                                    value="Player",
+                                    when_display=Name_TextArea_Display
+                                   ))
+
+        cls.buttons.append(Slider(pos=Vect2d(width/4, height*9/10),
+                                  size=Vect2d(width/2, height*2/3),
+                                  text="Test",
+                                  value=1,
+                                  min_value=0,
+                                  max_value=10,
+                                  var="map_w"
+                                 ))
 
     @classmethod
     def applyEnd(cls, width: int, height: int) -> None:
@@ -172,7 +192,7 @@ class Menu:
         if mouse_pressed:
             for i in range(len(cls.buttons)):
                 if cls.buttons[i].isMouseOver(cls.mouse_pos):
-                    cls.buttons[i].on_click()
+                    cls.buttons[i].on_click(mouse_pos)
 
     @classmethod
     def display(cls) -> None:
@@ -181,7 +201,10 @@ class Menu:
         hand_cursor = False
 
         for i in range(len(cls.buttons)):
-            hand_cursor = cls.buttons[i].display(cls.mouse_pos) or hand_cursor
+            res = cls.buttons[i].display(cls.mouse_pos)
+
+            if res:
+                hand_cursor = True
 
         if hand_cursor:
             # Change le curseur selon le bouton sur lequel il est

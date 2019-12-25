@@ -36,11 +36,11 @@ from game.map import Map
 from game.game import Game
 # Jeu en général
 
-from game.menu import Menu
-# Menu
-
 from game.gamestate import GameState
 # États du jeu
+
+from menu.menu import Menu
+# Menu
 
 from view.display import Display
 # Fenêtre

@@ -7,8 +7,9 @@ if __name__ == "__main__":
     sys.path.append("..")
 
 from game.map import Map
-from game.menu import Menu
 from game.gamestate import GameState
+
+from menu.menu import Menu
 
 from util.vector import Vect2d
 
