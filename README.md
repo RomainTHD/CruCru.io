@@ -34,7 +34,7 @@ sudo dnf install python3
 python3 -m pip install pygame --user
 ```
 
-* Arch Linux, Manjaro
+* Arch, Manjaro
 ```Bash
 sudo pacman -S python
 python -m pip install pygame --user
