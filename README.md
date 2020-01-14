@@ -65,4 +65,4 @@ Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage
 
 ### Captures d'écran
 
-![Aperçu de l'image](wiki/CruCru.png)
+![Aperçu de l'image](data/preview.png)
