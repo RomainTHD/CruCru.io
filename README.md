@@ -54,6 +54,10 @@ Vous pouvez aussi ajouter des noms dans le fichier ```./data/usernames.txt```
 
 ### Aperçu
 
+Vous pouvez voir dans la barre de titre le nombre d'images par secondes, qui peut facilement dépasser 300 (si les paramètres l'autorisent) sans que le jeu paraisse plus rapide (plus fluide par contre oui). <br /> 
+Dans la fenêtre de jeu nous voyons le joueur au centre, quelques ennemis et de la nourriture (petites boules). <br />
+À vous de télécharger notre jeu pour voir les buissons :kissing_heart:
+
 ![Aperçu de l'image](data/preview.png)
 
 ### Licence
