@@ -52,17 +52,17 @@ Certains paramètres sont modifiables dans le fichier ```./config.py``` <br />
 Vous pouvez ajouter des skins dans le dossier ```./data/skins/```, avec éventuellement une description de ce skin dans le dossier ```./data/description/```<br />
 Vous pouvez aussi ajouter des noms dans le fichier ```./data/usernames.txt```
 
+### Aperçu
+
+![Aperçu de l'image](data/preview.png)
+
+### Licence
+
+Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0)
+
 ### Crédits
 
 Romain THEODET (@Rominos111) <br />
 Sarah CRUMIERE (@crumiers)
 
 Projet VISI301, L2 CMI INFO + MATHS, USMB, 2019
-
-### Licence
-
-Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0)
-
-### Aperçu
-
-![Aperçu de l'image](data/preview.png)
