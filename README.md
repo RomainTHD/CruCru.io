@@ -65,6 +65,4 @@ Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage
 
 ### Captures d'écran
 
-<img src="https://drive.google.com/uc?export=view&amp;id=1ldGejrW16baMNuGeL8hqVVTXgIlWBZdT" alt="Zut, le lien ne marche plus ?" />
-
-![Aperçu de l'image](https://drive.google.com/uc?export=view&amp;id=1ldGejrW16baMNuGeL8hqVVTXgIlWBZdT)
+![Aperçu de l'image](wiki/CruCru.png)
