@@ -61,4 +61,10 @@ Projet VISI301, L2 CMI INFO + MATHS, USMB, 2019
 
 ### Licence
 
-Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0)  
+Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0)
+
+### Captures d'écran
+
+<img src="https://drive.google.com/uc?export=view&amp;id=1ldGejrW16baMNuGeL8hqVVTXgIlWBZdT" alt="Zut, le lien ne marche plus ?" />
+
+![Aperçu de l'image](https://drive.google.com/uc?export=view&amp;id=1ldGejrW16baMNuGeL8hqVVTXgIlWBZdT)
