@@ -62,7 +62,7 @@ Dans la fenêtre de jeu nous voyons le joueur au centre, quelques ennemis et de 
 
 ### Licence
 
-Licence Creative Commons Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions 4.0 International (CC BY-NC-SA 4.0)
+GPL-3.0-or-later
 
 ### Crédits
 
