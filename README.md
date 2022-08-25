@@ -1,4 +1,4 @@
-# CruCru.io
+# CruCru.io, Projet VISI301 2019
 
 ### Principe du jeu
 
@@ -20,32 +20,6 @@ Manger les éléments plus petits que soi en évitant ceux plus gros que soi.
 #### Comment lancer le jeu
 
 Pour jouer à ce jeu, il vous faudra avoir installé Python (**≥ 3.7**) et pygame
-* Ubuntu, Debian :
-```Bash
-sudo apt-get install python3
-python3 -m pip install pygame --user
-# ou `pip3 install pygame`
-# `--user` est facultatif si vous avez les privilèges requis
-```
-
-* Fedora
-```Bash
-sudo dnf install python3
-python3 -m pip install pygame --user
-```
-
-* Arch, Manjaro
-```Bash
-sudo pacman -S python
-python -m pip install pygame --user
-```
-
-* Windows :
-Téléchargez et installez Python 3 [ici](https://www.python.org/ftp/python/3.8.0/python-3.8.0-amd64.exe) (64 bit) et ajoutez le à la variable d'environnement ```PATH```
-```Powershell
-python -m pip install pygame --user
-# ou `pip install pygame`
-```
 
 Vous devrez ensuite exécuter le fichier ```./main.py```, soit par terminal / cmd / Powershell avec ```python main.py``` ou ```python3 main.py``` <br />
 Certains paramètres sont modifiables dans le fichier ```./config.py``` <br />
@@ -60,13 +34,7 @@ Dans la fenêtre de jeu nous voyons le joueur au centre, quelques ennemis et de 
 
 ![Aperçu de l'image](data/preview.png)
 
-### Licence
-
-GPL-3.0-or-later
-
 ### Crédits
 
-Romain THEODET (@Rominos111) <br />
-Sarah CRUMIERE (@crumiers)
-
-Projet VISI301, L2 CMI INFO + MATHS, USMB, 2019
+@RomainTHD<br />
+@crumiers
